@@ -1,1 +1,321 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
+body {
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background: #fff7fa;
+  color: #43265f;
+  padding: 20px;
+}
+
+/* Logo */
+.header {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.header h1 {
+  font-size: 48px;
+  color: #ff8fb3;
+  font-family: cursive;
+  line-height: 1;
+}
+
+.header p {
+  margin-top: 5px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #ff729d;
+}
+
+/* Bố cục 2 cột */
+.app-container {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 250px;
+  gap: 18px;
+}
+
+/* Khu vực bên trái */
+.main-area {
+  min-width: 0;
+}
+
+.settings {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.settings label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: bold;
+  color: #ef5b92;
+}
+
+select {
+  height: 38px;
+  min-width: 120px;
+  border: 1px solid #e3cbd4;
+  border-radius: 8px;
+  background: white;
+  padding: 0 10px;
+  color: #555;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.small-button {
+  height: 38px;
+  padding: 0 20px;
+  border-radius: 8px;
+  background: #ffd5e4;
+  color: #d94d81;
+}
+
+/* Camera */
+.camera-box {
+  position: relative;
+  width: 100%;
+  min-height: 470px;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #fff9fb;
+  border: 1px solid #ffe3ec;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#camera {
+  width: 100%;
+  height: 100%;
+  min-height: 470px;
+  object-fit: cover;
+  transform: scaleX(-1);
+  display: none;
+}
+
+.camera-message {
+  max-width: 500px;
+  padding: 20px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: bold;
+  color: #222;
+}
+
+.countdown {
+  position: absolute;
+  z-index: 5;
+  font-size: 100px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Nút chụp */
+.camera-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  margin: 18px 0 10px;
+}
+
+.round-button {
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  background: #f4f3f5;
+  color: #725981;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  font-size: 28px;
+  transition: 0.2s;
+}
+
+.round-button span {
+  font-size: 11px;
+}
+
+.round-button:hover {
+  transform: translateY(-3px);
+}
+
+.main-capture {
+  width: 98px;
+  height: 98px;
+  background: #fff0f5;
+  color: #ff6397;
+  box-shadow: 0 6px 18px rgba(255, 121, 164, 0.2);
+}
+
+.retry-button {
+  display: block;
+  margin: 0 auto 16px;
+  padding: 10px 22px;
+  border-radius: 20px;
+  background: #39245f;
+  color: white;
+}
+
+/* Bộ lọc */
+.filter-box {
+  border: 1px solid #ffb9cd;
+  border-radius: 18px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.filter-box h2 {
+  margin-bottom: 12px;
+  font-size: 15px;
+  color: #ec5d8c;
+}
+
+.filter-list {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter {
+  padding: 9px 16px;
+  border: 1px solid #f0d5de;
+  border-radius: 20px;
+  background: white;
+  color: #66596a;
+  font-size: 12px;
+}
+
+.filter.active {
+  background: #ff91b3;
+  color: white;
+  border-color: #ff91b3;
+}
+
+/* Cột ảnh bên phải */
+.photo-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.photo-slot {
+  position: relative;
+  height: 170px;
+  border: 1px solid #ff8eae;
+  background: #fffafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.photo-slot span {
+  color: #c079a0;
+  font-size: 14px;
+}
+
+.photo-slot img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+.photo-counter {
+  padding: 15px;
+  border-radius: 8px;
+  background: #f7bfd2;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+}
+
+.download-button {
+  padding: 14px;
+  border-radius: 8px;
+  background: #ff75a4;
+  color: white;
+  font-weight: bold;
+}
+
+.download-button:disabled {
+  background: #e5dce0;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+/* Điện thoại */
+@media (max-width: 800px) {
+  body {
+    padding: 12px;
+  }
+
+  .header h1 {
+    font-size: 38px;
+  }
+
+  .header p {
+    font-size: 19px;
+  }
+
+  .app-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .settings {
+    align-items: stretch;
+  }
+
+  .settings label,
+  .settings select,
+  .small-button {
+    width: 100%;
+  }
+
+  .camera-box,
+  #camera {
+    min-height: 360px;
+  }
+
+  .camera-controls {
+    gap: 15px;
+  }
+
+  .photo-sidebar {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .photo-slot {
+    height: 150px;
+  }
+
+  .photo-counter,
+  .download-button {
+    grid-column: 1 / -1;
+  }
+}
