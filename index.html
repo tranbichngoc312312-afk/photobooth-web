@@ -1,1 +1,149 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
 
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>PhotoXinhh - Photobooth</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header class="header">
+    <h1>PhotoXinhh</h1>
+    <p>Capture Memories</p>
+  </header>
+
+  <main class="app-container">
+
+    <!-- Khu vực bên trái -->
+    <section class="main-area">
+
+      <div class="settings">
+        <label>
+          Layout ảnh
+          <select id="layoutSelect">
+            <option value="4">1x4 (4 ảnh)</option>
+            <option value="1">1 ảnh</option>
+          </select>
+        </label>
+
+        <label>
+          Đếm ngược
+          <select id="countdownSelect">
+            <option value="3">3 giây</option>
+            <option value="5">5 giây</option>
+            <option value="10">10 giây</option>
+          </select>
+        </label>
+
+        <button id="frameButton" class="small-button">
+          Chọn khung
+        </button>
+      </div>
+
+      <!-- Camera -->
+      <div class="camera-box">
+        <video id="camera" autoplay playsinline></video>
+
+        <div id="countdown" class="countdown"></div>
+
+        <div id="cameraMessage" class="camera-message">
+          Đang chuẩn bị camera...
+        </div>
+      </div>
+
+      <!-- Nút điều khiển -->
+      <div class="camera-controls">
+        <button id="manualButton" class="round-button">
+          📷
+          <span>Chụp tay</span>
+        </button>
+
+        <button id="captureButton" class="round-button main-capture">
+          📸
+          <span>Chụp ảnh</span>
+        </button>
+
+        <button id="retakeButton" class="round-button">
+          🔄
+          <span>Chụp lại</span>
+        </button>
+      </div>
+
+      <button id="retryButton" class="retry-button">
+        Thử lại camera
+      </button>
+
+      <!-- Bộ lọc -->
+      <section class="filter-box">
+        <h2>Bộ lọc màu</h2>
+
+        <div class="filter-list">
+          <button class="filter active" data-filter="none">
+            Bình thường
+          </button>
+
+          <button class="filter" data-filter="grayscale(100%)">
+            Đen trắng
+          </button>
+
+          <button class="filter" data-filter="sepia(50%)">
+            Retro
+          </button>
+
+          <button class="filter" data-filter="brightness(115%)">
+            Sáng nhẹ
+          </button>
+
+          <button class="filter" data-filter="contrast(120%)">
+            Tương phản
+          </button>
+        </div>
+      </section>
+    </section>
+
+    <!-- Khu vực ảnh bên phải -->
+    <aside class="photo-sidebar">
+      <div class="photo-slot">
+        <span>Ảnh 1</span>
+        <img alt="Ảnh đã chụp số 1">
+      </div>
+
+      <div class="photo-slot">
+        <span>Ảnh 2</span>
+        <img alt="Ảnh đã chụp số 2">
+      </div>
+
+      <div class="photo-slot">
+        <span>Ảnh 3</span>
+        <img alt="Ảnh đã chụp số 3">
+      </div>
+
+      <div class="photo-slot">
+        <span>Ảnh 4</span>
+        <img alt="Ảnh đã chụp số 4">
+      </div>
+
+      <div id="photoCounter" class="photo-counter">
+        0/4
+      </div>
+
+      <button id="downloadButton" class="download-button" disabled>
+        Tải ảnh xuống
+      </button>
+    </aside>
+
+  </main>
+
+  <!-- Canvas dùng để chụp và ghép ảnh -->
+  <canvas id="photoCanvas" hidden></canvas>
+
+  <script src="script.js"></script>
+</body>
+</html>
