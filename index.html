@@ -66,7 +66,7 @@
   <main id="top" class="app-shell">
 
     <!-- Giới thiệu -->
-    <section class="intro-card">
+    <section class="intro-card capture-view">
 
       <div>
         <p class="eyebrow">
@@ -90,7 +90,7 @@
     </section>
 
     <!-- Các bước sử dụng -->
-    <nav class="stepper" aria-label="Quy trình sử dụng">
+    <nav class="stepper capture-view" aria-label="Quy trình sử dụng">
 
       <div class="step active" data-step="1">
         <span>1</span>
@@ -116,7 +116,7 @@
 
     <!-- Thiết lập -->
     <section
-      class="settings-panel"
+      class="settings-panel capture-view"
       aria-label="Thiết lập photobooth"
     >
 
@@ -193,7 +193,7 @@
     </section>
 
     <!-- Camera và ảnh đã chụp -->
-    <section class="workspace">
+    <section class="workspace capture-view">
 
       <!-- Khu vực camera -->
       <div class="camera-column">
@@ -339,9 +339,32 @@
       </aside>
 
     </section>
+<section class="next-step-bar capture-view">
 
+  <div>
+    <strong>Đã chụp xong?</strong>
+
+    <p>
+      Chụp đủ ảnh rồi chuyển sang bước trang trí.
+    </p>
+  </div>
+
+  <button
+    id="nextToEditorButton"
+    class="primary-button next-step-button"
+    type="button"
+    disabled
+  >
+    Chụp đủ ảnh để tiếp tục
+  </button>
+
+</section>
     <!-- Phần chỉnh sửa -->
-    <section class="editor-section">
+    <section
+  id="editorScreen"
+  class="editor-section"
+  hidden
+>
 
       <div class="section-heading">
 
@@ -355,13 +378,25 @@
           </h2>
         </div>
 
-        <button
-          id="refreshPreviewButton"
-          class="secondary-button"
-          type="button"
-        >
-          Cập nhật xem trước
-        </button>
+        <div class="editor-heading-actions">
+
+  <button
+    id="backToCaptureButton"
+    class="secondary-button"
+    type="button"
+  >
+    ← Quay lại chụp
+  </button>
+
+  <button
+    id="refreshPreviewButton"
+    class="secondary-button"
+    type="button"
+  >
+    Cập nhật xem trước
+  </button>
+
+</div>
 
       </div>
 
