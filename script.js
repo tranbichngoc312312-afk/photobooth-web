@@ -99,6 +99,8 @@ let recapBlob = null;
 let recapAnimationId = null;
 let toastTimer = null;
 let audioContext = null;
+let previewRenderFrame = 0;
+let compositeRenderToken = 0;
 
 function wait(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -145,57 +147,93 @@ function clearRecap() {
 
 async function startCamera() {
   cameraStatus.textContent = "Đang mở camera…";
+
   cameraPlaceholder.hidden = false;
+  cameraPlaceholder.style.display = "grid";
+
+  $("#cameraPlaceholder strong").textContent =
+    "Đang mở camera…";
+
+  $("#cameraPlaceholder p").textContent =
+    "Vui lòng chờ trong giây lát.";
 
   try {
     if (!navigator.mediaDevices?.getUserMedia) {
-      throw new Error("Trình duyệt không hỗ trợ camera.");
+      throw new Error(
+        "Trình duyệt không hỗ trợ camera."
+      );
     }
 
     if (stream) {
-      stream.getTracks().forEach(track => track.stop());
+      stream
+        .getTracks()
+        .forEach(track => track.stop());
+
+      stream = null;
     }
 
-    stream = await navigator.mediaDevices.getUserMedia({
-      audio: false,
+    stream =
+      await navigator.mediaDevices.getUserMedia({
+        audio: false,
 
-      video: {
-        facingMode: {
-          ideal: facingMode
-        },
+        video: {
+          facingMode: {
+            ideal: facingMode
+          },
 
-        width: {
-          ideal: 1280
-        },
+          width: {
+            ideal: 1280
+          },
 
-        height: {
-          ideal: 960
+          height: {
+            ideal: 960
+          }
         }
-      }
-    });
+      });
 
     video.srcObject = stream;
+    video.muted = true;
+    video.autoplay = true;
+    video.playsInline = true;
 
     await video.play();
-    await waitForVideoFrame();
+
+    if (
+      video.readyState < 2 ||
+      !video.videoWidth
+    ) {
+      await waitForVideoFrame();
+    }
+
+    video.style.display = "block";
+    video.style.visibility = "visible";
+    video.style.opacity = "1";
+    video.style.transform = "none";
 
     cameraPlaceholder.hidden = true;
+    cameraPlaceholder.style.display = "none";
 
     cameraStatus.textContent =
       facingMode === "user"
         ? "Camera trước đã sẵn sàng"
         : "Camera sau đã sẵn sàng";
   } catch (error) {
-    console.error(error);
+    console.error(
+      "Lỗi mở camera:",
+      error
+    );
 
     cameraPlaceholder.hidden = false;
-    cameraStatus.textContent = "Không thể mở camera";
+    cameraPlaceholder.style.display = "grid";
 
     $("#cameraPlaceholder strong").textContent =
       "Không thể mở camera";
 
     $("#cameraPlaceholder p").textContent =
-      "Hãy cấp quyền camera trong cài đặt trình duyệt rồi bấm Mở camera.";
+      "Hãy cấp quyền camera trong cài đặt trình duyệt rồi thử lại.";
+
+    cameraStatus.textContent =
+      "Không thể mở camera";
 
     showToast(
       "Không mở được camera. Hãy kiểm tra quyền truy cập."
@@ -372,10 +410,7 @@ async function captureCurrentFrame(targetIndex = null) {
 
   context.save();
 
-  if (facingMode === "user") {
-    context.translate(width, 0);
-    context.scale(-1, 1);
-  }
+  
 
   context.drawImage(
     video,
@@ -1084,6 +1119,8 @@ function getPhotoBoxes(layout) {
 }
 
 async function renderComposite() {
+  const renderToken =
+    ++compositeRenderToken;
   const layout = getLayout();
 
   const filled = photos
@@ -1121,14 +1158,17 @@ async function renderComposite() {
 
   updateSteps(4);
 
-  outputCanvas.width =
-    layout.width;
+  const workCanvas =
+  document.createElement("canvas");
 
-  outputCanvas.height =
-    layout.height;
+workCanvas.width =
+  layout.width;
 
-  const context =
-    outputCanvas.getContext("2d");
+workCanvas.height =
+  layout.height;
+
+const context =
+  workCanvas.getContext("2d");
 
   const palette =
     framePalette(activeFrame);
@@ -1248,11 +1288,39 @@ async function renderComposite() {
     layout
   );
 
-  outputCanvas.style.display =
-    "block";
+  if (
+  renderToken !== compositeRenderToken
+) {
+  return;
+}
 
-  emptyPreview.style.display =
-    "none";
+outputCanvas.width =
+  layout.width;
+
+outputCanvas.height =
+  layout.height;
+
+const outputContext =
+  outputCanvas.getContext("2d");
+
+outputContext.clearRect(
+  0,
+  0,
+  outputCanvas.width,
+  outputCanvas.height
+);
+
+outputContext.drawImage(
+  workCanvas,
+  0,
+  0
+);
+
+outputCanvas.style.display =
+  "block";
+
+emptyPreview.style.display =
+  "none";
 }
 
 function drawFrameDecorations(
@@ -1642,10 +1710,6 @@ async function startRecapRecording() {
       );
 
       if (video.readyState >= 2) {
-        if (facingMode === "user") {
-          context.translate(width, 0);
-          context.scale(-1, 1);
-        }
 
         context.filter =
           getCombinedFilter();
@@ -1996,6 +2060,24 @@ function bindOptionButtons() {
   );
 }
 
+
+function scheduleCompositeRender() {
+  cancelAnimationFrame(
+    previewRenderFrame
+  );
+
+  previewRenderFrame =
+    requestAnimationFrame(() => {
+      renderComposite().catch(
+        error => {
+          console.error(
+            "Lỗi render preview:",
+            error
+          );
+        }
+      );
+    });
+}
 function bindEvents() {
   $("#startCameraButton")
     .addEventListener(
@@ -2115,28 +2197,27 @@ function bindEvents() {
     );
 
   [
-    brightnessRange,
-    contrastRange,
-    saturationRange
-  ].forEach(input => {
-    input.addEventListener(
-      "input",
-      async () => {
-        brightnessValue.value =
-          `${brightnessRange.value}%`;
+  brightnessRange,
+  contrastRange,
+  saturationRange
+].forEach(input => {
+  input.addEventListener(
+    "input",
+    () => {
+      brightnessValue.value =
+        `${brightnessRange.value}%`;
 
-        contrastValue.value =
-          `${contrastRange.value}%`;
+      contrastValue.value =
+        `${contrastRange.value}%`;
 
-        saturationValue.value =
-          `${saturationRange.value}%`;
+      saturationValue.value =
+        `${saturationRange.value}%`;
 
-        updateVideoPreviewFilter();
-
-        await renderComposite();
-      }
-    );
-  });
+      updateVideoPreviewFilter();
+      scheduleCompositeRender();
+    }
+  );
+});
 
   [
     customText,
