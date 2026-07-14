@@ -5,145 +5,820 @@
 
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
   >
 
-  <title>PhotoXinhh - Photobooth</title>
+  <meta name="theme-color" content="#fff7fb">
+
+  <meta
+    name="description"
+    content="NoHa - Tiệm Photobooth online miễn phí, chụp ảnh, chọn khung, filter và tải ảnh ngay trên trình duyệt."
+  >
+
+  <title>NoHa - Tiệm Photobooth</title>
 
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <header class="header">
-    <h1>PhotoXinhh</h1>
-    <p>Capture Memories</p>
+
+  <!-- Thanh đầu trang -->
+  <header class="site-header">
+
+    <a
+      class="brand"
+      href="#top"
+      aria-label="NoHa - Tiệm Photobooth"
+    >
+      <span class="brand-mark" aria-hidden="true">
+        ✿
+      </span>
+
+      <span>
+        <strong>NoHa</strong>
+        <small>TIỆM PHOTOBOOTH</small>
+      </span>
+    </a>
+
+    <div class="header-actions">
+
+      <button
+        id="helpButton"
+        class="ghost-button"
+        type="button"
+      >
+        Hướng dẫn
+      </button>
+
+      <button
+        id="soundButton"
+        class="icon-button"
+        type="button"
+        aria-label="Bật hoặc tắt âm thanh"
+        title="Âm thanh"
+      >
+        🔊
+      </button>
+
+    </div>
   </header>
 
-  <main class="app-container">
+  <main id="top" class="app-shell">
 
-    <!-- Khu vực bên trái -->
-    <section class="main-area">
+    <!-- Giới thiệu -->
+    <section class="intro-card">
 
-      <div class="settings">
-        <label>
-          Layout ảnh
-          <select id="layoutSelect">
-            <option value="4">1x4 (4 ảnh)</option>
-            <option value="1">1 ảnh</option>
-          </select>
-        </label>
+      <div>
+        <p class="eyebrow">
+          NOHA ONLINE PHOTOBOOTH
+        </p>
 
-        <label>
-          Đếm ngược
-          <select id="countdownSelect">
-            <option value="3">3 giây</option>
-            <option value="5">5 giây</option>
-            <option value="10">10 giây</option>
-          </select>
-        </label>
+        <h1>
+          Chụp ảnh xinh ngay trên trình duyệt
+        </h1>
 
-        <button id="frameButton" class="small-button">
-          Chọn khung
-        </button>
+        <p>
+          Chọn layout, chụp tự động, thêm khung và filter
+          rồi tải ảnh PNG về máy.
+        </p>
       </div>
 
-      <!-- Camera -->
-      <div class="camera-box">
-        <video id="camera" autoplay playsinline></video>
-
-        <div id="countdown" class="countdown"></div>
-
-        <div id="cameraMessage" class="camera-message">
-          Đang chuẩn bị camera...
-        </div>
+      <div class="privacy-badge">
+        🔒 Ảnh chỉ xử lý trên thiết bị
       </div>
 
-      <!-- Nút điều khiển -->
-      <div class="camera-controls">
-        <button id="manualButton" class="round-button">
-          📷
-          <span>Chụp tay</span>
-        </button>
-
-        <button id="captureButton" class="round-button main-capture">
-          📸
-          <span>Chụp ảnh</span>
-        </button>
-
-        <button id="retakeButton" class="round-button">
-          🔄
-          <span>Chụp lại</span>
-        </button>
-      </div>
-
-      <button id="retryButton" class="retry-button">
-        Thử lại camera
-      </button>
-
-      <!-- Bộ lọc -->
-      <section class="filter-box">
-        <h2>Bộ lọc màu</h2>
-
-        <div class="filter-list">
-          <button class="filter active" data-filter="none">
-            Bình thường
-          </button>
-
-          <button class="filter" data-filter="grayscale(100%)">
-            Đen trắng
-          </button>
-
-          <button class="filter" data-filter="sepia(50%)">
-            Retro
-          </button>
-
-          <button class="filter" data-filter="brightness(115%)">
-            Sáng nhẹ
-          </button>
-
-          <button class="filter" data-filter="contrast(120%)">
-            Tương phản
-          </button>
-        </div>
-      </section>
     </section>
 
-    <!-- Khu vực ảnh bên phải -->
-    <aside class="photo-sidebar">
-      <div class="photo-slot">
-        <span>Ảnh 1</span>
-        <img alt="Ảnh đã chụp số 1">
+    <!-- Các bước sử dụng -->
+    <nav class="stepper" aria-label="Quy trình sử dụng">
+
+      <div class="step active" data-step="1">
+        <span>1</span>
+        <b>Thiết lập</b>
       </div>
 
-      <div class="photo-slot">
-        <span>Ảnh 2</span>
-        <img alt="Ảnh đã chụp số 2">
+      <div class="step" data-step="2">
+        <span>2</span>
+        <b>Chụp ảnh</b>
       </div>
 
-      <div class="photo-slot">
-        <span>Ảnh 3</span>
-        <img alt="Ảnh đã chụp số 3">
+      <div class="step" data-step="3">
+        <span>3</span>
+        <b>Trang trí</b>
       </div>
 
-      <div class="photo-slot">
-        <span>Ảnh 4</span>
-        <img alt="Ảnh đã chụp số 4">
+      <div class="step" data-step="4">
+        <span>4</span>
+        <b>Tải xuống</b>
       </div>
 
-      <div id="photoCounter" class="photo-counter">
-        0/4
-      </div>
+    </nav>
 
-      <button id="downloadButton" class="download-button" disabled>
-        Tải ảnh xuống
+    <!-- Thiết lập -->
+    <section
+      class="settings-panel"
+      aria-label="Thiết lập photobooth"
+    >
+
+      <label class="field">
+
+        <span>Layout ảnh</span>
+
+        <select id="layoutSelect">
+          <option value="strip4">
+            Dải dọc 1 × 4
+          </option>
+
+          <option value="grid4">
+            Lưới vuông 2 × 2
+          </option>
+
+          <option value="grid6">
+            Lưới 2 × 3
+          </option>
+
+          <option value="single">
+            Một ảnh
+          </option>
+        </select>
+
+      </label>
+
+      <label class="field">
+
+        <span>Đếm ngược</span>
+
+        <select id="countdownSelect">
+          <option value="3">3 giây</option>
+          <option value="5">5 giây</option>
+          <option value="10">10 giây</option>
+        </select>
+
+      </label>
+
+      <label class="field">
+
+        <span>Khoảng nghỉ</span>
+
+        <select id="intervalSelect">
+          <option value="1">1 giây</option>
+          <option value="2" selected>2 giây</option>
+          <option value="3">3 giây</option>
+        </select>
+
+      </label>
+
+      <button
+        id="switchCameraButton"
+        class="secondary-button"
+        type="button"
+      >
+        🔄 Đổi camera
       </button>
-    </aside>
+
+      <label class="secondary-button file-button">
+
+        ⬆ Tải ảnh lên
+
+        <input
+          id="uploadPhotoInput"
+          type="file"
+          accept="image/*"
+          multiple
+          hidden
+        >
+
+      </label>
+
+    </section>
+
+    <!-- Camera và ảnh đã chụp -->
+    <section class="workspace">
+
+      <!-- Khu vực camera -->
+      <div class="camera-column">
+
+        <div id="cameraStage" class="camera-stage">
+
+          <video
+            id="cameraVideo"
+            autoplay
+            muted
+            playsinline
+          ></video>
+
+          <div
+            id="cameraPlaceholder"
+            class="camera-placeholder"
+          >
+
+            <span>📷</span>
+
+            <strong>
+              Camera chưa sẵn sàng
+            </strong>
+
+            <p>
+              Cho phép trình duyệt dùng camera để bắt đầu chụp.
+            </p>
+
+            <button
+              id="startCameraButton"
+              class="primary-button"
+              type="button"
+            >
+              Mở camera
+            </button>
+
+          </div>
+
+          <div
+            id="countdownOverlay"
+            class="countdown-overlay"
+            aria-live="polite"
+          ></div>
+
+          <div
+            id="flashOverlay"
+            class="flash-overlay"
+          ></div>
+
+          <div
+            id="cameraStatus"
+            class="camera-status"
+          >
+            Đang chuẩn bị camera…
+          </div>
+
+          <div class="live-label">
+            <span></span>
+            LIVE
+          </div>
+
+        </div>
+
+        <!-- Nút chụp -->
+        <div class="capture-controls">
+
+          <button
+            id="manualCaptureButton"
+            class="control-button"
+            type="button"
+          >
+            <span>📷</span>
+            <small>Chụp tay</small>
+          </button>
+
+          <button
+            id="autoCaptureButton"
+            class="shutter-button"
+            type="button"
+            aria-label="Chụp tự động"
+          >
+            <span></span>
+          </button>
+
+          <button
+            id="retakeButton"
+            class="control-button"
+            type="button"
+          >
+            <span>↶</span>
+            <small>Chụp lại</small>
+          </button>
+
+        </div>
+
+        <div class="capture-footer">
+
+          <p id="captureMessage">
+            Bấm nút tròn để chụp tự động đủ số ảnh.
+          </p>
+
+          <button
+            id="resetButton"
+            class="danger-link"
+            type="button"
+          >
+            Xóa tất cả
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- Danh sách ảnh -->
+      <aside class="shots-panel">
+
+        <div class="panel-heading">
+
+          <div>
+            <h2>Ảnh của bạn</h2>
+
+            <p>
+              Chọn ô để chụp lại hoặc thay ảnh.
+            </p>
+          </div>
+
+          <span
+            id="photoProgress"
+            class="progress-pill"
+          >
+            0/4
+          </span>
+
+        </div>
+
+        <div
+          id="capturedPhotos"
+          class="captured-photos"
+        ></div>
+
+      </aside>
+
+    </section>
+
+    <!-- Phần chỉnh sửa -->
+    <section class="editor-section">
+
+      <div class="section-heading">
+
+        <div>
+          <p class="eyebrow">
+            TRANG TRÍ
+          </p>
+
+          <h2>
+            Tạo phong cách riêng cho bộ ảnh
+          </h2>
+        </div>
+
+        <button
+          id="refreshPreviewButton"
+          class="secondary-button"
+          type="button"
+        >
+          Cập nhật xem trước
+        </button>
+
+      </div>
+
+      <div class="editor-grid">
+
+        <!-- Công cụ -->
+        <div class="tools-column">
+
+          <!-- Khung ảnh -->
+          <article class="tool-card">
+
+            <h3>Khung ảnh</h3>
+
+            <div id="frameList" class="frame-list">
+
+              <button
+                class="frame-item active"
+                data-frame="pink"
+                type="button"
+              >
+                <span class="frame-swatch pink"></span>
+                NoHa Hồng
+              </button>
+
+              <button
+                class="frame-item"
+                data-frame="cream"
+                type="button"
+              >
+                <span class="frame-swatch cream"></span>
+                Kem ngọt
+              </button>
+
+              <button
+                class="frame-item"
+                data-frame="sky"
+                type="button"
+              >
+                <span class="frame-swatch sky"></span>
+                Trời xanh
+              </button>
+
+              <button
+                class="frame-item"
+                data-frame="film"
+                type="button"
+              >
+                <span class="frame-swatch film"></span>
+                Film cổ điển
+              </button>
+
+              <button
+                class="frame-item"
+                data-frame="mono"
+                type="button"
+              >
+                <span class="frame-swatch mono"></span>
+                Đen trắng
+              </button>
+
+              <button
+                class="frame-item"
+                data-frame="none"
+                type="button"
+              >
+                <span class="frame-swatch none"></span>
+                Tối giản
+              </button>
+
+            </div>
+
+            <label
+              class="secondary-button file-button full-width"
+            >
+              🖼 Tải khung PNG riêng
+
+              <input
+                id="customFrameInput"
+                type="file"
+                accept="image/png,image/webp"
+                hidden
+              >
+
+            </label>
+
+            <p class="helper-text">
+              Khung riêng nên là ảnh PNG trong suốt cùng tỉ lệ
+              với layout.
+            </p>
+
+          </article>
+
+          <!-- Bộ lọc -->
+          <article class="tool-card">
+
+            <h3>Bộ lọc màu</h3>
+
+            <div id="filterList" class="filter-list">
+
+              <button
+                class="filter-item active"
+                data-filter="normal"
+                type="button"
+              >
+                <span class="filter-preview normal"></span>
+                Bình thường
+              </button>
+
+              <button
+                class="filter-item"
+                data-filter="bright"
+                type="button"
+              >
+                <span class="filter-preview bright"></span>
+                Sáng nhẹ
+              </button>
+
+              <button
+                class="filter-item"
+                data-filter="warm"
+                type="button"
+              >
+                <span class="filter-preview warm"></span>
+                Nắng ấm
+              </button>
+
+              <button
+                class="filter-item"
+                data-filter="retro"
+                type="button"
+              >
+                <span class="filter-preview retro"></span>
+                Retro
+              </button>
+
+              <button
+                class="filter-item"
+                data-filter="mono"
+                type="button"
+              >
+                <span class="filter-preview mono"></span>
+                Đen trắng
+              </button>
+
+              <button
+                class="filter-item"
+                data-filter="vivid"
+                type="button"
+              >
+                <span class="filter-preview vivid"></span>
+                Rực rỡ
+              </button>
+
+            </div>
+
+          </article>
+
+          <!-- Điều chỉnh ảnh -->
+          <article class="tool-card">
+
+            <h3>Điều chỉnh</h3>
+
+            <label class="range-field">
+
+              <span>
+                Độ sáng
+                <output id="brightnessValue">
+                  100%
+                </output>
+              </span>
+
+              <input
+                id="brightnessRange"
+                type="range"
+                min="70"
+                max="140"
+                value="100"
+              >
+
+            </label>
+
+            <label class="range-field">
+
+              <span>
+                Tương phản
+                <output id="contrastValue">
+                  100%
+                </output>
+              </span>
+
+              <input
+                id="contrastRange"
+                type="range"
+                min="70"
+                max="140"
+                value="100"
+              >
+
+            </label>
+
+            <label class="range-field">
+
+              <span>
+                Màu sắc
+                <output id="saturationValue">
+                  100%
+                </output>
+              </span>
+
+              <input
+                id="saturationRange"
+                type="range"
+                min="0"
+                max="170"
+                value="100"
+              >
+
+            </label>
+
+          </article>
+
+          <!-- Chữ và sticker -->
+          <article class="tool-card">
+
+            <h3>Chữ và sticker</h3>
+
+            <label class="field">
+
+              <span>Nội dung</span>
+
+              <input
+                id="customText"
+                type="text"
+                maxlength="45"
+                placeholder="Ví dụ: NoHa cùng tụi mình"
+              >
+
+            </label>
+
+            <div class="inline-fields">
+
+              <label class="field">
+
+                <span>Màu chữ</span>
+
+                <input
+                  id="textColor"
+                  type="color"
+                  value="#ffffff"
+                >
+
+              </label>
+
+              <label class="field">
+
+                <span>Vị trí</span>
+
+                <select id="textPosition">
+                  <option value="bottom">
+                    Phía dưới
+                  </option>
+
+                  <option value="top">
+                    Phía trên
+                  </option>
+
+                  <option value="center">
+                    Ở giữa
+                  </option>
+                </select>
+
+              </label>
+
+            </div>
+
+            <div id="stickerList" class="sticker-list">
+
+              <button
+                class="sticker-button active"
+                data-sticker=""
+                type="button"
+              >
+                Không
+              </button>
+
+              <button
+                class="sticker-button"
+                data-sticker="🌼"
+                type="button"
+              >
+                🌼
+              </button>
+
+              <button
+                class="sticker-button"
+                data-sticker="🎀"
+                type="button"
+              >
+                🎀
+              </button>
+
+              <button
+                class="sticker-button"
+                data-sticker="✨"
+                type="button"
+              >
+                ✨
+              </button>
+
+              <button
+                class="sticker-button"
+                data-sticker="💗"
+                type="button"
+              >
+                💗
+              </button>
+
+              <button
+                class="sticker-button"
+                data-sticker="🐣"
+                type="button"
+              >
+                🐣
+              </button>
+
+            </div>
+
+          </article>
+
+        </div>
+
+        <!-- Xem trước -->
+        <article class="preview-card">
+
+          <div class="preview-heading">
+
+            <div>
+              <h3>Xem trước thành phẩm</h3>
+
+              <p>
+                Ảnh xuất ra không có watermark.
+              </p>
+            </div>
+
+            <span
+              id="previewStatus"
+              class="status-chip"
+            >
+              Chưa đủ ảnh
+            </span>
+
+          </div>
+
+          <div class="output-preview">
+
+            <canvas id="outputCanvas"></canvas>
+
+            <div
+              id="emptyPreview"
+              class="empty-preview"
+            >
+              <span>✿</span>
+
+              <p>
+                Chụp hoặc tải đủ ảnh để xem thành phẩm.
+              </p>
+            </div>
+
+          </div>
+
+          <div class="export-actions">
+
+            <button
+              id="downloadImageButton"
+              class="primary-button"
+              type="button"
+              disabled
+            >
+              ⬇ Tải ảnh PNG
+            </button>
+
+            <button
+              id="downloadVideoButton"
+              class="secondary-button"
+              type="button"
+              disabled
+            >
+              🎞 Tải video recap
+            </button>
+
+          </div>
+
+          <p id="videoHint" class="helper-text">
+            Video recap được ghi khi bạn dùng chế độ chụp tự động.
+          </p>
+
+        </article>
+
+      </div>
+
+    </section>
 
   </main>
 
-  <!-- Canvas dùng để chụp và ghép ảnh -->
-  <canvas id="photoCanvas" hidden></canvas>
+  <!-- Canvas xử lý ảnh -->
+  <canvas id="captureCanvas" hidden></canvas>
+  <canvas id="recapCanvas" hidden></canvas>
+
+  <!-- Hộp hướng dẫn -->
+  <dialog id="helpDialog" class="help-dialog">
+
+    <div class="dialog-heading">
+
+      <h2>Cách sử dụng NoHa</h2>
+
+      <button
+        id="closeHelpButton"
+        class="icon-button"
+        type="button"
+        aria-label="Đóng"
+      >
+        ✕
+      </button>
+
+    </div>
+
+    <ol>
+      <li>
+        Chọn layout, thời gian đếm ngược và khoảng nghỉ.
+      </li>
+
+      <li>
+        Mở camera hoặc tải ảnh có sẵn từ thiết bị.
+      </li>
+
+      <li>
+        Bấm nút tròn để tự động chụp đủ ảnh.
+      </li>
+
+      <li>
+        Chọn khung, filter, chữ và sticker.
+      </li>
+
+      <li>
+        Tải ảnh PNG hoặc video recap về máy.
+      </li>
+    </ol>
+
+  </dialog>
+
+  <!-- Thông báo -->
+  <div
+    id="toast"
+    class="toast"
+    role="status"
+    aria-live="polite"
+  ></div>
 
   <script src="script.js"></script>
+
 </body>
 </html>
