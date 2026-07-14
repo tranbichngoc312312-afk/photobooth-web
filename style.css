@@ -1206,3 +1206,93 @@ input[type="range"] {
     flex-direction: column;
   }
 }
+
+
+/* =========================
+   TÁCH MÀN HÌNH CHỤP / TRANG TRÍ
+   ========================= */
+
+/* Bảo đảm phần có hidden luôn được ẩn */
+[hidden] {
+  display: none !important;
+}
+
+/* Thanh chuyển sang bước trang trí */
+.next-step-bar {
+  margin-top: 20px;
+  padding: 20px 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+
+  border: 1px solid var(--line);
+  border-radius: 22px;
+
+  background: linear-gradient(
+    135deg,
+    #ffffff,
+    #fff0f6
+  );
+
+  box-shadow: var(--shadow);
+}
+
+.next-step-bar strong {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 18px;
+  color: var(--ink);
+}
+
+.next-step-bar p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.next-step-button {
+  min-width: 240px;
+  min-height: 54px;
+  font-size: 15px;
+}
+
+/* Nút trên đầu màn hình trang trí */
+.editor-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Khi chuyển màn hình */
+.capture-view.screen-hidden {
+  display: none !important;
+}
+
+/* Điện thoại */
+@media (max-width: 780px) {
+  .next-step-bar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px;
+  }
+
+  .next-step-button {
+    width: 100%;
+    min-width: 0;
+    min-height: 58px;
+    font-size: 16px;
+  }
+
+  .editor-heading-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .editor-heading-actions button {
+    width: 100%;
+    min-height: 52px;
+  }
+}
