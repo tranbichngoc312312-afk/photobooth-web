@@ -1312,3 +1312,38 @@ input[type="range"] {
   transform: scaleX(-1) !important;
   transform-origin: center;
 }
+
+/* Khóa khung camera trên điện thoại */
+@media (max-width: 780px) {
+  .camera-stage {
+    position: relative;
+    width: 100%;
+    height: auto !important;
+    min-height: 0 !important;
+
+    /* Khung ngang, phù hợp ô ảnh photobooth */
+    aspect-ratio: 4 / 3;
+
+    overflow: hidden;
+    background: #211a25;
+  }
+
+  .camera-stage > video {
+    position: absolute;
+    inset: 0;
+
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+
+    display: block;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .camera-placeholder {
+    position: absolute;
+    inset: 0;
+  }
+}
