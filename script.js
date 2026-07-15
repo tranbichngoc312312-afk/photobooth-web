@@ -21,6 +21,15 @@ const downloadVideoButton = $("#downloadVideoButton");
 const videoHint = $("#videoHint");
 const toast = $("#toast");
 
+const nextToEditorButton =
+  $("#nextToEditorButton");
+
+const backToCaptureButton =
+  $("#backToCaptureButton");
+
+const editorScreen =
+  $("#editorScreen");
+
 const layoutSelect = $("#layoutSelect");
 const countdownSelect = $("#countdownSelect");
 const intervalSelect = $("#intervalSelect");
@@ -816,6 +825,19 @@ function renderSlots() {
     total === layout.count
       ? "Đã đủ ảnh. Hãy trang trí và tải xuống."
       : `Còn ${layout.count - total} ảnh nữa.`;
+
+  const readyForEditor =
+  total === layout.count;
+
+if (nextToEditorButton) {
+  nextToEditorButton.disabled =
+    !readyForEditor;
+
+  nextToEditorButton.textContent =
+    readyForEditor
+      ? "Tiếp theo: Trang trí →"
+      : `Chụp đủ ${layout.count} ảnh để tiếp tục`;
+}
 }
 
 function getCombinedFilter() {
@@ -2078,7 +2100,67 @@ function scheduleCompositeRender() {
       );
     });
 }
+
+async function openEditorScreen() {
+  const layout = getLayout();
+
+  const total = photos
+    .slice(0, layout.count)
+    .filter(Boolean)
+    .length;
+
+  if (total !== layout.count) {
+    showToast(
+      "Bạn cần chụp đủ ảnh trước khi trang trí."
+    );
+    return;
+  }
+
+  document
+    .querySelectorAll(".capture-view")
+    .forEach(element => {
+      element.classList.add(
+        "screen-hidden"
+      );
+    });
+
+  editorScreen.hidden = false;
+
+  await renderComposite();
+
+  editorScreen.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
+
+function openCaptureScreen() {
+  editorScreen.hidden = true;
+
+  document
+    .querySelectorAll(".capture-view")
+    .forEach(element => {
+      element.classList.remove(
+        "screen-hidden"
+      );
+    });
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
 function bindEvents() {
+
+  nextToEditorButton?.addEventListener(
+  "click",
+  openEditorScreen
+);
+
+backToCaptureButton?.addEventListener(
+  "click",
+  openCaptureScreen
+);
   $("#startCameraButton")
     .addEventListener(
       "click",
