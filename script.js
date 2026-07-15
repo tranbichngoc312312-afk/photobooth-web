@@ -4,6 +4,7 @@ const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
 const video = $("#cameraVideo");
+const cameraStage = $("#cameraStage");
 const captureCanvas = $("#captureCanvas");
 const recapCanvas = $("#recapCanvas");
 const outputCanvas = $("#outputCanvas");
@@ -399,7 +400,51 @@ function canvasToBlob(
     );
   });
 }
+function drawVideoCover(
+  context,
+  sourceVideo,
+  targetWidth,
+  targetHeight
+) {
+  const sourceWidth =
+    sourceVideo.videoWidth;
 
+  const sourceHeight =
+    sourceVideo.videoHeight;
+
+  const sourceRatio =
+    sourceWidth / sourceHeight;
+
+  const targetRatio =
+    targetWidth / targetHeight;
+
+  let sx = 0;
+  let sy = 0;
+  let sw = sourceWidth;
+  let sh = sourceHeight;
+
+  if (sourceRatio > targetRatio) {
+    // Camera rộng hơn khung: cắt hai bên
+    sw = sourceHeight * targetRatio;
+    sx = (sourceWidth - sw) / 2;
+  } else {
+    // Camera cao hơn khung: cắt trên và dưới
+    sh = sourceWidth / targetRatio;
+    sy = (sourceHeight - sh) / 2;
+  }
+
+  context.drawImage(
+    sourceVideo,
+    sx,
+    sy,
+    sw,
+    sh,
+    0,
+    0,
+    targetWidth,
+    targetHeight
+  );
+}
 async function captureCurrentFrame(targetIndex = null) {
   if (
     !stream ||
@@ -410,26 +455,45 @@ async function captureCurrentFrame(targetIndex = null) {
     return false;
   }
 
-  const maxWidth = 1280;
+  const stageRect =
+  cameraStage?.getBoundingClientRect();
 
-  const scale = Math.min(
-    1,
-    maxWidth / video.videoWidth
+const previewRatio =
+  stageRect?.width > 0 &&
+  stageRect?.height > 0
+    ? stageRect.width / stageRect.height
+    : video.videoWidth / video.videoHeight;
+
+const maxSize = 1280;
+
+let width;
+let height;
+
+if (previewRatio >= 1) {
+  width = Math.min(
+    maxSize,
+    video.videoWidth
   );
 
-  const width = Math.max(
-    2,
-    Math.round(video.videoWidth * scale)
+  height = Math.round(
+    width / previewRatio
+  );
+} else {
+  height = Math.min(
+    maxSize,
+    video.videoHeight
   );
 
-  const height = Math.max(
-    2,
-    Math.round(video.videoHeight * scale)
+  width = Math.round(
+    height * previewRatio
   );
+}
 
-  captureCanvas.width = width;
-  captureCanvas.height = height;
+width = Math.max(2, width);
+height = Math.max(2, height);
 
+captureCanvas.width = width;
+captureCanvas.height = height;
   const context = captureCanvas.getContext(
     "2d",
     {
@@ -446,13 +510,12 @@ async function captureCurrentFrame(targetIndex = null) {
 
   
 
-  context.drawImage(
-    video,
-    0,
-    0,
-    width,
-    height
-  );
+  drawVideoCover(
+  context,
+  video,
+  width,
+  height
+);
 
   context.restore();
 
