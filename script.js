@@ -200,12 +200,32 @@ async function startCamera() {
         }
       });
 
+    video.setAttribute("autoplay", "");
+video.setAttribute("muted", "");
+video.setAttribute("playsinline", "");
+video.setAttribute(
+  "webkit-playsinline",
+  ""
+);
+video.setAttribute(
+  "disablepictureinpicture",
+  ""
+);
     video.srcObject = stream;
     video.muted = true;
     video.autoplay = true;
     video.playsInline = true;
 
+    if ("disablePictureInPicture" in video) {
+  video.disablePictureInPicture = true;
+}
+
     await video.play();
+
+    video.classList.toggle(
+  "mirror-preview",
+  facingMode === "user"
+);
 
     if (
       video.readyState < 2 ||
@@ -217,7 +237,7 @@ async function startCamera() {
     video.style.display = "block";
     video.style.visibility = "visible";
     video.style.opacity = "1";
-    video.style.transform = "none";
+    
 
     cameraPlaceholder.hidden = true;
     cameraPlaceholder.style.display = "none";
@@ -418,6 +438,11 @@ async function captureCurrentFrame(targetIndex = null) {
   );
 
   context.save();
+
+  if (facingMode === "user") {
+  context.translate(width, 0);
+  context.scale(-1, 1);
+}
 
   
 
@@ -2394,7 +2419,8 @@ async function init() {
   renderSlots();
   updateVideoPreviewFilter();
 
-  await startCamera();
+  cameraStatus.textContent =
+  "Bấm Mở camera để bắt đầu.";
 }
 
 init();
