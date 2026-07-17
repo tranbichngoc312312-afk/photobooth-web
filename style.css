@@ -1429,3 +1429,399 @@ input[type="range"] {
     animation: none;
   }
 }
+
+/* ==================================================
+   GIAO DIỆN MÀN CHỤP RIÊNG CHO MOBILE
+   Không ảnh hưởng giao diện laptop
+================================================== */
+
+@media (max-width: 780px) {
+
+  /* ===== Tổng thể ===== */
+
+  body {
+    overflow-x: hidden;
+  }
+
+  .app-shell {
+    width: 100%;
+    max-width: none;
+    margin: 0 auto 40px;
+    padding: 0 12px;
+  }
+
+  /* Ẩn banner lớn và thanh 4 bước trên điện thoại */
+  .intro-card,
+  .stepper {
+    display: none !important;
+  }
+
+  /* ===== Header mobile ===== */
+
+  .site-header {
+    min-height: 74px;
+    padding: 12px 16px;
+  }
+
+  .brand {
+    gap: 9px;
+  }
+
+  .brand-mark {
+    width: 43px;
+    height: 43px;
+    flex-basis: 43px;
+  }
+
+  .brand strong {
+    font-size: 25px;
+  }
+
+  .brand small {
+    margin-top: 5px;
+    font-size: 8px;
+    letter-spacing: 1.6px;
+  }
+
+  /* Hiện lại nút Hướng dẫn trên mobile */
+  .header-actions .ghost-button {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 43px;
+    padding: 0 13px;
+
+    border: 1px solid var(--line);
+    border-radius: 999px;
+
+    background: rgba(255, 255, 255, 0.9);
+    font-size: 12px;
+  }
+
+  .header-actions .icon-button {
+    width: 42px;
+    height: 42px;
+  }
+
+  /* ===== Thanh thiết lập 4 ô ===== */
+
+  .settings-panel {
+    margin-top: 14px;
+    padding: 11px;
+
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    align-items: stretch;
+
+    border-radius: 20px;
+  }
+
+  .settings-panel .field:first-child,
+  .mobile-layout-setting,
+  .mobile-countdown-setting {
+    grid-column: auto;
+  }
+
+  /* Ẩn khoảng nghỉ, sau này đưa vào Cài đặt nâng cao */
+  .mobile-advanced-setting {
+    display: none !important;
+  }
+
+  .settings-panel .field {
+    min-width: 0;
+    gap: 6px;
+    text-align: center;
+  }
+
+  .settings-panel .field > span {
+    overflow: hidden;
+
+    color: var(--ink);
+    font-size: 10px;
+    font-weight: 850;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .settings-panel select {
+    width: 100%;
+    min-width: 0;
+    min-height: 61px;
+    padding: 0 5px;
+
+    border-radius: 14px;
+
+    font-size: 10px;
+    font-weight: 800;
+    text-align: center;
+    text-align-last: center;
+  }
+
+  /* Đổi camera và tải ảnh */
+  .mobile-setting-action {
+    width: 100%;
+    min-width: 0;
+    min-height: 82px;
+    padding: 8px 4px;
+
+    display: grid;
+    place-items: center;
+    align-content: center;
+
+    border-radius: 14px;
+
+    font-size: 10px;
+    line-height: 1.25;
+    text-align: center;
+    white-space: normal;
+  }
+
+  /* ===== Camera ===== */
+
+  .workspace {
+    margin-top: 13px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 13px;
+  }
+
+  .camera-column {
+    padding: 10px;
+    border-radius: 22px;
+  }
+
+  .camera-stage {
+    width: 100%;
+    min-height: 0 !important;
+
+    aspect-ratio: 4 / 3;
+    border-radius: 18px;
+  }
+
+  .camera-stage > video {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .camera-status {
+    left: 11px;
+    bottom: 11px;
+
+    max-width: calc(100% - 22px);
+    padding: 7px 10px;
+
+    font-size: 11px;
+  }
+
+  .live-label {
+    top: 11px;
+    right: 11px;
+  }
+
+  /* ===== Ba nút chụp ===== */
+
+  .capture-controls {
+    min-height: 108px;
+    gap: 19px;
+  }
+
+  .control-button {
+    width: 72px;
+    height: 72px;
+  }
+
+  .control-button > span {
+    font-size: 23px;
+  }
+
+  .control-button small {
+    font-size: 10px;
+  }
+
+  .shutter-button {
+    width: 88px;
+    height: 88px;
+  }
+
+  .capture-footer {
+    padding: 11px 3px 2px;
+
+    align-items: center;
+    flex-direction: row;
+  }
+
+  .capture-footer p {
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .danger-link {
+    flex: 0 0 auto;
+    font-size: 12px;
+  }
+
+  /* ===== Ảnh đã chụp thành một hàng ===== */
+
+  .mobile-shots-panel {
+    position: static;
+
+    padding: 14px;
+    border-radius: 20px;
+  }
+
+  .mobile-shots-panel .panel-heading {
+    align-items: center;
+  }
+
+  .mobile-shots-panel .panel-heading h2 {
+    font-size: 17px;
+  }
+
+  .mobile-shots-panel .panel-heading p {
+    display: none;
+  }
+
+  .mobile-shots-panel .progress-pill {
+    padding: 0;
+
+    color: var(--ink);
+    background: transparent;
+
+    font-size: 14px;
+  }
+
+  .mobile-captured-photos {
+    margin-top: 12px;
+
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 8px;
+  }
+
+  .mobile-captured-photos .photo-slot {
+    width: 100%;
+    min-height: 0 !important;
+
+    aspect-ratio: 3 / 4;
+    border-radius: 13px;
+  }
+
+  .mobile-captured-photos .photo-slot img {
+    width: 100%;
+    height: 100% !important;
+    min-height: 0 !important;
+
+    object-fit: cover;
+  }
+
+  .mobile-captured-photos .photo-empty {
+    width: 100%;
+    height: 100%;
+    min-height: 0 !important;
+
+    padding: 4px;
+  }
+
+  .mobile-captured-photos .photo-empty strong {
+    display: none;
+  }
+
+  .mobile-captured-photos .photo-empty small {
+    font-size: 9px;
+  }
+
+  .mobile-captured-photos .slot-number {
+    left: 5px;
+    top: 5px;
+
+    width: 21px;
+    height: 21px;
+
+    font-size: 9px;
+  }
+
+  .mobile-captured-photos .slot-actions {
+    right: 4px;
+    bottom: 4px;
+    gap: 3px;
+  }
+
+  .mobile-captured-photos .slot-actions button {
+    min-width: 23px;
+    width: 23px;
+    height: 23px;
+
+    padding: 0;
+    border-radius: 7px;
+
+    font-size: 9px;
+  }
+
+  /* ===== Nút Trang trí ảnh ===== */
+
+  .mobile-next-step-bar {
+    margin-top: 13px;
+    padding: 0;
+
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  /* Ẩn phần chữ “Đã chụp xong?” */
+  .mobile-next-step-bar > div {
+    display: none;
+  }
+
+  .mobile-decorate-button {
+    width: 100%;
+    min-width: 0;
+    min-height: 60px;
+
+    border-radius: 16px;
+
+    font-size: 17px;
+    font-weight: 900;
+
+    box-shadow:
+      0 12px 26px rgba(228, 86, 140, 0.25);
+  }
+}
+
+/* Điện thoại rất nhỏ */
+@media (max-width: 390px) {
+  .settings-panel {
+    gap: 6px;
+    padding: 9px;
+  }
+
+  .settings-panel select,
+  .mobile-setting-action {
+    font-size: 9px;
+  }
+
+  .capture-controls {
+    gap: 13px;
+  }
+
+  .control-button {
+    width: 66px;
+    height: 66px;
+  }
+
+  .shutter-button {
+    width: 82px;
+    height: 82px;
+  }
+
+  .mobile-captured-photos {
+    gap: 6px;
+  }
+}
