@@ -2450,3 +2450,416 @@ input[type="range"] {
     font-size: 14px;
   }
 }
+
+/* ==================================================
+   BỐ CỤC TRANG TRÍ MOBILE MỚI
+   Laptop giữ nguyên
+================================================== */
+
+.mobile-editor-topbar,
+.mobile-download-button {
+  display: none;
+}
+
+@media (max-width: 780px) {
+
+  /* Giữ nguyên cơ chế hidden của trang */
+  #editorScreen[hidden] {
+    display: none !important;
+  }
+
+  /* Sắp xếp lại thứ tự riêng trên điện thoại */
+  #editorScreen:not([hidden]) {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  /* Ẩn tiêu đề và hai nút lớn cũ */
+  #editorScreen > .section-heading {
+    display: none !important;
+  }
+
+  /* ==============================
+     1. THANH TRÊN CÙNG
+  ============================== */
+
+  .mobile-editor-topbar {
+    order: 1;
+
+    display: grid !important;
+    grid-template-columns: 44px 1fr 44px;
+    align-items: center;
+
+    width: 100%;
+    margin: 6px 0 10px;
+    padding: 0 2px;
+  }
+
+  .mobile-editor-topbar strong {
+    color: var(--ink);
+    font-size: 17px;
+    font-weight: 900;
+    text-align: center;
+  }
+
+  .mobile-editor-back {
+    width: 42px;
+    height: 42px;
+    padding: 0;
+
+    display: grid;
+    place-items: center;
+
+    border: 0;
+    border-radius: 13px;
+
+    color: #ef4f89;
+    background: #fff0f5;
+
+    font-size: 25px;
+    line-height: 1;
+  }
+
+  .mobile-editor-back:active {
+    transform: scale(0.94);
+  }
+
+  /* ==============================
+     2. PREVIEW VÀ PANEL CÔNG CỤ
+  ============================== */
+
+  .mobile-editor-layout {
+    order: 2;
+
+    position: relative !important;
+    display: block !important;
+
+    width: 100% !important;
+    min-height: 0 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    overflow: hidden !important;
+  }
+
+  .mobile-preview-card {
+    position: relative !important;
+
+    inset: auto !important;
+    top: auto !important;
+
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+
+    margin: 0 !important;
+    padding: 10px !important;
+
+    border-radius: 18px !important;
+
+    transform: none !important;
+
+    transition:
+      width 0.28s ease,
+      padding 0.28s ease !important;
+  }
+
+  /* Ẩn tiêu đề “Xem trước thành phẩm” bên trong */
+  .mobile-preview-card .preview-heading {
+    display: none !important;
+  }
+
+  /* Ẩn các nút tải cũ trong preview */
+  .mobile-preview-card .export-actions,
+  .mobile-preview-card #videoHint {
+    display: none !important;
+  }
+
+  .mobile-preview-card canvas,
+  .mobile-preview-card img,
+  #outputCanvas {
+    display: block !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+
+    margin: 0 auto !important;
+  }
+
+  /* Panel công cụ trượt từ bên phải */
+  .mobile-tools-panel {
+    position: absolute !important;
+
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: auto !important;
+
+    width: 42% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: block !important;
+
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+
+    border: 1px solid #efd7e2;
+    border-radius: 16px;
+
+    background: #fffafd;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transform: translateX(calc(100% + 16px));
+
+    transition:
+      transform 0.28s ease,
+      opacity 0.22s ease,
+      visibility 0s linear 0.28s;
+
+    z-index: 20;
+  }
+
+  .mobile-tools-panel.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+
+    transform: translateX(0);
+
+    transition:
+      transform 0.28s ease,
+      opacity 0.22s ease,
+      visibility 0s;
+  }
+
+  /* Khi mở panel, preview thu nhỏ */
+  .mobile-editor-layout.is-tool-open
+  .mobile-preview-card {
+    width: 57% !important;
+    padding: 7px !important;
+  }
+
+  /* Nội dung trong panel */
+  .mobile-tools-panel .tool-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 100% !important;
+
+    margin: 0 !important;
+    padding: 12px 9px !important;
+
+    border: 0 !important;
+    border-radius: 15px !important;
+
+    background: #fffafd !important;
+    box-shadow: none !important;
+  }
+
+  .mobile-tools-panel
+  [data-mobile-panel][hidden] {
+    display: none !important;
+  }
+
+  .mobile-tools-panel .tool-card h3 {
+    margin: 0 0 11px !important;
+    font-size: 15px !important;
+    line-height: 1.2 !important;
+  }
+
+  .mobile-tools-panel .frame-list,
+  .mobile-tools-panel .filter-list {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 7px !important;
+  }
+
+  .mobile-tools-panel .frame-item,
+  .mobile-tools-panel .filter-item {
+    min-width: 0 !important;
+    min-height: 54px !important;
+
+    padding: 5px !important;
+
+    display: grid !important;
+    grid-template-columns: 38px 1fr !important;
+    align-items: center !important;
+    gap: 5px !important;
+
+    border-radius: 10px !important;
+
+    font-size: 8px !important;
+    line-height: 1.2 !important;
+    text-align: left !important;
+  }
+
+  .mobile-tools-panel .frame-swatch,
+  .mobile-tools-panel .filter-preview {
+    width: 34px !important;
+    height: 42px !important;
+  }
+
+  .mobile-tools-panel .inline-fields {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .mobile-tools-panel .field input,
+  .mobile-tools-panel .field select {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 42px !important;
+
+    padding: 7px !important;
+    font-size: 10px !important;
+  }
+
+  .mobile-tools-panel .sticker-list {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+  }
+
+  .mobile-tools-panel .sticker-button {
+    min-width: 0 !important;
+    min-height: 44px !important;
+
+    padding: 5px !important;
+    font-size: 16px !important;
+  }
+
+  /* ==============================
+     3. THANH KHUNG/FILTER/CHỈNH/STICKER
+  ============================== */
+
+  .mobile-editor-toolbar {
+    order: 3;
+
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+
+    width: 100% !important;
+
+    margin: 10px 0 9px !important;
+    padding: 6px !important;
+
+    border: 1px solid #efd8e3 !important;
+    border-radius: 17px !important;
+
+    background: rgba(255, 255, 255, 0.96) !important;
+    box-shadow: 0 7px 20px rgba(75, 39, 65, 0.07) !important;
+  }
+
+  .mobile-tool-button {
+    min-width: 0 !important;
+    min-height: 58px !important;
+
+    padding: 6px 2px !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+
+    border: 1px solid transparent !important;
+    border-radius: 12px !important;
+
+    color: var(--ink) !important;
+    background: #fff8fa !important;
+
+    font-size: 10px !important;
+    font-weight: 850 !important;
+    line-height: 1 !important;
+  }
+
+  .mobile-tool-button span {
+    font-size: 20px !important;
+    line-height: 1 !important;
+  }
+
+  .mobile-tool-button.is-active {
+    color: #e84e87 !important;
+    border-color: #ff75a7 !important;
+    background: #fff0f5 !important;
+
+    box-shadow:
+      0 0 0 3px rgba(255, 117, 167, 0.12) !important;
+  }
+
+  /* ==============================
+     4. NÚT TẢI ẢNH DƯỚI CÙNG
+  ============================== */
+
+  .mobile-download-button {
+    order: 4;
+
+    width: 100% !important;
+    min-height: 56px !important;
+
+    margin: 0 0 18px !important;
+    padding: 10px 16px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+
+    border: 0 !important;
+    border-radius: 14px !important;
+
+    color: #fff !important;
+
+    background:
+      linear-gradient(
+        135deg,
+        #f66b9f,
+        #eb3e80
+      ) !important;
+
+    font-size: 17px !important;
+    font-weight: 900 !important;
+
+    box-shadow:
+      0 12px 26px rgba(232, 73, 132, 0.25) !important;
+  }
+
+  .mobile-download-button span {
+    font-size: 22px !important;
+  }
+
+  .mobile-download-button:disabled {
+    opacity: 0.5 !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .mobile-tools-panel {
+    width: 43% !important;
+  }
+
+  .mobile-editor-layout.is-tool-open
+  .mobile-preview-card {
+    width: 56% !important;
+  }
+
+  .mobile-tool-button {
+    min-height: 55px !important;
+    font-size: 9px !important;
+  }
+}
