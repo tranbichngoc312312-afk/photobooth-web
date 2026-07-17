@@ -2504,15 +2504,6 @@ const originalDownloadButton =
   document.querySelector(
     "#downloadImageButton"
   );
-  const mobileVideoDownloadButton =
-  document.querySelector(
-    "#mobileDownloadVideoButton"
-  );
-
-const originalVideoDownloadButton =
-  document.querySelector(
-    "#downloadVideoButton"
-  );
 
   const editorLayout =
     document.querySelector(".mobile-editor-layout");
@@ -2677,45 +2668,8 @@ if (
 
   syncDownloadButton();
 }
-
-    syncDownloadButton();
+  renderMobileEditorTools();
 }
-
-if (
-  mobileVideoDownloadButton &&
-  originalVideoDownloadButton
-) {
-  const syncVideoDownloadButton = () => {
-    mobileVideoDownloadButton.disabled =
-      originalVideoDownloadButton.disabled;
-  };
-
-  mobileVideoDownloadButton.addEventListener(
-    "click",
-    () => {
-      originalVideoDownloadButton.click();
-    }
-  );
-
-  const videoDownloadObserver =
-    new MutationObserver(
-      syncVideoDownloadButton
-    );
-
-  videoDownloadObserver.observe(
-    originalVideoDownloadButton,
-    {
-      attributes: true,
-      attributeFilter: ["disabled"]
-    }
-  );
-
-  syncVideoDownloadButton();
-}
-
-renderMobileEditorTools();
-}
-
 async function init() {
   bindOptionButtons();
   bindEvents();
