@@ -2302,3 +2302,151 @@ input[type="range"] {
     width: calc(55% - 5px) !important;
   }
 }
+
+/* ==================================================
+   FIX GIAO DIỆN TRANG TRÍ MOBILE
+   Không ảnh hưởng laptop
+================================================== */
+
+@media (max-width: 780px) {
+
+  /* Mobile chỉ giữ toolbar và preview */
+  #editorScreen > .section-heading {
+    display: none !important;
+  }
+
+  /* Xóa khoảng trắng giữa toolbar và preview */
+  .mobile-editor-layout {
+    position: relative !important;
+
+    display: block !important;
+
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+
+    margin: 12px 0 0 !important;
+    padding: 0 !important;
+
+    overflow: hidden !important;
+  }
+
+  /* Preview trở lại đúng luồng, không dùng sticky của desktop */
+  .mobile-preview-card {
+    position: relative !important;
+
+    inset: auto !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+
+    margin: 0 !important;
+    padding: 14px !important;
+
+    transform: none !important;
+
+    transition:
+      width 0.28s ease,
+      padding 0.28s ease !important;
+  }
+
+  /* Canvas luôn vừa preview */
+  .mobile-preview-card canvas,
+  #outputCanvas {
+    display: block !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+
+    margin: 0 auto !important;
+  }
+
+  /* Panel cao đúng bằng preview và cuộn riêng */
+  .mobile-tools-panel {
+    position: absolute !important;
+
+    top: 0 !important;
+    right: 0 !important;
+    bottom: auto !important;
+    left: auto !important;
+
+    width: 40% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+
+    margin: 0 !important;
+
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Khi panel mở, preview nhường chỗ bên phải */
+  .mobile-editor-layout.is-tool-open
+  .mobile-preview-card {
+    width: 58% !important;
+    padding: 10px !important;
+  }
+
+  /* Thu gọn phần đầu preview khi panel mở */
+  .mobile-editor-layout.is-tool-open
+  .preview-heading {
+    display: block !important;
+
+    margin-bottom: 8px !important;
+  }
+
+  .mobile-editor-layout.is-tool-open
+  .preview-heading h3 {
+    margin: 0 !important;
+    font-size: 0 !important;
+  }
+
+  .mobile-editor-layout.is-tool-open
+  .preview-heading h3::after {
+    content: "Xem trước";
+
+    font-size: 16px;
+    font-weight: 850;
+    line-height: 1.2;
+  }
+
+  /* Ẩn mô tả và trạng thái để preview không bị méo */
+  .mobile-editor-layout.is-tool-open
+  .preview-heading p,
+  .mobile-editor-layout.is-tool-open
+  .preview-heading .status-chip {
+    display: none !important;
+  }
+
+  /* Panel không được tạo khoảng trống khi đóng */
+  .mobile-tools-panel:not(.is-open) {
+    pointer-events: none !important;
+  }
+}
+
+/* Điện thoại nhỏ */
+@media (max-width: 390px) {
+  .mobile-tools-panel {
+    width: 41% !important;
+  }
+
+  .mobile-editor-layout.is-tool-open
+  .mobile-preview-card {
+    width: 57% !important;
+  }
+
+  .mobile-editor-layout.is-tool-open
+  .preview-heading h3::after {
+    font-size: 14px;
+  }
+}
