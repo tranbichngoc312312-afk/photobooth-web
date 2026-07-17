@@ -2476,9 +2476,145 @@ backToCaptureButton?.addEventListener(
   );
 }
 
+
+function setupMobileEditorTools() {
+  const mobileMedia = window.matchMedia(
+    "(max-width: 780px)"
+  );
+
+  const editorScreen =
+    document.querySelector("#editorScreen");
+
+  const editorLayout =
+    document.querySelector(".mobile-editor-layout");
+
+  const toolsPanel =
+    document.querySelector("#mobileToolsPanel");
+
+  const toolButtons = [
+    ...document.querySelectorAll(
+      ".mobile-tool-button"
+    )
+  ];
+
+  const toolPanels = [
+    ...document.querySelectorAll(
+      "[data-mobile-panel]"
+    )
+  ];
+
+  if (
+    !editorScreen ||
+    !editorLayout ||
+    !toolsPanel ||
+    toolButtons.length === 0 ||
+    toolPanels.length === 0
+  ) {
+    return;
+  }
+
+  let activeTool = null;
+
+  function renderMobileEditorTools() {
+    const isMobile = mobileMedia.matches;
+    const isOpen =
+      isMobile && activeTool !== null;
+
+    editorScreen.dataset.activeTool =
+      activeTool || "";
+
+    editorLayout.classList.toggle(
+      "is-tool-open",
+      isOpen
+    );
+
+    toolsPanel.classList.toggle(
+      "is-open",
+      isOpen
+    );
+
+    const panelClosed =
+  isMobile && !isOpen;
+
+toolsPanel.setAttribute(
+  "aria-hidden",
+  String(panelClosed)
+);
+
+if ("inert" in toolsPanel) {
+  toolsPanel.inert = panelClosed;
+}
+
+    toolButtons.forEach((button) => {
+      const isActive =
+        isMobile &&
+        button.dataset.mobileTool === activeTool;
+
+      button.classList.toggle(
+        "is-active",
+        isActive
+      );
+
+      button.setAttribute(
+        "aria-pressed",
+        String(isActive)
+      );
+    });
+
+    toolPanels.forEach((panel) => {
+      if (!isMobile) {
+        panel.hidden = false;
+        return;
+      }
+
+      panel.hidden =
+        panel.dataset.mobilePanel !== activeTool;
+    });
+  }
+
+  toolButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      if (!mobileMedia.matches) {
+        return;
+      }
+
+      const selectedTool =
+        button.dataset.mobileTool;
+
+      activeTool =
+        activeTool === selectedTool
+          ? null
+          : selectedTool;
+
+      renderMobileEditorTools();
+    });
+  });
+
+  function handleScreenChange() {
+    if (!mobileMedia.matches) {
+      activeTool = null;
+    }
+
+    renderMobileEditorTools();
+  }
+
+  if (mobileMedia.addEventListener) {
+    mobileMedia.addEventListener(
+      "change",
+      handleScreenChange
+    );
+  } else {
+    mobileMedia.addListener(
+      handleScreenChange
+    );
+  }
+
+  renderMobileEditorTools();
+}
 async function init() {
   bindOptionButtons();
   bindEvents();
+  setupMobileEditorTools();
   renderSlots();
   updateVideoPreviewFilter();
 
