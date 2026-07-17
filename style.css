@@ -1825,3 +1825,161 @@ input[type="range"] {
     gap: 6px;
   }
 }
+
+/* ===== SỬA THANH THIẾT LẬP MOBILE ===== */
+@media (max-width: 780px) {
+
+  /* Giữ 4 mục nằm trên cùng một hàng */
+  .settings-panel {
+    grid-template-columns:
+      minmax(0, 1.15fr)
+      minmax(0, 1.15fr)
+      minmax(0, 0.85fr)
+      minmax(0, 0.95fr) !important;
+
+    align-items: stretch !important;
+    gap: 7px !important;
+    padding: 8px !important;
+
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  /* Xóa khoảng trống giữa tên và ô lựa chọn */
+  .mobile-layout-setting,
+  .mobile-countdown-setting {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 58px !important;
+    min-height: 58px !important;
+
+    gap: 3px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .mobile-layout-setting > span,
+  .mobile-countdown-setting > span {
+    display: block !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    font-size: 9px !important;
+    line-height: 1 !important;
+    text-align: center !important;
+  }
+
+  /* Đổi tên ngắn hơn trên mobile */
+  .mobile-layout-setting > span {
+    font-size: 0 !important;
+  }
+
+  .mobile-layout-setting > span::after {
+    content: "Layout ảnh";
+    font-size: 9px;
+  }
+
+  .mobile-countdown-setting > span {
+    font-size: 0 !important;
+  }
+
+  .mobile-countdown-setting > span::after {
+    content: "Đếm ngược";
+    font-size: 9px;
+  }
+
+  /* Ô Dải dọc 1 × 4 và 3 giây */
+  .mobile-layout-setting select,
+  .mobile-countdown-setting select {
+    display: block !important;
+
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 35px !important;
+    min-height: 35px !important;
+
+    margin: 0 !important;
+    padding: 0 4px !important;
+
+    border-radius: 10px !important;
+
+    font-size: 9px !important;
+    line-height: 35px !important;
+    text-align: center !important;
+    text-align-last: center !important;
+  }
+
+  /* Hai nút Đổi camera và Tải ảnh */
+  .mobile-setting-action {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 58px !important;
+    min-height: 58px !important;
+
+    margin: 0 !important;
+    padding: 4px 2px !important;
+    gap: 3px !important;
+
+    border-radius: 12px !important;
+
+    /* Ẩn emoji và chữ gốc để tạo lại đúng bố cục */
+    font-size: 0 !important;
+    line-height: 1 !important;
+    text-align: center !important;
+  }
+
+  /* Icon nằm trên chữ Đổi camera */
+  .mobile-switch-camera::before {
+    content: "↻" !important;
+
+    display: block;
+    font-size: 18px !important;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .mobile-switch-camera::after {
+    content: "Đổi camera" !important;
+
+    display: block;
+    font-size: 8px !important;
+    font-weight: 800;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+
+  /* Icon nằm trên chữ Tải ảnh lên */
+  .mobile-upload-photo::before {
+    content: "⇧" !important;
+
+    display: block;
+    font-size: 18px !important;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .mobile-upload-photo::after {
+    content: "Tải ảnh lên" !important;
+
+    display: block;
+    font-size: 8px !important;
+    font-weight: 800;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+
+  /* Giữ input tải ảnh bị ẩn */
+  .mobile-upload-photo input {
+    display: none !important;
+  }
+}
