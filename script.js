@@ -2485,6 +2485,26 @@ function setupMobileEditorTools() {
   const editorScreen =
     document.querySelector("#editorScreen");
 
+  const mobileBackButton =
+  document.querySelector(
+    "#mobileBackToCaptureButton"
+  );
+
+const mobileDownloadButton =
+  document.querySelector(
+    "#mobileDownloadImageButton"
+  );
+
+const originalBackButton =
+  document.querySelector(
+    "#backToCaptureButton"
+  );
+
+const originalDownloadButton =
+  document.querySelector(
+    "#downloadImageButton"
+  );
+
   const editorLayout =
     document.querySelector(".mobile-editor-layout");
 
@@ -2609,6 +2629,45 @@ if ("inert" in toolsPanel) {
     );
   }
 
+  mobileBackButton?.addEventListener(
+  "click",
+  () => {
+    activeTool = null;
+    renderMobileEditorTools();
+    originalBackButton?.click();
+  }
+);
+
+mobileDownloadButton?.addEventListener(
+  "click",
+  () => {
+    originalDownloadButton?.click();
+  }
+);
+
+/* Đồng bộ trạng thái nút tải mobile với nút tải gốc */
+if (
+  mobileDownloadButton &&
+  originalDownloadButton
+) {
+  const syncDownloadButton = () => {
+    mobileDownloadButton.disabled =
+      originalDownloadButton.disabled;
+  };
+
+  const downloadObserver =
+    new MutationObserver(syncDownloadButton);
+
+  downloadObserver.observe(
+    originalDownloadButton,
+    {
+      attributes: true,
+      attributeFilter: ["disabled"]
+    }
+  );
+
+  syncDownloadButton();
+}
   renderMobileEditorTools();
 }
 async function init() {
