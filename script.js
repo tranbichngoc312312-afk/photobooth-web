@@ -1027,6 +1027,125 @@ function drawImageCover(
   );
 }
 
+function clampColor(value) {
+  return Math.max(0, Math.min(255, value));
+}
+
+function applyPixelFilter(canvas) {
+  const context = canvas.getContext("2d", {
+    willReadFrequently: true
+  });
+  const imageData = context.getImageData(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+  const data = imageData.data;
+
+  const userBrightness =
+    Number(brightnessRange.value) / 100;
+  const userContrast =
+    Number(contrastRange.value) / 100;
+  const userSaturation =
+    Number(saturationRange.value) / 100;
+
+  const preset = {
+    brightness: 1,
+    contrast: 1,
+    saturation: 1,
+    sepia: 0,
+    grayscale: 0
+  };
+
+  if (activeFilter === "bright") {
+    preset.brightness = 1.12;
+    preset.saturation = 1.05;
+  } else if (activeFilter === "warm") {
+    preset.sepia = 0.18;
+    preset.saturation = 1.12;
+    preset.brightness = 1.05;
+  } else if (activeFilter === "retro") {
+    preset.sepia = 0.45;
+    preset.contrast = 1.05;
+    preset.saturation = 0.86;
+  } else if (activeFilter === "mono") {
+    preset.grayscale = 1;
+    preset.contrast = 1.08;
+  } else if (activeFilter === "vivid") {
+    preset.contrast = 1.1;
+    preset.saturation = 1.35;
+  }
+
+  const changeSaturation = (rgb, amount) => {
+    const luminance =
+      rgb[0] * 0.2126 +
+      rgb[1] * 0.7152 +
+      rgb[2] * 0.0722;
+
+    return rgb.map(
+      channel =>
+        luminance +
+        (channel - luminance) * amount
+    );
+  };
+
+  const changeContrast = (rgb, amount) =>
+    rgb.map(
+      channel =>
+        (channel - 128) * amount + 128
+    );
+
+  for (let index = 0; index < data.length; index += 4) {
+    let rgb = [
+      data[index],
+      data[index + 1],
+      data[index + 2]
+    ];
+
+    if (preset.sepia > 0) {
+      const [red, green, blue] = rgb;
+      const sepiaRgb = [
+        red * 0.393 + green * 0.769 + blue * 0.189,
+        red * 0.349 + green * 0.686 + blue * 0.168,
+        red * 0.272 + green * 0.534 + blue * 0.131
+      ];
+
+      rgb = rgb.map(
+        (channel, channelIndex) =>
+          channel * (1 - preset.sepia) +
+          sepiaRgb[channelIndex] * preset.sepia
+      );
+    }
+
+    if (preset.grayscale > 0) {
+      const gray =
+        rgb[0] * 0.2126 +
+        rgb[1] * 0.7152 +
+        rgb[2] * 0.0722;
+      rgb = [gray, gray, gray];
+    }
+
+    rgb = changeContrast(rgb, preset.contrast);
+    rgb = changeSaturation(rgb, preset.saturation);
+    rgb = rgb.map(
+      channel => channel * preset.brightness
+    );
+
+    rgb = changeContrast(rgb, userContrast);
+    rgb = changeSaturation(rgb, userSaturation);
+    rgb = rgb.map(
+      channel => channel * userBrightness
+    );
+
+    data[index] = clampColor(rgb[0]);
+    data[index + 1] = clampColor(rgb[1]);
+    data[index + 2] = clampColor(rgb[2]);
+  }
+
+  context.putImageData(imageData, 0, 0);
+}
+
 function framePalette(frame) {
   const palettes = {
     pink: {
@@ -1305,9 +1424,6 @@ const context =
     padding
   } = getPhotoBoxes(layout);
 
-  const filter =
-    getCombinedFilter();
-
   for (
     let index = 0;
     index < layout.count;
@@ -1320,6 +1436,27 @@ const context =
 
     const box =
       boxes[index];
+
+    const photoCanvas =
+      document.createElement("canvas");
+    photoCanvas.width =
+      Math.max(1, Math.round(box.width));
+    photoCanvas.height =
+      Math.max(1, Math.round(box.height));
+
+    const photoContext =
+      photoCanvas.getContext("2d");
+
+    drawImageCover(
+      photoContext,
+      image,
+      0,
+      0,
+      photoCanvas.width,
+      photoCanvas.height
+    );
+
+    applyPixelFilter(photoCanvas);
 
     context.save();
 
@@ -1334,11 +1471,8 @@ const context =
 
     context.clip();
 
-    context.filter = filter;
-
-    drawImageCover(
-      context,
-      image,
+    context.drawImage(
+      photoCanvas,
       box.x,
       box.y,
       box.width,
