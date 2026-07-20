@@ -2136,7 +2136,7 @@ function bindOptionButtons() {
           activeFilter =
             button.dataset.filter;
 
-          updateVideoPreviewFilter();
+      
 
           await renderComposite();
         }
@@ -2383,7 +2383,7 @@ backToCaptureButton?.addEventListener(
       saturationValue.value =
         `${saturationRange.value}%`;
 
-      updateVideoPreviewFilter();
+     
       scheduleCompositeRender();
     }
   );
