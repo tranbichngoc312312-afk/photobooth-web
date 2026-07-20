@@ -2863,3 +2863,35 @@ input[type="range"] {
     font-size: 9px !important;
   }
 }
+
+/* ==================================================
+   KHÓA TRANG CHỈNH SỬA TRÊN MOBILE
+   Không ảnh hưởng giao diện laptop
+================================================== */
+
+@media (max-width: 780px) {
+  /* Trang chỉnh sửa phải ẩn hoàn toàn khi đang chụp */
+  #editorScreen[hidden] {
+    display: none !important;
+  }
+
+  #editorScreen[hidden] .mobile-editor-topbar,
+  #editorScreen[hidden] .mobile-editor-toolbar,
+  #editorScreen[hidden] .mobile-editor-layout,
+  #editorScreen[hidden] .mobile-tools-panel,
+  #editorScreen[hidden] .mobile-download-button {
+    display: none !important;
+  }
+
+  /* Ẩn trang chụp sau khi chuyển sang chỉnh sửa */
+  .capture-view.screen-hidden {
+    display: none !important;
+  }
+
+  /* Chỉ hiện editor sau khi JavaScript bỏ thuộc tính hidden */
+  #editorScreen:not([hidden]) {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+}
