@@ -2671,6 +2671,14 @@ if (
   renderMobileEditorTools();
 }
 async function init() {
+    /* Luôn bắt đầu ở màn hình chụp ảnh */
+  editorScreen.hidden = true;
+
+  document
+    .querySelectorAll(".capture-view")
+    .forEach(element => {
+      element.classList.remove("screen-hidden");
+    });
   bindOptionButtons();
   bindEvents();
   setupMobileEditorTools();
