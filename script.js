@@ -2633,6 +2633,10 @@ const mobileDownloadVideoButton =
   document.querySelector(
     "#mobileDownloadVideoButton"
   );
+
+const mobileVideoStatus =
+  document.querySelector("#mobileVideoStatus");
+
 const originalBackButton =
   document.querySelector(
     "#backToCaptureButton"
@@ -2794,9 +2798,16 @@ if (
   downloadVideoButton
 ) {
   const syncVideoDownloadButton = () => {
-    mobileDownloadVideoButton.disabled =
-      downloadVideoButton.disabled;
-  };
+  mobileDownloadVideoButton.disabled =
+    downloadVideoButton.disabled;
+
+  if (mobileVideoStatus) {
+    mobileVideoStatus.textContent =
+      downloadVideoButton.disabled
+        ? "Video recap đang được xử lý..."
+        : "Video recap đã sẵn sàng tải xuống.";
+  }
+};
 
   const videoDownloadObserver =
     new MutationObserver(
