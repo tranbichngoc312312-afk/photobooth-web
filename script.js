@@ -1957,7 +1957,9 @@ async function startRecapRecording() {
 
         context.filter =
           getCombinedFilter();
-
+context.translate(width, 0);
+context.scale(-1, 1);
+        
         drawVideoCover(
   context,
   video,
