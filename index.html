@@ -883,23 +883,33 @@
 
       </div>
 
-      <button
-  id="mobileDownloadImageButton"
-  class="mobile-download-button"
-  type="button"
+     <div class="mobile-download-actions">
+  <button
+    id="mobileDownloadImageButton"
+    class="mobile-download-button mobile-download-image"
+    type="button"
+  >
+    <span>↓</span>
+    Tải ảnh PNG
+  </button>
+
+  <button
+    id="mobileDownloadVideoButton"
+    class="mobile-download-button mobile-download-video"
+    type="button"
+    disabled
+  >
+    <span>↗</span>
+    Tải video recap
+  </button>
+</div>
+
+<p
+  id="mobileVideoStatus"
+  class="mobile-video-status"
 >
-  <span>⇩</span>
-  Tải ảnh PNG
-</button>
-      <button
-  id="mobileDownloadVideoButton"
-  class="mobile-download-button"
-  type="button"
-  disabled
->
-  <span>🎞</span>
-  Tải video recap
-</button>
+  Video recap đang được xử lý...
+</p>
 
     </section>
 
