@@ -1958,13 +1958,12 @@ async function startRecapRecording() {
         context.filter =
           getCombinedFilter();
 
-        context.drawImage(
-          video,
-          0,
-          0,
-          width,
-          height
-        );
+        drawVideoCover(
+  context,
+  video,
+  width,
+  height
+);
       }
 
       context.restore();
@@ -2628,7 +2627,10 @@ const mobileDownloadButton =
   document.querySelector(
     "#mobileDownloadImageButton"
   );
-
+const mobileDownloadVideoButton =
+  document.querySelector(
+    "#mobileDownloadVideoButton"
+  );
 const originalBackButton =
   document.querySelector(
     "#backToCaptureButton"
@@ -2778,7 +2780,37 @@ mobileDownloadButton?.addEventListener(
     originalDownloadButton?.click();
   }
 );
+mobileDownloadVideoButton?.addEventListener(
+  "click",
+  () => {
+    downloadVideoButton?.click();
+  }
+);
 
+if (
+  mobileDownloadVideoButton &&
+  downloadVideoButton
+) {
+  const syncVideoDownloadButton = () => {
+    mobileDownloadVideoButton.disabled =
+      downloadVideoButton.disabled;
+  };
+
+  const videoDownloadObserver =
+    new MutationObserver(
+      syncVideoDownloadButton
+    );
+
+  videoDownloadObserver.observe(
+    downloadVideoButton,
+    {
+      attributes: true,
+      attributeFilter: ["disabled"]
+    }
+  );
+
+  syncVideoDownloadButton();
+}
 /* Đồng bộ trạng thái nút tải mobile với nút tải gốc */
 if (
   mobileDownloadButton &&
