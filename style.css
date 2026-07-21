@@ -2458,3 +2458,59 @@ input[type="range"] {
     overflow: hidden !important;
   }
 }
+
+/* Hai nút tải xuống nằm ngang trên mobile */
+@media (max-width: 780px) {
+  .mobile-download-actions {
+    order: 4;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    gap: 8px !important;
+    width: 100% !important;
+    margin-top: 10px !important;
+  }
+
+  .mobile-download-actions .mobile-download-button {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 44px !important;
+    margin: 0 !important;
+    padding: 8px 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    border-radius: 10px !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+  }
+
+  .mobile-download-image {
+    color: #fff !important;
+    border: 1px solid #f25591 !important;
+    background: linear-gradient(135deg, #ff6ca8, #ec3d81) !important;
+  }
+
+  .mobile-download-video {
+    color: #5b376d !important;
+    border: 1px solid #e3cfdb !important;
+    background: #f8f0f5 !important;
+  }
+
+  .mobile-download-video:disabled {
+    opacity: 0.65 !important;
+    cursor: not-allowed !important;
+  }
+
+  .mobile-video-status {
+    order: 5;
+    width: 100% !important;
+    margin: 6px 0 0 !important;
+    color: #8b7283 !important;
+    font-size: 9px !important;
+    line-height: 1.35 !important;
+    text-align: left !important;
+  }
+}
