@@ -963,19 +963,29 @@ function updateVideoPreviewFilter() {
   );
 }
 
+const imageCache = new Map();
+const filteredPhotoCache = new Map();
 function loadImage(url) {
-  return new Promise(
-    (resolve, reject) => {
-      const image = new Image();
+  if (imageCache.has(url)) {
+    return imageCache.get(url);
+  }
 
-      image.onload = () =>
-        resolve(image);
+  const imagePromise = new Promise((resolve, reject) => {
+    const image = new Image();
 
-      image.onerror = reject;
+    image.onload = () => resolve(image);
 
-      image.src = url;
-    }
-  );
+    image.onerror = error => {
+      imageCache.delete(url);
+      reject(error);
+    };
+
+    image.src = url;
+  });
+
+  imageCache.set(url, imagePromise);
+
+  return imagePromise;
 }
 
 function drawImageCover(
@@ -1434,29 +1444,62 @@ const context =
         photos[index].url
       );
 
+    if (renderToken !== compositeRenderToken) {
+  return;
+}
+
     const box =
       boxes[index];
 
-    const photoCanvas =
-      document.createElement("canvas");
-    photoCanvas.width =
-      Math.max(1, Math.round(box.width));
-    photoCanvas.height =
-      Math.max(1, Math.round(box.height));
+   const photoWidth =
+  Math.max(1, Math.round(box.width));
 
-    const photoContext =
-      photoCanvas.getContext("2d");
+const photoHeight =
+  Math.max(1, Math.round(box.height));
 
-    drawImageCover(
-      photoContext,
-      image,
-      0,
-      0,
-      photoCanvas.width,
-      photoCanvas.height
-    );
+const photoRenderKey = [
+  photos[index].url,
+  photoWidth,
+  photoHeight,
+  activeFilter,
+  brightnessRange.value,
+  contrastRange.value,
+  saturationRange.value
+].join("|");
 
-    applyPixelFilter(photoCanvas);
+let photoCanvas =
+  filteredPhotoCache.get(photoRenderKey);
+
+if (!photoCanvas) {
+  photoCanvas =
+    document.createElement("canvas");
+
+  photoCanvas.width = photoWidth;
+  photoCanvas.height = photoHeight;
+
+  const photoContext =
+    photoCanvas.getContext("2d");
+
+  drawImageCover(
+    photoContext,
+    image,
+    0,
+    0,
+    photoWidth,
+    photoHeight
+  );
+
+  applyPixelFilter(photoCanvas);
+
+  if (filteredPhotoCache.size > 40) {
+    filteredPhotoCache.clear();
+  }
+
+  filteredPhotoCache.set(
+    photoRenderKey,
+    photoCanvas
+  );
+}
 
     context.save();
 
@@ -1505,6 +1548,10 @@ const context =
         await loadImage(
           customFrameUrl
         );
+
+      if (renderToken !== compositeRenderToken) {
+  return;
+}
 
       context.drawImage(
         frameImage,
@@ -2306,22 +2353,22 @@ function bindOptionButtons() {
 }
 
 
-function scheduleCompositeRender() {
-  cancelAnimationFrame(
-    previewRenderFrame
-  );
+let previewRenderTimer = null;
 
-  previewRenderFrame =
-    requestAnimationFrame(() => {
-      renderComposite().catch(
-        error => {
-          console.error(
-            "Lỗi render preview:",
-            error
-          );
-        }
-      );
+function scheduleCompositeRender() {
+  cancelAnimationFrame(previewRenderFrame);
+  clearTimeout(previewRenderTimer);
+
+  previewRenderTimer = setTimeout(() => {
+    previewRenderFrame = requestAnimationFrame(() => {
+      renderComposite().catch(error => {
+        console.error(
+          "Lỗi render preview:",
+          error
+        );
+      });
     });
+  }, 80);
 }
 
 async function openEditorScreen() {
