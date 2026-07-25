@@ -1535,7 +1535,13 @@ if (!photoCanvas) {
   photoCanvas.height = photoHeight;
 
   const photoContext =
-    photoCanvas.getContext("2d");
+  photoCanvas.getContext("2d");
+
+if ("filter" in photoContext) {
+  photoContext.save();
+
+  photoContext.filter =
+    getCombinedFilter();
 
   drawImageCover(
     photoContext,
@@ -1546,7 +1552,19 @@ if (!photoCanvas) {
     photoHeight
   );
 
+  photoContext.restore();
+} else {
+  drawImageCover(
+    photoContext,
+    image,
+    0,
+    0,
+    photoWidth,
+    photoHeight
+  );
+
   applyPixelFilter(photoCanvas);
+}
 
   if (filteredPhotoCache.size > 40) {
     filteredPhotoCache.clear();
@@ -2410,22 +2428,17 @@ function bindOptionButtons() {
 }
 
 
-let previewRenderTimer = null;
-
 function scheduleCompositeRender() {
   cancelAnimationFrame(previewRenderFrame);
-  clearTimeout(previewRenderTimer);
 
-  previewRenderTimer = setTimeout(() => {
-    previewRenderFrame = requestAnimationFrame(() => {
-      renderComposite().catch(error => {
-        console.error(
-          "Lỗi render preview:",
-          error
-        );
-      });
+  previewRenderFrame = requestAnimationFrame(() => {
+    renderComposite().catch(error => {
+      console.error(
+        "Lỗi render preview:",
+        error
+      );
     });
-  }, 80);
+  });
 }
 
 async function openEditorScreen() {
