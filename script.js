@@ -312,6 +312,63 @@ function setBusy(busy) {
   });
 }
 
+async function unlockAudio() {
+  try {
+    audioContext ||= new (
+      window.AudioContext ||
+      window.webkitAudioContext
+    )();
+
+    if (audioContext.state !== "running") {
+      await audioContext.resume();
+    }
+
+    const oscillator = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+
+    gain.gain.value = 0.0001;
+
+    oscillator
+      .connect(gain)
+      .connect(audioContext.destination);
+
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + 0.01);
+
+    return true;
+  } catch (error) {
+    console.warn("Không thể kích hoạt âm thanh:", error);
+    return false;
+  }
+}
+
+async function unlockAudio() {
+  try {
+    audioContext ||= new (
+      window.AudioContext ||
+      window.webkitAudioContext
+    )();
+
+    if (audioContext.state !== "running") {
+      await audioContext.resume();
+    }
+
+    const oscillator = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+
+    gain.gain.value = 0.0001;
+
+    oscillator
+      .connect(gain)
+      .connect(audioContext.destination);
+
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + 0.01);
+  } catch (error) {
+    console.warn("Không thể kích hoạt âm thanh:", error);
+  }
+}
+
 async function beep(frequency = 700, duration = 90) {
   if (!soundEnabled) {
     return;
@@ -360,10 +417,10 @@ async function runCountdown() {
   for (let number = seconds; number > 0; number--) {
     countdownOverlay.textContent = number;
 
-    beep(
-      number === 1 ? 960 : 680,
-      100
-    );
+    await beep(
+  number === 1 ? 960 : 680,
+  120
+);
 
     await wait(1000);
   }
@@ -2443,11 +2500,13 @@ backToCaptureButton?.addEventListener(
       manualCapture
     );
 
-  $("#autoCaptureButton")
-    .addEventListener(
-      "click",
-      autoCapture
-    );
+ $("#autoCaptureButton").addEventListener(
+  "click",
+  async () => {
+    await unlockAudio();
+    await autoCapture();
+  }
+);
 
   $("#retakeButton")
     .addEventListener(
