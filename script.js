@@ -109,7 +109,7 @@ let recapBlob = null;
 let recapAnimationId = null;
 let toastTimer = null;
 let audioContext = null;
-let previewRenderFrame = 0;
+let previewRenderTimer = 0;
 let compositeRenderToken = 0;
 
 function wait(ms) {
@@ -2394,8 +2394,9 @@ function bindOptionButtons() {
             button.dataset.filter;
 
       
-
-          await renderComposite();
+filteredPhotoCache.clear();
+updateVideoPreviewFilter();
+scheduleCompositeRender(40);
         }
       );
     }
@@ -2428,17 +2429,17 @@ function bindOptionButtons() {
 }
 
 
-function scheduleCompositeRender() {
-  cancelAnimationFrame(previewRenderFrame);
+function scheduleCompositeRender(delay = 100) {
+  clearTimeout(previewRenderTimer);
 
-  previewRenderFrame = requestAnimationFrame(() => {
+  previewRenderTimer = setTimeout(() => {
     renderComposite().catch(error => {
       console.error(
         "Lỗi render preview:",
         error
       );
     });
-  });
+  }, delay);
 }
 
 async function openEditorScreen() {
@@ -2638,7 +2639,9 @@ backToCaptureButton?.addEventListener(
         `${saturationRange.value}%`;
 
      
-      scheduleCompositeRender();
+     filteredPhotoCache.clear();
+updateVideoPreviewFilter();
+scheduleCompositeRender(100);
     }
   );
 });
