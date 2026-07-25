@@ -27,7 +27,7 @@
   rel="stylesheet"
 >
 
-<link rel="stylesheet" href="style.css?v=20260717-editor03">
+<link rel="stylesheet" href="style.css?v=20260725-share01">
 </head>
 
 <body>
@@ -873,6 +873,15 @@
               🎞 Tải video recap
             </button>
 
+            <button
+              id="continueToShareButton"
+              class="primary-button continue-share-button"
+              type="button"
+              disabled
+            >
+              Tiếp tục lưu hoặc chia sẻ →
+            </button>
+
           </div>
 
           <p id="videoHint" class="helper-text">
@@ -902,6 +911,15 @@
     <span>↗</span>
     Tải video recap
   </button>
+
+  <button
+    id="mobileContinueToShareButton"
+    class="mobile-download-button mobile-continue-share"
+    type="button"
+    disabled
+  >
+    Tiếp tục →
+  </button>
 </div>
 
 <p
@@ -911,6 +929,92 @@
   Video recap đang được xử lý...
 </p>
 
+    </section>
+
+    <!-- Lựa chọn sau khi hoàn thành ảnh -->
+    <section
+      id="shareScreen"
+      class="share-section"
+      aria-labelledby="shareTitle"
+      hidden
+    >
+      <div class="section-heading share-heading">
+        <div>
+          <p class="eyebrow">KHOẢNH KHẮC ĐÃ SẴN SÀNG</p>
+          <h2 id="shareTitle">
+            Bạn muốn làm gì tiếp theo?
+          </h2>
+          <p>
+            Lưu về máy không cần tài khoản. Gửi bạn và đăng
+            Khoảnh Khắc sẽ yêu cầu đăng nhập.
+          </p>
+        </div>
+
+        <button
+          id="backToEditorFromShareButton"
+          class="secondary-button"
+          type="button"
+        >
+          ← Quay lại trang trí
+        </button>
+      </div>
+
+      <div class="share-layout">
+        <article class="share-preview-card">
+          <div class="share-preview-frame">
+            <img
+              id="sharePreviewImage"
+              alt="Ảnh Photobooth vừa hoàn thành"
+            >
+          </div>
+
+          <p>
+            🔒 Bản thử nghiệm vẫn xử lý ảnh ngay trên thiết bị,
+            chưa tải ảnh lên máy chủ.
+          </p>
+        </article>
+
+        <div class="share-options" aria-label="Cách sử dụng khoảnh khắc">
+          <button
+            id="saveDeviceButton"
+            class="share-option share-option-primary"
+            type="button"
+          >
+            <span class="share-option-icon" aria-hidden="true">↓</span>
+            <span>
+              <strong>Lưu về máy</strong>
+              <small>Tải ảnh PNG chất lượng cao ngay lập tức.</small>
+              <em>Không cần tài khoản</em>
+            </span>
+          </button>
+
+          <button
+            id="sendPrivateButton"
+            class="share-option"
+            type="button"
+          >
+            <span class="share-option-icon" aria-hidden="true">💌</span>
+            <span>
+              <strong>Gửi bạn</strong>
+              <small>Gửi riêng cho một hoặc nhiều người bạn.</small>
+              <em>Cần đăng nhập · Bản giao diện</em>
+            </span>
+          </button>
+
+          <button
+            id="postMomentButton"
+            class="share-option"
+            type="button"
+          >
+            <span class="share-option-icon" aria-hidden="true">✨</span>
+            <span>
+              <strong>Đăng Khoảnh Khắc</strong>
+              <small>Chia sẻ lên bảng tin chỉ dành cho bạn bè.</small>
+              <em>Cần đăng nhập · Bản giao diện</em>
+            </span>
+          </button>
+        </div>
+      </div>
     </section>
 
   </main>
@@ -961,6 +1065,36 @@
 
   </dialog>
 
+  <dialog id="accountGateDialog" class="help-dialog account-gate-dialog">
+    <div class="dialog-heading">
+      <h2 id="accountGateTitle">Tính năng cần đăng nhập</h2>
+
+      <button
+        id="closeAccountGateButton"
+        class="icon-button"
+        type="button"
+        aria-label="Đóng"
+      >
+        ✕
+      </button>
+    </div>
+
+    <p id="accountGateMessage">
+      Đây là bản giao diện thử nghiệm. Dữ liệu chưa được gửi
+      hoặc đăng lên mạng.
+    </p>
+
+    <div class="account-gate-actions">
+      <button
+        id="accountGateDoneButton"
+        class="primary-button"
+        type="button"
+      >
+        Đã hiểu
+      </button>
+    </div>
+  </dialog>
+
   <!-- Thông báo -->
   <div
     id="toast"
@@ -969,8 +1103,7 @@
     aria-live="polite"
   ></div>
 
-<script src="script.js?v=20260721-recap03"></script>
+<script src="script.js?v=20260725-share01"></script>
 
 </body>
 </html>
-

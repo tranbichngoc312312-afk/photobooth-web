@@ -31,6 +31,27 @@ const backToCaptureButton =
 const editorScreen =
   $("#editorScreen");
 
+const shareScreen =
+  $("#shareScreen");
+
+const sharePreviewImage =
+  $("#sharePreviewImage");
+
+const continueToShareButton =
+  $("#continueToShareButton");
+
+const mobileContinueToShareButton =
+  $("#mobileContinueToShareButton");
+
+const accountGateDialog =
+  $("#accountGateDialog");
+
+const accountGateTitle =
+  $("#accountGateTitle");
+
+const accountGateMessage =
+  $("#accountGateMessage");
+
 const layoutSelect = $("#layoutSelect");
 const countdownSelect = $("#countdownSelect");
 const intervalSelect = $("#intervalSelect");
@@ -1430,6 +1451,16 @@ async function renderComposite() {
   downloadImageButton.disabled =
     !ready;
 
+  if (continueToShareButton) {
+    continueToShareButton.disabled =
+      !ready;
+  }
+
+  if (mobileContinueToShareButton) {
+    mobileContinueToShareButton.disabled =
+      !ready;
+  }
+
   previewStatus.textContent =
     ready
       ? "Sẵn sàng tải"
@@ -2465,6 +2496,7 @@ async function openEditorScreen() {
       );
     });
 
+  shareScreen.hidden = true;
   editorScreen.hidden = false;
 
   await renderComposite();
@@ -2475,8 +2507,107 @@ async function openEditorScreen() {
   });
 }
 
+function updateSharePreview() {
+  if (
+    !sharePreviewImage ||
+    !outputCanvas.width ||
+    !outputCanvas.height
+  ) {
+    return;
+  }
+
+  const maxPreviewSide = 720;
+  const scale = Math.min(
+    1,
+    maxPreviewSide /
+      Math.max(
+        outputCanvas.width,
+        outputCanvas.height
+      )
+  );
+
+  const previewCanvas =
+    document.createElement("canvas");
+
+  previewCanvas.width = Math.max(
+    1,
+    Math.round(outputCanvas.width * scale)
+  );
+
+  previewCanvas.height = Math.max(
+    1,
+    Math.round(outputCanvas.height * scale)
+  );
+
+  const previewContext =
+    previewCanvas.getContext("2d");
+
+  previewContext.drawImage(
+    outputCanvas,
+    0,
+    0,
+    previewCanvas.width,
+    previewCanvas.height
+  );
+
+  sharePreviewImage.src =
+    previewCanvas.toDataURL(
+      "image/jpeg",
+      0.86
+    );
+}
+
+async function openPostCaptureScreen() {
+  await renderComposite();
+
+  if (downloadImageButton.disabled) {
+    showToast(
+      "Bạn cần hoàn thành bộ ảnh trước khi tiếp tục."
+    );
+    return;
+  }
+
+  updateSharePreview();
+
+  editorScreen.hidden = true;
+  shareScreen.hidden = false;
+
+  shareScreen.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
+
+function openEditorFromShare() {
+  shareScreen.hidden = true;
+  editorScreen.hidden = false;
+
+  editorScreen.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
+
+function showAccountGate(action) {
+  const isPrivate =
+    action === "private";
+
+  accountGateTitle.textContent =
+    isPrivate
+      ? "Đăng nhập để Gửi bạn"
+      : "Đăng nhập để đăng Khoảnh Khắc";
+
+  accountGateMessage.textContent =
+    isPrivate
+      ? "Đây là bản giao diện thử nghiệm. Khi kết nối tài khoản, bạn sẽ có thể chọn bạn bè và gửi ảnh riêng tư. Hiện tại ảnh chưa được gửi đi."
+      : "Đây là bản giao diện thử nghiệm. Khi kết nối tài khoản, bạn sẽ có thể đăng ảnh lên bảng tin bạn bè. Hiện tại ảnh chưa được đăng lên mạng.";
+
+  accountGateDialog.showModal();
+}
+
 function openCaptureScreen() {
   editorScreen.hidden = true;
+  shareScreen.hidden = true;
 
   document
     .querySelectorAll(".capture-view")
@@ -2502,6 +2633,53 @@ backToCaptureButton?.addEventListener(
   "click",
   openCaptureScreen
 );
+
+  continueToShareButton?.addEventListener(
+    "click",
+    openPostCaptureScreen
+  );
+
+  mobileContinueToShareButton?.addEventListener(
+    "click",
+    openPostCaptureScreen
+  );
+
+  $("#backToEditorFromShareButton")
+    ?.addEventListener(
+      "click",
+      openEditorFromShare
+    );
+
+  $("#saveDeviceButton")
+    ?.addEventListener(
+      "click",
+      downloadComposite
+    );
+
+  $("#sendPrivateButton")
+    ?.addEventListener(
+      "click",
+      () => showAccountGate("private")
+    );
+
+  $("#postMomentButton")
+    ?.addEventListener(
+      "click",
+      () => showAccountGate("moment")
+    );
+
+  $("#closeAccountGateButton")
+    ?.addEventListener(
+      "click",
+      () => accountGateDialog.close()
+    );
+
+  $("#accountGateDoneButton")
+    ?.addEventListener(
+      "click",
+      () => accountGateDialog.close()
+    );
+
   $("#startCameraButton")
     .addEventListener(
       "click",
@@ -2974,6 +3152,7 @@ if (
 async function init() {
     /* Luôn bắt đầu ở màn hình chụp ảnh */
   editorScreen.hidden = true;
+  shareScreen.hidden = true;
 
   document
     .querySelectorAll(".capture-view")
