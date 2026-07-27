@@ -1052,36 +1052,74 @@
 
   </dialog>
 
-  <dialog id="accountGateDialog" class="help-dialog account-gate-dialog">
-    <div class="dialog-heading">
-      <h2 id="accountGateTitle">Tính năng cần đăng nhập</h2>
+ <dialog
+  id="accountGateDialog"
+  class="help-dialog account-gate-dialog"
+>
+  <div class="dialog-heading">
+    <h2 id="accountGateTitle">
+      Đăng nhập NoHa
+    </h2>
 
-      <button
-        id="closeAccountGateButton"
-        class="icon-button"
-        type="button"
-        aria-label="Đóng"
+    <button
+      id="closeAccountGateButton"
+      class="icon-button"
+      type="button"
+      aria-label="Đóng"
+    >
+      ✕
+    </button>
+  </div>
+
+  <p id="accountGateMessage">
+    Đăng nhập để gửi ảnh cho bạn bè hoặc đăng Khoảnh Khắc.
+  </p>
+
+  <form id="nohaAuthForm">
+    <label class="field">
+      <span>Email</span>
+      <input
+        id="authEmailInput"
+        type="email"
+        autocomplete="email"
+        placeholder="ban@example.com"
+        required
       >
-        ✕
-      </button>
-    </div>
+    </label>
 
-    <p id="accountGateMessage">
-      Đây là bản giao diện thử nghiệm. Dữ liệu chưa được gửi
-      hoặc đăng lên mạng.
-    </p>
+    <label class="field">
+      <span>Mật khẩu</span>
+      <input
+        id="authPasswordInput"
+        type="password"
+        autocomplete="current-password"
+        minlength="6"
+        placeholder="Tối thiểu 6 ký tự"
+        required
+      >
+    </label>
+
+    <p id="authStatus" aria-live="polite"></p>
 
     <div class="account-gate-actions">
       <button
-        id="accountGateDoneButton"
+        id="signInButton"
         class="primary-button"
+        type="submit"
+      >
+        Đăng nhập
+      </button>
+
+      <button
+        id="signUpButton"
+        class="secondary-button"
         type="button"
       >
-        Đã hiểu
+        Tạo tài khoản
       </button>
     </div>
-  </dialog>
-
+  </form>
+</dialog>
   <!-- Thông báo -->
   <div
     id="toast"
@@ -1090,7 +1128,8 @@
     aria-live="polite"
   ></div>
 
-<script src="script.js?v=20260725-share01"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js?v=20260727-auth02"></script>
 
 </body>
 </html>

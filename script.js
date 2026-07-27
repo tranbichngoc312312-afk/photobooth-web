@@ -1,5 +1,17 @@
 "use strict";
 
+const SUPABASE_URL =
+  "https://csmgesdhgzdrntjpxqcq.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+  "sb_publishable_zdxT2sd3b5g56lPCagdzmQ_EnxraVoX";
+
+const nohaSupabase =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
@@ -3170,3 +3182,228 @@ async function init() {
 }
 
 init();
+
+/* Đăng ký và đăng nhập tài khoản NoHa */
+(() => {
+  const form =
+    document.querySelector("#nohaAuthForm");
+
+  const emailInput =
+    document.querySelector("#authEmailInput");
+
+  const passwordInput =
+    document.querySelector("#authPasswordInput");
+
+  const status =
+    document.querySelector("#authStatus");
+
+  const signInButton =
+    document.querySelector("#signInButton");
+
+  const signUpButton =
+    document.querySelector("#signUpButton");
+
+  let currentUser = null;
+
+  function setStatus(message, isError = false) {
+    status.textContent = message;
+    status.style.color =
+      isError ? "#b42318" : "#6941c6";
+  }
+
+  function setBusy(isBusy) {
+    signInButton.disabled = isBusy;
+    signUpButton.disabled = isBusy;
+  }
+
+  function friendlyError(error) {
+    const message =
+      error?.message || "Đã xảy ra lỗi.";
+
+    if (
+      message.includes("Invalid login credentials")
+    ) {
+      return "Email hoặc mật khẩu chưa đúng.";
+    }
+
+    if (
+      message.includes("User already registered")
+    ) {
+      return "Email này đã có tài khoản. Hãy chọn Đăng nhập.";
+    }
+
+    if (
+      message.includes("Password should be at least")
+    ) {
+      return "Mật khẩu cần có ít nhất 6 ký tự.";
+    }
+
+    return message;
+  }
+
+  async function getCurrentUser() {
+    const { data, error } =
+      await nohaSupabase.auth.getSession();
+
+    if (error) {
+      throw error;
+    }
+
+    currentUser =
+      data.session?.user || null;
+
+    return currentUser;
+  }
+
+  async function signIn(event) {
+    event.preventDefault();
+
+    if (!form.reportValidity()) {
+      return;
+    }
+
+    setBusy(true);
+    setStatus("Đang đăng nhập…");
+
+    try {
+      const { data, error } =
+        await nohaSupabase.auth
+          .signInWithPassword({
+            email: emailInput.value.trim(),
+            password: passwordInput.value
+          });
+
+      if (error) {
+        throw error;
+      }
+
+      currentUser = data.user;
+
+      accountGateDialog.close();
+
+      showToast(
+        "Đăng nhập NoHa thành công."
+      );
+    } catch (error) {
+      setStatus(
+        friendlyError(error),
+        true
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function signUp() {
+    if (!form.reportValidity()) {
+      return;
+    }
+
+    setBusy(true);
+    setStatus("Đang tạo tài khoản…");
+
+    try {
+      const redirectUrl =
+        `${location.origin}${location.pathname}`;
+
+      const { data, error } =
+        await nohaSupabase.auth.signUp({
+          email: emailInput.value.trim(),
+          password: passwordInput.value,
+          options: {
+            emailRedirectTo: redirectUrl
+          }
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      currentUser = data.user;
+      passwordInput.value = "";
+
+      if (data.session) {
+        accountGateDialog.close();
+
+        showToast(
+          "Tài khoản NoHa đã được tạo."
+        );
+      } else {
+        setStatus(
+          "Đã gửi email xác nhận. Hãy mở email và bấm liên kết xác nhận."
+        );
+      }
+    } catch (error) {
+      setStatus(
+        friendlyError(error),
+        true
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  form.addEventListener(
+    "submit",
+    signIn
+  );
+
+  signUpButton.addEventListener(
+    "click",
+    signUp
+  );
+
+  nohaSupabase.auth.onAuthStateChange(
+    (_event, session) => {
+      currentUser =
+        session?.user || null;
+    }
+  );
+
+  showAccountGate =
+    async function (action) {
+      const isPrivate =
+        action === "private";
+
+      setStatus("");
+
+      try {
+        await getCurrentUser();
+      } catch (error) {
+        console.warn(error);
+      }
+
+      if (
+        currentUser &&
+        !currentUser.is_anonymous
+      ) {
+        form.hidden = true;
+
+        accountGateTitle.textContent =
+          "Tài khoản NoHa đã sẵn sàng";
+
+        accountGateMessage.textContent =
+          `Bạn đang đăng nhập bằng ${
+            currentUser.email || "NoHa"
+          }. ${
+            isPrivate
+              ? "Gửi bạn"
+              : "Khoảnh Khắc"
+          } sẽ được kết nối ở bước tiếp theo.`;
+      } else {
+        form.hidden = false;
+
+        accountGateTitle.textContent =
+          isPrivate
+            ? "Đăng nhập để Gửi bạn"
+            : "Đăng nhập để đăng Khoảnh Khắc";
+
+        accountGateMessage.textContent =
+          "Đăng nhập hoặc tạo tài khoản NoHa để tiếp tục.";
+      }
+
+      if (!accountGateDialog.open) {
+        accountGateDialog.showModal();
+      }
+    };
+})();
