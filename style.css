@@ -2762,3 +2762,179 @@ input[type="range"] {
     font-size: 12px;
   }
 }
+
+/* ==================================================
+   SHARE SCREEN V2 - PHONG CÁCH LOCKET
+================================================== */
+
+.share-section {
+  max-width: 760px;
+  margin: 26px auto 0;
+  padding: 24px;
+  border: 1px solid #f0dce6;
+  border-radius: 30px;
+  background: linear-gradient(180deg, #fffafd, #fff1f7);
+  box-shadow: 0 20px 55px rgba(104, 57, 86, 0.12);
+}
+
+.share-heading {
+  gap: 14px;
+  align-items: center;
+}
+
+.share-heading .eyebrow {
+  width: max-content;
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: #b52f68;
+  background: #ffe2ed;
+}
+
+.share-heading .secondary-button {
+  border-radius: 999px;
+}
+
+.share-layout {
+  max-width: 520px;
+  margin: 0 auto;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.share-preview-card {
+  padding: 10px;
+  border: 0;
+  border-radius: 28px;
+  background: #211821;
+  box-shadow: 0 18px 40px rgba(45, 25, 39, 0.2);
+}
+
+.share-preview-frame {
+  min-height: 340px;
+  max-height: 58vh;
+  padding: 8px;
+  border-radius: 22px;
+  background: #0e0c0f;
+}
+
+.share-preview-frame img {
+  max-height: 56vh;
+  border-radius: 17px;
+}
+
+.share-preview-card > p {
+  color: #eadde5;
+  text-align: center;
+  font-size: 11px;
+}
+
+.share-options {
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.share-option {
+  min-height: 100px;
+  padding: 14px;
+  grid-template-columns: 42px 1fr;
+  gap: 10px;
+  border-radius: 22px;
+  box-shadow: 0 10px 26px rgba(91, 52, 77, 0.1);
+}
+
+#sendPrivateButton {
+  border-color: #ded2ff;
+  background: linear-gradient(135deg, #faf7ff, #eee8ff);
+}
+
+#postMomentButton {
+  border-color: #ffc5da;
+  background: linear-gradient(135deg, #fff8fb, #ffe5ef);
+}
+
+#sendPrivateButton .share-option-icon {
+  background: linear-gradient(135deg, #8b6fe8, #b79df8);
+}
+
+#postMomentButton .share-option-icon {
+  background: linear-gradient(135deg, #ff639d, #ee3f82);
+}
+
+.share-option em {
+  display: none;
+}
+
+@media (max-width: 780px) {
+  .share-section {
+    width: 100%;
+    min-height: 100dvh;
+    margin: 0;
+    padding: 14px;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .share-heading {
+    display: grid;
+    gap: 10px;
+  }
+
+  .share-heading .secondary-button {
+    order: -1;
+    width: max-content;
+    margin: 0;
+  }
+
+  .share-layout {
+    max-width: 440px;
+    gap: 12px;
+  }
+
+  .share-preview-card {
+    padding: 8px;
+    border-radius: 24px;
+  }
+
+  .share-preview-frame {
+    min-height: 280px;
+    max-height: 49vh;
+    padding: 6px;
+  }
+
+  .share-preview-frame img {
+    max-height: 47vh;
+  }
+
+  .share-options {
+    padding: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .share-option {
+    min-height: 106px;
+    padding: 12px 8px;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 7px;
+    text-align: center;
+  }
+
+  .share-option > span:last-child {
+    justify-items: center;
+  }
+
+  .share-option-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .share-option small {
+    font-size: 10px;
+  }
+}
