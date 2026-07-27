@@ -951,12 +951,12 @@ input[type="range"] {
 .export-actions {
   margin-top: 13px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 9px;
 }
 
 .continue-share-button {
-  grid-column: 1 / -1;
+ grid-column: auto;
 }
 
 /* Hộp hướng dẫn */
@@ -2468,7 +2468,7 @@ input[type="range"] {
   .mobile-download-actions {
     order: 4;
     display: grid !important;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
     gap: 8px !important;
     width: 100% !important;
     margin-top: 10px !important;
@@ -2519,7 +2519,6 @@ input[type="range"] {
   }
 
   .mobile-continue-share {
-    grid-column: 1 / -1;
     color: #fff !important;
     border: 1px solid #f25591 !important;
     background: linear-gradient(
