@@ -1,5 +1,17 @@
 "use strict";
 
+const SUPABASE_URL =
+  "https://csmgesdhgzdrntjpxqcq.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+  "sb_publishable_zdxT2sd3b5g56lPCagdzmQ_EnxraVoX";
+
+const nohaSupabase =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
