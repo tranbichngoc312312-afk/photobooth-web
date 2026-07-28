@@ -64,6 +64,21 @@ const accountGateTitle =
 const accountGateMessage =
   $("#accountGateMessage");
 
+const appShell =
+  $(".app-shell");
+
+const momentsScreen =
+  $("#momentsScreen");
+
+const messagesScreen =
+  $("#messagesScreen");
+
+const momentCommentInput =
+  $("#momentCommentInput");
+
+const chatComposerInput =
+  $("#chatComposerInput");
+
 const layoutSelect = $("#layoutSelect");
 const countdownSelect = $("#countdownSelect");
 const intervalSelect = $("#intervalSelect");
@@ -144,6 +159,7 @@ let toastTimer = null;
 let audioContext = null;
 let previewRenderTimer = 0;
 let compositeRenderToken = 0;
+let pendingShareAction = null;
 
 function wait(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -2508,6 +2524,12 @@ async function openEditorScreen() {
       );
     });
 
+  momentsScreen.hidden = true;
+  messagesScreen.hidden = true;
+  messagesScreen.classList.remove("chat-open");
+  appShell.classList.remove("social-mode");
+  setActiveNavigation("capture");
+
   shareScreen.hidden = true;
   editorScreen.hidden = false;
 
@@ -2567,6 +2589,11 @@ function updateSharePreview() {
       "image/jpeg",
       0.86
     );
+
+  sharePreviewImage.dataset.ready =
+    "true";
+
+  syncLatestPhotoboothPreview();
 }
 
 async function openPostCaptureScreen() {
@@ -2580,6 +2607,11 @@ async function openPostCaptureScreen() {
   }
 
   updateSharePreview();
+
+  momentsScreen.hidden = true;
+  messagesScreen.hidden = true;
+  appShell.classList.remove("social-mode");
+  setActiveNavigation("capture");
 
   editorScreen.hidden = true;
   shareScreen.hidden = false;
@@ -2600,7 +2632,116 @@ function openEditorFromShare() {
   });
 }
 
+function setActiveNavigation(view) {
+  $$("[data-app-view]").forEach(button => {
+    const isActive =
+      button.dataset.appView === view;
+
+    button.classList.toggle(
+      "active",
+      isActive
+    );
+
+    if (isActive) {
+      button.setAttribute(
+        "aria-current",
+        "page"
+      );
+    } else {
+      button.removeAttribute(
+        "aria-current"
+      );
+    }
+  });
+}
+
+function hideCaptureFlow() {
+  document
+    .querySelectorAll(".capture-view")
+    .forEach(element => {
+      element.classList.add(
+        "screen-hidden"
+      );
+    });
+
+  editorScreen.hidden = true;
+  shareScreen.hidden = true;
+}
+
+function syncLatestPhotoboothPreview() {
+  const source =
+    sharePreviewImage
+      ?.dataset.ready === "true"
+      ? sharePreviewImage.src
+      : "";
+
+  $$("[data-latest-photobooth]")
+    .forEach(image => {
+      if (!source) {
+        image.hidden = true;
+        image.removeAttribute("src");
+        return;
+      }
+
+      image.src = source;
+      image.hidden = false;
+    });
+}
+
+function openSocialScreen(view) {
+  const showMoments =
+    view === "moments";
+
+  hideCaptureFlow();
+
+  momentsScreen.hidden =
+    !showMoments;
+
+  messagesScreen.hidden =
+    showMoments;
+
+  if (showMoments) {
+    messagesScreen.classList.remove(
+      "chat-open"
+    );
+  }
+
+  appShell.classList.add("social-mode");
+  setActiveNavigation(view);
+  syncLatestPhotoboothPreview();
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+function completePendingShareAction(
+  action = pendingShareAction
+) {
+  if (!action) {
+    return;
+  }
+
+  pendingShareAction = null;
+
+  if (action === "private") {
+    openSocialScreen("messages");
+    showToast(
+      "Đã mở Tin nhắn với bộ ảnh sẵn sàng gửi."
+    );
+    return;
+  }
+
+  openSocialScreen("moments");
+  showToast(
+    "Đã mở bản xem trước Khoảnh Khắc."
+  );
+}
+
 function showAccountGate(action) {
+  pendingShareAction = action;
+
   const isPrivate =
     action === "private";
 
@@ -2620,6 +2761,13 @@ function showAccountGate(action) {
 function openCaptureScreen() {
   editorScreen.hidden = true;
   shareScreen.hidden = true;
+  momentsScreen.hidden = true;
+  messagesScreen.hidden = true;
+  messagesScreen.classList.remove(
+    "chat-open"
+  );
+  appShell.classList.remove("social-mode");
+  setActiveNavigation("capture");
 
   document
     .querySelectorAll(".capture-view")
@@ -2634,6 +2782,332 @@ function openCaptureScreen() {
     behavior: "smooth"
   });
 }
+
+function filterSocialItems(
+  input,
+  itemSelector,
+  textSelector
+) {
+  const query =
+    input.value
+      .trim()
+      .toLocaleLowerCase("vi");
+
+  $$(itemSelector).forEach(item => {
+    const text =
+      $(textSelector, item)
+        ?.textContent
+        .toLocaleLowerCase("vi") || "";
+
+    item.hidden =
+      Boolean(query) &&
+      !text.includes(query);
+  });
+}
+
+function addMomentComment(text) {
+  const list =
+    $("#momentCommentList");
+
+  const article =
+    document.createElement("article");
+
+  article.className = "moment-comment";
+
+  const avatar =
+    document.createElement("span");
+
+  avatar.className =
+    "social-avatar avatar-user";
+
+  avatar.textContent = "B";
+
+  const content =
+    document.createElement("div");
+
+  const name =
+    document.createElement("strong");
+
+  name.textContent = "Bạn";
+
+  const time =
+    document.createElement("small");
+
+  time.textContent = "Vừa xong";
+
+  const message =
+    document.createElement("p");
+
+  message.textContent = text;
+
+  content.append(
+    name,
+    time,
+    message
+  );
+
+  const likeButton =
+    document.createElement("button");
+
+  likeButton.type = "button";
+  likeButton.textContent = "♥ 0";
+  likeButton.setAttribute(
+    "aria-label",
+    "Thích bình luận"
+  );
+
+  article.append(
+    avatar,
+    content,
+    likeButton
+  );
+
+  list.append(article);
+  article.scrollIntoView({
+    behavior: "smooth",
+    block: "nearest"
+  });
+}
+
+function addChatMessage(text) {
+  const list =
+    $("#chatMessageList");
+
+  const row =
+    document.createElement("div");
+
+  row.className = "message-row sent";
+
+  const message =
+    document.createElement("p");
+
+  message.textContent = text;
+
+  const time =
+    document.createElement("time");
+
+  time.textContent =
+    new Intl.DateTimeFormat(
+      "vi-VN",
+      {
+        hour: "2-digit",
+        minute: "2-digit"
+      }
+    ).format(new Date()) + " ✓";
+
+  row.append(message, time);
+  list.append(row);
+  list.scrollTop = list.scrollHeight;
+}
+
+function bindSocialEvents() {
+  $$("[data-app-view]")
+    .forEach(button => {
+      button.addEventListener(
+        "click",
+        () => {
+          const view =
+            button.dataset.appView;
+
+          if (view === "capture") {
+            openCaptureScreen();
+          } else {
+            openSocialScreen(view);
+          }
+        }
+      );
+    });
+
+  $("#momentFriendSearch")
+    ?.addEventListener(
+      "input",
+      event => {
+        filterSocialItems(
+          event.currentTarget,
+          ".moment-friend",
+          "strong"
+        );
+      }
+    );
+
+  $("#conversationSearch")
+    ?.addEventListener(
+      "input",
+      event => {
+        filterSocialItems(
+          event.currentTarget,
+          ".conversation-item",
+          "strong"
+        );
+      }
+    );
+
+  $$(".moment-friend")
+    .forEach(friend => {
+      friend.addEventListener(
+        "click",
+        () => {
+          $$(".moment-friend")
+            .forEach(item => {
+              item.classList.remove(
+                "active"
+              );
+            });
+
+          friend.classList.add("active");
+
+          $("#activeMomentName")
+            .textContent =
+              friend.dataset.person;
+        }
+      );
+    });
+
+  $("#momentLikeButton")
+    ?.addEventListener(
+      "click",
+      event => {
+        const button =
+          event.currentTarget;
+
+        const isLiked =
+          button.classList.toggle(
+            "liked"
+          );
+
+        button.setAttribute(
+          "aria-pressed",
+          String(isLiked)
+        );
+
+        $("#momentLikeCount")
+          .textContent =
+            isLiked ? "129" : "128";
+      }
+    );
+
+  $("#focusCommentButton")
+    ?.addEventListener(
+      "click",
+      () => {
+        momentCommentInput?.focus();
+      }
+    );
+
+  $("#shareMomentButton")
+    ?.addEventListener(
+      "click",
+      () => {
+        openSocialScreen("messages");
+        showToast(
+          "Chọn một người bạn để gửi Khoảnh Khắc."
+        );
+      }
+    );
+
+  $("#momentCommentForm")
+    ?.addEventListener(
+      "submit",
+      event => {
+        event.preventDefault();
+
+        const text =
+          momentCommentInput.value.trim();
+
+        if (!text) {
+          return;
+        }
+
+        addMomentComment(text);
+        momentCommentInput.value = "";
+      }
+    );
+
+  $("#uploadMomentButton")
+    ?.addEventListener(
+      "click",
+      () => showToast(
+        "Tải ảnh/video thường sẽ được kết nối ở bước dữ liệu tiếp theo."
+      )
+    );
+
+  $$(".conversation-item")
+    .forEach(item => {
+      item.addEventListener(
+        "click",
+        () => {
+          $$(".conversation-item")
+            .forEach(conversation => {
+              conversation.classList.remove(
+                "active"
+              );
+            });
+
+          item.classList.add("active");
+
+          const name =
+            item.dataset.chatName;
+
+          $("#activeChatName")
+            .textContent = name;
+
+          $("#chatDetailName")
+            .textContent = name;
+
+          messagesScreen.classList.add(
+            "chat-open"
+          );
+        }
+      );
+    });
+
+  $("#mobileChatBackButton")
+    ?.addEventListener(
+      "click",
+      () => {
+        messagesScreen.classList.remove(
+          "chat-open"
+        );
+      }
+    );
+
+  $("#chatComposerForm")
+    ?.addEventListener(
+      "submit",
+      event => {
+        event.preventDefault();
+
+        const text =
+          chatComposerInput.value.trim();
+
+        if (!text) {
+          return;
+        }
+
+        addChatMessage(text);
+        chatComposerInput.value = "";
+      }
+    );
+
+  $("#attachPhotoboothButton")
+    ?.addEventListener(
+      "click",
+      () => {
+        if (!sharePreviewImage?.src) {
+          showToast(
+            "Hãy chụp và trang trí một bộ ảnh trước."
+          );
+          return;
+        }
+
+        syncLatestPhotoboothPreview();
+        showToast(
+          "Bộ photobooth đã sẵn sàng trong cuộc trò chuyện."
+        );
+      }
+    );
+}
+
 function bindEvents() {
 
   nextToEditorButton?.addEventListener(
@@ -3165,6 +3639,8 @@ async function init() {
     /* Luôn bắt đầu ở màn hình chụp ảnh */
   editorScreen.hidden = true;
   shareScreen.hidden = true;
+  momentsScreen.hidden = true;
+  messagesScreen.hidden = true;
 
   document
     .querySelectorAll(".capture-view")
@@ -3173,6 +3649,7 @@ async function init() {
     });
   bindOptionButtons();
   bindEvents();
+  bindSocialEvents();
   setupMobileEditorTools();
   renderSlots();
   updateVideoPreviewFilter();
@@ -3284,6 +3761,8 @@ init();
       showToast(
         "Đăng nhập NoHa thành công."
       );
+
+      completePendingShareAction();
     } catch (error) {
       setStatus(
         friendlyError(error),
@@ -3328,6 +3807,8 @@ init();
         showToast(
           "Tài khoản NoHa đã được tạo."
         );
+
+        completePendingShareAction();
       } else {
         setStatus(
           "Đã gửi email xác nhận. Hãy mở email và bấm liên kết xác nhận."
@@ -3362,6 +3843,8 @@ init();
 
   showAccountGate =
     async function (action) {
+      pendingShareAction = action;
+
       const isPrivate =
         action === "private";
 
@@ -3377,19 +3860,8 @@ init();
         currentUser &&
         !currentUser.is_anonymous
       ) {
-        form.hidden = true;
-
-        accountGateTitle.textContent =
-          "Tài khoản NoHa đã sẵn sàng";
-
-        accountGateMessage.textContent =
-          `Bạn đang đăng nhập bằng ${
-            currentUser.email || "NoHa"
-          }. ${
-            isPrivate
-              ? "Gửi bạn"
-              : "Khoảnh Khắc"
-          } sẽ được kết nối ở bước tiếp theo.`;
+        completePendingShareAction(action);
+        return;
       } else {
         form.hidden = false;
 

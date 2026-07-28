@@ -27,7 +27,7 @@
   rel="stylesheet"
 >
 
-<link rel="stylesheet" href="style.css?v=20260727-share02">
+<link rel="stylesheet" href="style.css?v=20260727-social01">
 </head>
 
 <body>
@@ -50,6 +50,36 @@
       </span>
     </a>
 
+    <nav class="main-nav" aria-label="Điều hướng chính">
+      <button
+        class="main-nav-item active"
+        type="button"
+        data-app-view="capture"
+        aria-current="page"
+      >
+        <span aria-hidden="true">▣</span>
+        Chụp
+      </button>
+
+      <button
+        class="main-nav-item"
+        type="button"
+        data-app-view="moments"
+      >
+        <span aria-hidden="true">♡</span>
+        Khoảnh khắc
+      </button>
+
+      <button
+        class="main-nav-item"
+        type="button"
+        data-app-view="messages"
+      >
+        <span aria-hidden="true">○</span>
+        Tin nhắn
+      </button>
+    </nav>
+
     <div class="header-actions">
 
       <button
@@ -68,6 +98,16 @@
         title="Âm thanh"
       >
         🔊
+      </button>
+
+      <button
+        class="header-profile-button"
+        type="button"
+        data-app-view="messages"
+        aria-label="Mở trang cá nhân và tin nhắn"
+        title="Tài khoản NoHa"
+      >
+        <span>NH</span>
       </button>
 
     </div>
@@ -963,6 +1003,7 @@
           <div class="share-preview-frame">
             <img
               id="sharePreviewImage"
+              src="noha-icon.png?v=3"
               alt="Ảnh Photobooth vừa hoàn thành"
             >
           </div>
@@ -973,7 +1014,7 @@
           </p>
         </article>
 
-        <div class="share-options" aria-label="Cách sử dụng khoảnh khắc">
+        <div class="share-options" role="group" aria-label="Cách sử dụng khoảnh khắc">
 
           <button
             id="sendPrivateButton"
@@ -1004,7 +1045,567 @@
       </div>
     </section>
 
+    <!-- Khoảnh khắc -->
+    <section
+      id="momentsScreen"
+      class="social-screen moments-screen"
+      aria-labelledby="momentsTitle"
+      hidden
+    >
+      <aside
+        class="moments-friends-panel social-panel"
+        aria-label="Danh sách khoảnh khắc của bạn bè"
+      >
+        <div class="social-panel-heading">
+          <div>
+            <p class="social-kicker">BẠN BÈ</p>
+            <h2 id="momentsTitle">Khoảnh khắc mới</h2>
+          </div>
+
+          <button
+            class="round-action-button"
+            type="button"
+            data-app-view="capture"
+            aria-label="Chụp bộ ảnh mới"
+            title="Chụp bộ ảnh mới"
+          >
+            +
+          </button>
+        </div>
+
+        <label class="social-search">
+          <span aria-hidden="true">⌕</span>
+          <input
+            id="momentFriendSearch"
+            type="search"
+            placeholder="Tìm bạn bè"
+            autocomplete="off"
+          >
+        </label>
+
+        <div
+          class="moment-friend-list"
+        >
+          <button class="moment-friend active" type="button" data-person="Linh Chi">
+            <span class="social-avatar avatar-linh">LC</span>
+            <span>
+              <strong>Linh Chi</strong>
+              <small>2 giờ trước</small>
+            </span>
+            <i aria-hidden="true"></i>
+          </button>
+
+          <button class="moment-friend" type="button" data-person="Mai Anh">
+            <span class="social-avatar avatar-mai">MA</span>
+            <span>
+              <strong>Mai Anh</strong>
+              <small>3 giờ trước</small>
+            </span>
+            <i aria-hidden="true"></i>
+          </button>
+
+          <button class="moment-friend" type="button" data-person="Tuấn Anh">
+            <span class="social-avatar avatar-tuan">TA</span>
+            <span>
+              <strong>Tuấn Anh</strong>
+              <small>5 giờ trước</small>
+            </span>
+            <i aria-hidden="true"></i>
+          </button>
+
+          <button class="moment-friend" type="button" data-person="Khánh Ly">
+            <span class="social-avatar avatar-ly">KL</span>
+            <span>
+              <strong>Khánh Ly</strong>
+              <small>1 ngày trước</small>
+            </span>
+            <i aria-hidden="true"></i>
+          </button>
+
+          <button class="moment-friend" type="button" data-person="Minh Đức">
+            <span class="social-avatar avatar-duc">MĐ</span>
+            <span>
+              <strong>Minh Đức</strong>
+              <small>1 ngày trước</small>
+            </span>
+            <i aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <div class="moment-list-tabs" role="tablist" aria-label="Loại khoảnh khắc">
+          <button class="active" type="button" role="tab" aria-selected="true">
+            Bạn bè
+          </button>
+          <button type="button" role="tab" aria-selected="false">
+            Của tôi
+          </button>
+        </div>
+      </aside>
+
+      <section
+        class="moment-stage social-panel"
+        aria-label="Khoảnh khắc đang xem"
+      >
+        <article class="moment-post">
+          <header class="moment-post-header">
+            <div class="social-person">
+              <span class="social-avatar avatar-linh">LC</span>
+              <span>
+                <strong id="activeMomentName">Linh Chi</strong>
+                <small>2 giờ trước</small>
+              </span>
+            </div>
+
+            <button
+              class="plain-icon-button"
+              type="button"
+              aria-label="Tùy chọn khoảnh khắc"
+            >
+              ⋮
+            </button>
+          </header>
+
+          <div class="moment-content-row">
+            <button
+              class="moment-arrow"
+              type="button"
+              aria-label="Khoảnh khắc trước"
+            >
+              ‹
+            </button>
+
+            <div
+              class="moment-photobooth"
+              role="img"
+              aria-label="Bộ ảnh photobooth của Linh Chi"
+            >
+              <div class="moment-brand-line">
+                <span></span>
+                <img src="noha-icon.png?v=3" alt="">
+                <strong>NoHa</strong>
+                <span></span>
+              </div>
+
+              <div class="moment-photo-grid">
+                <div class="moment-shot shot-one"><span>✿</span></div>
+                <div class="moment-shot shot-two"><span>♡</span></div>
+                <div class="moment-shot shot-three"><span>✦</span></div>
+                <div class="moment-shot shot-four"><span>☻</span></div>
+                <img
+                  class="latest-photobooth-image"
+                  data-latest-photobooth
+                  src="noha-icon.png?v=3"
+                  alt="Bộ ảnh photobooth vừa hoàn thành"
+                  hidden
+                >
+              </div>
+
+              <img class="moment-flower-signature" src="noha-icon.png?v=3" alt="">
+            </div>
+
+            <div
+              class="moment-actions"
+              role="group"
+              aria-label="Tương tác khoảnh khắc"
+            >
+              <button id="momentLikeButton" type="button" aria-pressed="false">
+                <span>♡</span>
+                <strong id="momentLikeCount">128</strong>
+                <small>Thích</small>
+              </button>
+
+              <button id="focusCommentButton" type="button">
+                <span>○</span>
+                <strong>36</strong>
+                <small>Bình luận</small>
+              </button>
+
+              <button id="shareMomentButton" type="button">
+                <span>⌁</span>
+                <strong>Gửi</strong>
+                <small>Bạn bè</small>
+              </button>
+
+              <div class="moment-view-count">
+                <span>◉</span>
+                <strong>1.2K</strong>
+                <small>Người xem</small>
+              </div>
+            </div>
+          </div>
+
+          <p class="moment-caption">
+            Một ngày thật đẹp cùng bestie 🌸
+          </p>
+
+          <div
+            class="moment-pagination"
+            role="group"
+            aria-label="Vị trí khoảnh khắc"
+          >
+            <span></span><span class="active"></span><span></span>
+            <strong>3 / 12</strong>
+          </div>
+        </article>
+      </section>
+
+      <aside
+        class="moment-comments-panel social-panel"
+        aria-label="Bình luận và người xem"
+      >
+        <h2>Bình luận</h2>
+
+        <div id="momentCommentList" class="moment-comment-list">
+          <article class="moment-comment">
+            <span class="social-avatar avatar-mai">MA</span>
+            <div>
+              <strong>Mai Anh</strong>
+              <small>2 giờ trước</small>
+              <p>Xinh quá đi mất! 💖</p>
+            </div>
+            <button type="button" aria-label="Thích bình luận">♥ 2</button>
+          </article>
+
+          <article class="moment-comment">
+            <span class="social-avatar avatar-tuan">TA</span>
+            <div>
+              <strong>Tuấn Anh</strong>
+              <small>2 giờ trước</small>
+              <p>Đáng iu xỉu luôn á 😍</p>
+            </div>
+            <button type="button" aria-label="Thích bình luận">♥ 1</button>
+          </article>
+
+          <article class="moment-comment">
+            <span class="social-avatar avatar-ly">KL</span>
+            <div>
+              <strong>Khánh Ly</strong>
+              <small>1 giờ trước</small>
+              <p>Xin vía chụp đẹp như này ạ 🥰</p>
+            </div>
+            <button type="button" aria-label="Thích bình luận">♥ 1</button>
+          </article>
+        </div>
+
+        <form id="momentCommentForm" class="social-compose-form">
+          <span class="social-avatar avatar-user">B</span>
+          <input
+            id="momentCommentInput"
+            type="text"
+            placeholder="Viết bình luận..."
+            aria-label="Nội dung bình luận"
+            maxlength="180"
+          >
+          <button type="submit" aria-label="Gửi bình luận">➤</button>
+        </form>
+
+        <div class="moment-viewers">
+          <strong>Người đã xem</strong>
+          <div>
+            <span class="social-avatar avatar-linh">LC</span>
+            <span class="social-avatar avatar-mai">MA</span>
+            <span class="social-avatar avatar-tuan">TA</span>
+            <span class="social-avatar avatar-ly">KL</span>
+            <span class="viewer-more">+24</span>
+          </div>
+        </div>
+
+        <button
+          class="primary-button social-primary-action"
+          type="button"
+          data-app-view="capture"
+        >
+          ▣ Chụp bộ mới
+        </button>
+
+        <button
+          id="uploadMomentButton"
+          class="secondary-button social-secondary-action"
+          type="button"
+        >
+          ⇧ Đăng ảnh/video
+        </button>
+      </aside>
+    </section>
+
+    <!-- Tin nhắn -->
+    <section
+      id="messagesScreen"
+      class="social-screen messages-screen"
+      aria-labelledby="messagesTitle"
+      hidden
+    >
+      <aside
+        class="conversation-panel social-panel"
+        aria-label="Danh sách cuộc trò chuyện"
+      >
+        <label class="social-search">
+          <span aria-hidden="true">⌕</span>
+          <input
+            id="conversationSearch"
+            type="search"
+            placeholder="Tìm bạn bè"
+            autocomplete="off"
+          >
+        </label>
+
+        <div class="recent-friends-heading">
+          <strong>Bạn bè gần đây</strong>
+          <button type="button">Xem tất cả</button>
+        </div>
+
+        <div class="recent-friends">
+          <button type="button">
+            <span class="social-avatar avatar-linh">LC</span>
+            <small>Linh Chi</small>
+          </button>
+          <button type="button">
+            <span class="social-avatar avatar-mai">MA</span>
+            <small>Mai Anh</small>
+          </button>
+          <button type="button">
+            <span class="social-avatar avatar-tuan">TA</span>
+            <small>Tuấn Anh</small>
+          </button>
+          <button type="button">
+            <span class="social-avatar avatar-ly">KL</span>
+            <small>Khánh Ly</small>
+          </button>
+        </div>
+
+        <h2 id="messagesTitle">Tin nhắn</h2>
+
+        <div class="conversation-list">
+          <button class="conversation-item active" type="button" data-chat-name="Linh Chi">
+            <span class="conversation-thumb photo-thumb-pink">✿</span>
+            <span>
+              <strong>Linh Chi</strong>
+              <small>Bạn: Đẹp quá đi mất! 😍</small>
+            </span>
+            <span>
+              <time>2 phút</time>
+              <b>2</b>
+            </span>
+          </button>
+
+          <button class="conversation-item" type="button" data-chat-name="Mai Anh">
+            <span class="conversation-thumb photo-thumb-peach">♡</span>
+            <span>
+              <strong>Mai Anh</strong>
+              <small>Xin vía chụp đẹp như này 🥰</small>
+            </span>
+            <span><time>15 phút</time><i></i></span>
+          </button>
+
+          <button class="conversation-item" type="button" data-chat-name="Tuấn Anh">
+            <span class="conversation-thumb photo-thumb-blue">✦</span>
+            <span>
+              <strong>Tuấn Anh</strong>
+              <small>Bạn: Đáng iu xỉu luôn á 😍</small>
+            </span>
+            <span><time>1 giờ</time><i></i></span>
+          </button>
+
+          <button class="conversation-item" type="button" data-chat-name="Khánh Ly">
+            <span class="conversation-thumb photo-thumb-cream">☻</span>
+            <span>
+              <strong>Khánh Ly</strong>
+              <small>Hẹn tuần sau nhaaa 🌸</small>
+            </span>
+            <span><time>3 giờ</time></span>
+          </button>
+
+          <button class="conversation-item" type="button" data-chat-name="Minh Đức">
+            <span class="conversation-thumb photo-thumb-purple">♧</span>
+            <span>
+              <strong>Minh Đức</strong>
+              <small>Bạn: Okiii 🫶</small>
+            </span>
+            <span><time>5 giờ</time></span>
+          </button>
+        </div>
+      </aside>
+
+      <section
+        class="chat-panel social-panel"
+        aria-label="Cuộc trò chuyện đang mở"
+      >
+        <header class="chat-header">
+          <button
+            id="mobileChatBackButton"
+            class="mobile-chat-back"
+            type="button"
+            aria-label="Quay lại danh sách tin nhắn"
+          >
+            ‹
+          </button>
+
+          <span class="social-avatar avatar-linh">LC<i></i></span>
+          <span>
+            <strong id="activeChatName">Linh Chi</strong>
+            <small>Đang hoạt động</small>
+          </span>
+
+          <div>
+            <button type="button" aria-label="Tìm trong cuộc trò chuyện">⌕</button>
+            <button type="button" aria-label="Gọi thoại">⌕</button>
+            <button type="button" aria-label="Gọi video">▣</button>
+            <button type="button" aria-label="Tùy chọn">•••</button>
+          </div>
+        </header>
+
+        <div id="chatMessageList" class="chat-message-list">
+          <article class="chat-shared-photobooth">
+            <div class="chat-photobooth-card">
+              <div class="moment-brand-line">
+                <span></span>
+                <img src="noha-icon.png?v=3" alt="">
+                <strong>NoHa</strong>
+                <span></span>
+              </div>
+              <div class="mini-photo-grid">
+                <div class="moment-shot shot-one"></div>
+                <div class="moment-shot shot-two"></div>
+                <div class="moment-shot shot-three"></div>
+                <div class="moment-shot shot-four"></div>
+                <img
+                  class="latest-photobooth-image"
+                  data-latest-photobooth
+                  src="noha-icon.png?v=3"
+                  alt="Bộ ảnh photobooth vừa hoàn thành"
+                  hidden
+                >
+              </div>
+            </div>
+            <button type="button" aria-label="Chia sẻ bộ ảnh">⌁</button>
+            <span class="message-reaction">😍 2</span>
+          </article>
+
+          <article class="chat-video-card">
+            <div class="chat-video-preview">
+              <span>▶</span>
+              <time>0:03</time>
+            </div>
+            <div>
+              <strong>Video recap 3 giây</strong>
+              <small>NoHa · 3 giây</small>
+            </div>
+            <button type="button" aria-label="Phát video">▶</button>
+          </article>
+
+          <div class="message-row sent">
+            <p>Đẹp quá đi mất! 😍</p>
+            <time>14:32 ✓✓</time>
+          </div>
+
+          <div class="message-row received">
+            <span class="social-avatar avatar-linh">LC</span>
+            <p>Hihi cảm ơn cậu nhaaa 🥰</p>
+            <time>14:33</time>
+          </div>
+
+          <div class="message-row sent">
+            <p>Mai mình chụp thêm bộ nữa nhaaa 🌸💕</p>
+            <time>14:34 ✓✓</time>
+          </div>
+        </div>
+
+        <form id="chatComposerForm" class="chat-composer">
+          <img src="noha-icon.png?v=3" alt="">
+          <div class="chat-composer-field">
+            <input
+              id="chatComposerInput"
+              type="text"
+              placeholder="Nhắn tin..."
+              aria-label="Nội dung tin nhắn"
+              maxlength="500"
+            >
+            <button id="attachPhotoboothButton" type="button" aria-label="Gửi ảnh photobooth">▣</button>
+            <button type="button" aria-label="Chọn biểu tượng cảm xúc">☺</button>
+          </div>
+          <button type="submit" aria-label="Gửi tin nhắn">➤</button>
+        </form>
+      </section>
+
+      <aside
+        class="chat-detail-panel social-panel"
+        aria-label="Thông tin cuộc trò chuyện"
+      >
+        <div class="chat-profile">
+          <span class="social-avatar avatar-linh">LC</span>
+          <h2 id="chatDetailName">Linh Chi</h2>
+          <p>Đang hoạt động</p>
+        </div>
+
+        <div class="chat-quick-actions">
+          <button type="button"><span>♙</span><small>Trang cá nhân</small></button>
+          <button type="button"><span>♧</span><small>Tắt thông báo</small></button>
+          <button type="button"><span>⌕</span><small>Tìm kiếm</small></button>
+          <button type="button"><span>◉</span><small>Chủ đề</small></button>
+        </div>
+
+        <div class="shared-memories">
+          <div>
+            <strong>Kỷ niệm chung</strong>
+            <button type="button" aria-label="Xem tất cả kỷ niệm">›</button>
+          </div>
+          <div class="memory-grid">
+            <div class="moment-shot shot-one"></div>
+            <div class="moment-shot shot-two"></div>
+            <div class="moment-shot shot-three"></div>
+            <div class="moment-shot shot-four"></div>
+            <div class="moment-shot shot-two"></div>
+            <div class="memory-more">+12</div>
+          </div>
+        </div>
+
+        <div class="chat-viewers">
+          <strong>Người đã xem</strong>
+          <div>
+            <span class="social-avatar avatar-mai">MA</span>
+            <span class="social-avatar avatar-tuan">TA</span>
+            <span class="social-avatar avatar-ly">KL</span>
+            <span class="viewer-more">+18</span>
+          </div>
+        </div>
+
+        <div class="friend-streak">
+          <span>🔥 Chuỗi ngày thân thiết</span>
+          <strong>12 <small>ngày</small></strong>
+          <i><b></b></i>
+        </div>
+
+        <button
+          class="primary-button social-primary-action"
+          type="button"
+          data-app-view="capture"
+        >
+          🎁 Gửi bộ photobooth
+        </button>
+
+        <div class="media-shortcuts">
+          <button type="button">▣ Ảnh</button>
+          <button type="button">▶ Video</button>
+        </div>
+      </aside>
+    </section>
+
   </main>
+
+  <nav class="mobile-bottom-nav" aria-label="Điều hướng chính trên điện thoại">
+    <button class="active" type="button" data-app-view="capture" aria-current="page">
+      <span>▣</span>
+      Chụp
+    </button>
+    <button type="button" data-app-view="moments">
+      <span>♡</span>
+      Khoảnh khắc
+    </button>
+    <button type="button" data-app-view="messages">
+      <span>○</span>
+      Tin nhắn
+    </button>
+  </nav>
 
   <!-- Canvas xử lý ảnh -->
   <canvas id="captureCanvas" hidden></canvas>
@@ -1129,7 +1730,7 @@
   ></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js?v=20260727-auth02"></script>
+<script src="script.js?v=20260727-social01"></script>
 
 </body>
 </html>
