@@ -95,6 +95,13 @@
       return "Thông tin này đã tồn tại.";
     }
 
+    if (
+      error?.code === "23514" &&
+      message.includes("username")
+    ) {
+      return "Tên hiển thị cần từ 2–40 ký tự.";
+    }
+
     if (message.includes("row-level security")) {
       return "Tài khoản chưa có quyền thực hiện thao tác này.";
     }
@@ -394,14 +401,20 @@
       $social("#friendSearchResults");
 
     results.innerHTML =
-      '<p class="social-empty">Đang tìm…</p>';
+      '<p class="social-empty">Đang tải tài khoản…</p>';
 
-    const { data, error } = await client
+    let request = client
       .from("profiles")
       .select("id, username, avatar_url")
-      .ilike("username", `%${query}%`)
       .neq("id", state.user.id)
-      .limit(20);
+      .order("username", { ascending: true })
+      .limit(100);
+
+    if (query) {
+      request = request.ilike("username", `%${query}%`);
+    }
+
+    const { data, error } = await request;
 
     if (error) throw error;
 
@@ -427,7 +440,11 @@
 
           return friendCard(profile, action);
         }).join("")
-      : '<p class="social-empty">Không tìm thấy tài khoản phù hợp.</p>';
+      : `<p class="social-empty">${
+          query
+            ? "Không tìm thấy tài khoản phù hợp."
+            : "Chưa có tài khoản NoHa nào khác."
+        }</p>`;
 
     bindFriendActionButtons();
   }
@@ -449,8 +466,8 @@
     }
 
     setProfileStatus("Đã gửi lời mời kết bạn.");
-    $social("#friendSearchResults").innerHTML = "";
     await loadFriends();
+    await refreshProfileDirectory();
   }
 
   async function acceptFriendRequest(requestId) {
@@ -466,6 +483,7 @@
 
     setProfileStatus("Đã thêm bạn mới.");
     await loadFriends();
+    await refreshProfileDirectory();
   }
 
   async function deleteFriendship(friendshipId) {
@@ -481,6 +499,13 @@
 
     setProfileStatus("Đã cập nhật danh sách bạn bè.");
     await loadFriends();
+    await refreshProfileDirectory();
+  }
+
+  async function refreshProfileDirectory() {
+    const query =
+      $social("#friendSearchInput")?.value.trim() || "";
+    await searchProfiles(query);
   }
 
   async function saveProfile(event) {
@@ -519,6 +544,7 @@
 
     try {
       await Promise.all([loadProfile(), loadFriends()]);
+      await refreshProfileDirectory();
       setProfileStatus("");
       if (!profileDialog.open) profileDialog.showModal();
     } catch (error) {
@@ -1459,7 +1485,6 @@
       ?.addEventListener("submit", async event => {
         event.preventDefault();
         const query = $social("#friendSearchInput").value.trim();
-        if (query.length < 2) return;
 
         try {
           await searchProfiles(query);
