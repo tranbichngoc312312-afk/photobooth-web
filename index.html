@@ -27,7 +27,7 @@
   rel="stylesheet"
 >
 
-<link rel="stylesheet" href="style.css?v=20260801-auth03">
+<link rel="stylesheet" href="style.css?v=20260801-social02">
 </head>
 
 <body>
@@ -101,10 +101,10 @@
       </button>
 
       <button
+        id="headerProfileButton"
         class="header-profile-button"
         type="button"
-        data-app-view="messages"
-        aria-label="Mở trang cá nhân và tin nhắn"
+        aria-label="Mở tài khoản NoHa"
         title="Tài khoản NoHa"
       >
         <span>NH</span>
@@ -1009,8 +1009,8 @@
           </div>
 
           <p>
-            🔒 Bản thử nghiệm vẫn xử lý ảnh ngay trên thiết bị,
-            chưa tải ảnh lên máy chủ.
+            🔒 Ảnh chỉ được tải lên sau khi bạn chọn người nhận
+            hoặc xác nhận đăng Khoảnh Khắc.
           </p>
         </article>
 
@@ -1025,7 +1025,7 @@
             <span>
               <strong>Gửi bạn</strong>
               <small>Gửi riêng cho một hoặc nhiều người bạn.</small>
-              <em>Cần đăng nhập · Bản giao diện</em>
+              <em>Cần đăng nhập</em>
             </span>
           </button>
 
@@ -1038,7 +1038,7 @@
             <span>
               <strong>Đăng Khoảnh Khắc</strong>
               <small>Chia sẻ lên bảng tin chỉ dành cho bạn bè.</small>
-              <em>Cần đăng nhập · Bản giao diện</em>
+              <em>Cần đăng nhập</em>
             </span>
           </button>
         </div>
@@ -1133,10 +1133,10 @@
         </div>
 
         <div class="moment-list-tabs" role="tablist" aria-label="Loại khoảnh khắc">
-          <button class="active" type="button" role="tab" aria-selected="true">
+          <button class="active" type="button" role="tab" aria-selected="true" data-moment-scope="friends">
             Bạn bè
           </button>
-          <button type="button" role="tab" aria-selected="false">
+          <button type="button" role="tab" aria-selected="false" data-moment-scope="mine">
             Của tôi
           </button>
         </div>
@@ -1152,17 +1152,10 @@
               <span class="social-avatar avatar-linh">LC</span>
               <span>
                 <strong id="activeMomentName">Linh Chi</strong>
-                <small>2 giờ trước</small>
+                <small id="activeMomentTime">Vừa xong</small>
               </span>
             </div>
 
-            <button
-              class="plain-icon-button"
-              type="button"
-              aria-label="Tùy chọn khoảnh khắc"
-            >
-              ⋮
-            </button>
           </header>
 
           <div class="moment-content-row">
@@ -1203,6 +1196,14 @@
               <img class="moment-flower-signature" src="noha-icon.png?v=3" alt="">
             </div>
 
+            <button
+              class="moment-arrow"
+              type="button"
+              aria-label="Khoảnh khắc tiếp theo"
+            >
+              ›
+            </button>
+
             <div
               class="moment-actions"
               role="group"
@@ -1216,7 +1217,7 @@
 
               <button id="focusCommentButton" type="button">
                 <span>○</span>
-                <strong>36</strong>
+                <strong id="momentCommentCount">0</strong>
                 <small>Bình luận</small>
               </button>
 
@@ -1228,8 +1229,8 @@
 
               <div class="moment-view-count">
                 <span>◉</span>
-                <strong>1.2K</strong>
-                <small>Người xem</small>
+                <strong id="momentFeedCount">0</strong>
+                <small>Bài đăng</small>
               </div>
             </div>
           </div>
@@ -1238,13 +1239,8 @@
             Một ngày thật đẹp cùng bestie 🌸
           </p>
 
-          <div
-            class="moment-pagination"
-            role="group"
-            aria-label="Vị trí khoảnh khắc"
-          >
-            <span></span><span class="active"></span><span></span>
-            <strong>3 / 12</strong>
+          <div class="moment-pagination" aria-label="Vị trí khoảnh khắc">
+            <strong>0 / 0</strong>
           </div>
         </article>
       </section>
@@ -1299,17 +1295,6 @@
           <button type="submit" aria-label="Gửi bình luận">➤</button>
         </form>
 
-        <div class="moment-viewers">
-          <strong>Người đã xem</strong>
-          <div>
-            <span class="social-avatar avatar-linh">LC</span>
-            <span class="social-avatar avatar-mai">MA</span>
-            <span class="social-avatar avatar-tuan">TA</span>
-            <span class="social-avatar avatar-ly">KL</span>
-            <span class="viewer-more">+24</span>
-          </div>
-        </div>
-
         <button
           class="primary-button social-primary-action"
           type="button"
@@ -1323,8 +1308,15 @@
           class="secondary-button social-secondary-action"
           type="button"
         >
-          ⇧ Đăng ảnh/video
+          ⇧ Đăng ảnh
         </button>
+
+        <input
+          id="momentUploadInput"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          hidden
+        >
       </aside>
     </section>
 
@@ -1443,15 +1435,9 @@
           <span class="social-avatar avatar-linh">LC<i></i></span>
           <span>
             <strong id="activeChatName">Linh Chi</strong>
-            <small>Đang hoạt động</small>
+            <small id="activeChatStatus">Bạn bè trên NoHa</small>
           </span>
 
-          <div>
-            <button type="button" aria-label="Tìm trong cuộc trò chuyện">⌕</button>
-            <button type="button" aria-label="Gọi thoại">⌕</button>
-            <button type="button" aria-label="Gọi video">▣</button>
-            <button type="button" aria-label="Tùy chọn">•••</button>
-          </div>
         </header>
 
         <div id="chatMessageList" class="chat-message-list">
@@ -1521,10 +1507,17 @@
               maxlength="500"
             >
             <button id="attachPhotoboothButton" type="button" aria-label="Gửi ảnh photobooth">▣</button>
-            <button type="button" aria-label="Chọn biểu tượng cảm xúc">☺</button>
+            <button id="attachImageButton" type="button" aria-label="Gửi ảnh từ thiết bị">☺</button>
           </div>
           <button type="submit" aria-label="Gửi tin nhắn">➤</button>
         </form>
+
+        <input
+          id="chatFileInput"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          hidden
+        >
       </section>
 
       <aside
@@ -1534,45 +1527,7 @@
         <div class="chat-profile">
           <span class="social-avatar avatar-linh">LC</span>
           <h2 id="chatDetailName">Linh Chi</h2>
-          <p>Đang hoạt động</p>
-        </div>
-
-        <div class="chat-quick-actions">
-          <button type="button"><span>♙</span><small>Trang cá nhân</small></button>
-          <button type="button"><span>♧</span><small>Tắt thông báo</small></button>
-          <button type="button"><span>⌕</span><small>Tìm kiếm</small></button>
-          <button type="button"><span>◉</span><small>Chủ đề</small></button>
-        </div>
-
-        <div class="shared-memories">
-          <div>
-            <strong>Kỷ niệm chung</strong>
-            <button type="button" aria-label="Xem tất cả kỷ niệm">›</button>
-          </div>
-          <div class="memory-grid">
-            <div class="moment-shot shot-one"></div>
-            <div class="moment-shot shot-two"></div>
-            <div class="moment-shot shot-three"></div>
-            <div class="moment-shot shot-four"></div>
-            <div class="moment-shot shot-two"></div>
-            <div class="memory-more">+12</div>
-          </div>
-        </div>
-
-        <div class="chat-viewers">
-          <strong>Người đã xem</strong>
-          <div>
-            <span class="social-avatar avatar-mai">MA</span>
-            <span class="social-avatar avatar-tuan">TA</span>
-            <span class="social-avatar avatar-ly">KL</span>
-            <span class="viewer-more">+18</span>
-          </div>
-        </div>
-
-        <div class="friend-streak">
-          <span>🔥 Chuỗi ngày thân thiết</span>
-          <strong>12 <small>ngày</small></strong>
-          <i><b></b></i>
+          <p id="chatDetailStatus">Bạn bè trên NoHa</p>
         </div>
 
         <button
@@ -1583,10 +1538,6 @@
           🎁 Gửi bộ photobooth
         </button>
 
-        <div class="media-shortcuts">
-          <button type="button">▣ Ảnh</button>
-          <button type="button">▶ Video</button>
-        </div>
       </aside>
     </section>
 
@@ -1651,6 +1602,117 @@
       </li>
     </ol>
 
+  </dialog>
+
+  <dialog id="profileDialog" class="help-dialog profile-dialog">
+    <div class="dialog-heading">
+      <h2>Tài khoản NoHa</h2>
+      <button
+        id="closeProfileButton"
+        class="icon-button"
+        type="button"
+        aria-label="Đóng"
+      >
+        ✕
+      </button>
+    </div>
+
+    <p id="profileEmail" class="profile-email"></p>
+
+    <form id="profileForm" class="profile-form">
+      <label class="field">
+        <span>Tên hiển thị</span>
+        <input
+          id="profileUsernameInput"
+          type="text"
+          minlength="2"
+          maxlength="40"
+          required
+        >
+      </label>
+      <button class="primary-button" type="submit">
+        Lưu hồ sơ
+      </button>
+    </form>
+
+    <section class="friend-manager">
+      <h3>Tìm và kết bạn</h3>
+      <form id="friendSearchForm" class="friend-search-form">
+        <input
+          id="friendSearchInput"
+          type="search"
+          placeholder="Nhập tên người dùng"
+          minlength="2"
+          required
+        >
+        <button class="secondary-button" type="submit">Tìm</button>
+      </form>
+      <div id="friendSearchResults" class="friend-manager-list"></div>
+    </section>
+
+    <section class="friend-manager">
+      <h3>Lời mời kết bạn</h3>
+      <div id="friendRequestList" class="friend-manager-list"></div>
+    </section>
+
+    <section class="friend-manager">
+      <h3>Bạn bè</h3>
+      <div id="profileFriendList" class="friend-manager-list"></div>
+    </section>
+
+    <p id="profileStatus" class="profile-status" aria-live="polite"></p>
+
+    <button
+      id="signOutButton"
+      class="secondary-button profile-signout"
+      type="button"
+    >
+      Đăng xuất
+    </button>
+  </dialog>
+
+  <dialog id="momentComposerDialog" class="help-dialog moment-composer-dialog">
+    <div class="dialog-heading">
+      <h2>Đăng Khoảnh Khắc</h2>
+      <button
+        id="closeMomentComposerButton"
+        class="icon-button"
+        type="button"
+        aria-label="Đóng"
+      >
+        ✕
+      </button>
+    </div>
+
+    <img
+      id="momentComposerPreview"
+      class="moment-composer-preview"
+      alt="Ảnh sắp đăng"
+    >
+
+    <form id="momentComposerForm">
+      <label class="field">
+        <span>Chú thích</span>
+        <textarea
+          id="momentCaptionInput"
+          maxlength="500"
+          placeholder="Viết vài dòng về Khoảnh Khắc này..."
+        ></textarea>
+      </label>
+
+      <p id="momentComposerStatus" aria-live="polite"></p>
+
+      <div class="account-gate-actions">
+        <button class="primary-button" type="submit">Đăng</button>
+        <button
+          id="cancelMomentComposerButton"
+          class="secondary-button"
+          type="button"
+        >
+          Hủy
+        </button>
+      </div>
+    </form>
   </dialog>
 
  <dialog
@@ -1787,7 +1849,9 @@
   ></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js?v=20260801-auth03"></script>
+<script>window.NOHA_REAL_SOCIAL = true;</script>
+<script src="script.js?v=20260801-social02"></script>
+<script src="social.js?v=20260801-social02"></script>
 
 </body>
 </html>

@@ -2725,6 +2725,16 @@ function completePendingShareAction(
 
   pendingShareAction = null;
 
+  if (
+    window.nohaSocialApp &&
+    typeof window.nohaSocialApp
+      .completeShare === "function"
+  ) {
+    window.nohaSocialApp
+      .completeShare(action);
+    return;
+  }
+
   if (action === "private") {
     openSocialScreen("messages");
     showToast(
@@ -3649,7 +3659,9 @@ async function init() {
     });
   bindOptionButtons();
   bindEvents();
-  bindSocialEvents();
+  if (!window.NOHA_REAL_SOCIAL) {
+    bindSocialEvents();
+  }
   setupMobileEditorTools();
   renderSlots();
   updateVideoPreviewFilter();
@@ -4098,10 +4110,20 @@ init();
       } else {
         form.hidden = false;
 
+        const gateTitles = {
+          private: "Đăng nhập để Gửi bạn",
+          moment: "Đăng nhập để đăng Khoảnh Khắc",
+          profile: "Đăng nhập để mở tài khoản",
+          "browse-moments": "Đăng nhập để xem Khoảnh Khắc",
+          "browse-messages": "Đăng nhập để xem Tin nhắn"
+        };
+
         accountGateTitle.textContent =
-          isPrivate
-            ? "Đăng nhập để Gửi bạn"
-            : "Đăng nhập để đăng Khoảnh Khắc";
+          gateTitles[action] || (
+            isPrivate
+              ? "Đăng nhập để Gửi bạn"
+              : "Đăng nhập NoHa"
+          );
 
         accountGateMessage.textContent =
           "Đăng nhập hoặc tạo tài khoản NoHa để tiếp tục.";
