@@ -4651,6 +4651,13 @@ input[type="range"] {
   gap: 8px;
 }
 
+.friend-search-hint {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
 .friend-manager-list {
   margin-top: 11px;
   display: grid;
