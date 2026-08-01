@@ -27,7 +27,7 @@
   rel="stylesheet"
 >
 
-<link rel="stylesheet" href="style.css?v=20260801-social03">
+<link rel="stylesheet" href="style.css?v=20260801-social04">
 </head>
 
 <body>
@@ -1636,18 +1636,21 @@
     </form>
 
     <section class="friend-manager">
-      <h3>Tìm và kết bạn</h3>
+      <h3>Khám phá tài khoản NoHa</h3>
       <form id="friendSearchForm" class="friend-search-form">
         <input
           id="friendSearchInput"
           type="search"
-          placeholder="Nhập tên người dùng"
-          minlength="2"
-          required
+          placeholder="Tìm theo tên hiển thị"
         >
         <button class="secondary-button" type="submit">Tìm</button>
       </form>
-      <div id="friendSearchResults" class="friend-manager-list"></div>
+      <p class="friend-search-hint">
+        Tất cả tài khoản đều có thể thấy tên hiển thị và gửi lời mời kết bạn.
+      </p>
+      <div id="friendSearchResults" class="friend-manager-list">
+        <p class="social-empty">Đang tải danh sách tài khoản…</p>
+      </div>
     </section>
 
     <section class="friend-manager">
@@ -1850,8 +1853,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>window.NOHA_REAL_SOCIAL = true;</script>
-<script src="script.js?v=20260801-social03"></script>
-<script src="social.js?v=20260801-social03"></script>
+<script src="script.js?v=20260801-social04"></script>
+<script src="social.js?v=20260801-social04"></script>
 
 </body>
 </html>
