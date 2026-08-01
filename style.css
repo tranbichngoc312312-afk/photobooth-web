@@ -2707,9 +2707,9 @@ input[type="range"] {
 }
 
 .account-gate-dialog form {
-  margin-top: 18px;
+  margin-top: 16px;
   display: grid;
-  gap: 13px;
+  gap: 10px;
 }
 
 .account-gate-dialog form[hidden],
@@ -2718,9 +2718,12 @@ input[type="range"] {
 }
 
 .auth-assistance {
-  min-height: 21px;
   display: flex;
   justify-content: flex-end;
+}
+
+.auth-assistance:has(.auth-link-button[hidden]) {
+  display: none;
 }
 
 .auth-link-button {
@@ -2740,18 +2743,46 @@ input[type="range"] {
 
 #authStatus,
 #recoveryStatus {
-  min-height: 20px;
   margin: 0;
   font-size: 13px;
   line-height: 1.5;
 }
 
+#authStatus:empty,
+#recoveryStatus:empty {
+  display: none;
+}
+
 .account-gate-actions {
-  margin-top: 5px;
+  margin-top: 3px;
   display: flex;
   gap: 9px;
   flex-wrap: wrap;
   justify-content: flex-end;
+}
+
+#nohaAuthForm .account-gate-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+#nohaAuthForm .account-gate-actions button {
+  width: 100%;
+}
+
+#nohaAuthForm .auth-create-button {
+  min-height: 34px;
+  padding: 4px 10px;
+  border-color: transparent;
+  color: #8a4767;
+  background: transparent;
+  box-shadow: none;
+  font-size: 12px;
+}
+
+#nohaAuthForm .auth-create-button:hover {
+  color: #c52e68;
+  background: #fff0f6;
 }
 
 @media (max-width: 520px) {
@@ -2888,11 +2919,10 @@ input[type="range"] {
   border: 2px solid #ff5d96;
   border-radius: 50%;
   color: #fff;
-  background:
-    radial-gradient(circle at 50% 34%, #5f3c4e 0 16%, transparent 17%),
-    radial-gradient(circle at 50% 78%, #8e5c75 0 27%, transparent 28%),
-    linear-gradient(145deg, #ffe6ef, #ffb8d0);
-  font-size: 0;
+  background: linear-gradient(145deg, #ff8bb5, #ed3d7c);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.4px;
 }
 
 .header-profile-button span {
@@ -2901,7 +2931,8 @@ input[type="range"] {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  color: transparent;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .mobile-bottom-nav {
@@ -4715,6 +4746,22 @@ input[type="range"] {
   font-size: 12px;
   line-height: 1.5;
   text-align: center;
+}
+
+.social-empty-with-action {
+  align-self: center;
+  justify-self: center;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+
+.social-empty-with-action p {
+  margin: 0;
+}
+
+.social-empty-with-action button {
+  min-height: 38px;
 }
 
 .social-empty-photo {
