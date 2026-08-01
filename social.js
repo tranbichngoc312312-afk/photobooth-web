@@ -164,6 +164,8 @@
     state.outgoingRequests = [];
     state.moments = [];
     state.activeMomentId = null;
+    state.momentScope = "friends";
+    state.momentFilterUserId = null;
     state.activeFriendId = null;
     state.signedUrls.clear();
 
@@ -660,6 +662,9 @@
       if (error) throw error;
 
       closeMomentComposer();
+      state.momentScope = "mine";
+      state.momentFilterUserId = null;
+      syncMomentScopeTabs();
       openSocialScreen("moments");
       await loadMoments();
       showToast("Đã đăng Khoảnh Khắc.");
@@ -721,6 +726,16 @@
 
     renderMomentFriendList();
     await renderActiveMoment();
+  }
+
+  function syncMomentScopeTabs() {
+    $$social("[data-moment-scope]")
+      .forEach(tab => {
+        const active =
+          tab.dataset.momentScope === state.momentScope;
+        tab.classList.toggle("active", active);
+        tab.setAttribute("aria-selected", String(active));
+      });
   }
 
   function filteredMoments() {
@@ -1083,9 +1098,24 @@
 
     const list = $social("#chatMessageList");
     if (list) {
-      list.innerHTML =
-        '<p class="social-empty">Chọn bạn bè để bắt đầu nhắn tin.</p>';
+      list.innerHTML = `
+        <div class="social-empty social-empty-with-action">
+          <p>Chọn bạn bè để bắt đầu nhắn tin.</p>
+          <button class="secondary-button open-profile-manager-button" type="button">
+            Tìm và kết bạn
+          </button>
+        </div>
+      `;
     }
+
+    bindSocialEmptyActions();
+  }
+
+  function bindSocialEmptyActions() {
+    $$social(".open-profile-manager-button")
+      .forEach(button => {
+        button.addEventListener("click", openProfile);
+      });
   }
 
   async function selectMessageFriend(friendId) {
@@ -1486,12 +1516,7 @@
           state.momentFilterUserId = null;
           state.activeMomentId = filteredMoments()[0]?.id || null;
 
-          $$social("[data-moment-scope]")
-            .forEach(tab => {
-              const active = tab === button;
-              tab.classList.toggle("active", active);
-              tab.setAttribute("aria-selected", String(active));
-            });
+          syncMomentScopeTabs();
 
           renderMomentFriendList();
           await renderActiveMoment();
