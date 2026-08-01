@@ -247,7 +247,9 @@ button:disabled {
 }
 
 select,
-input[type="text"] {
+input[type="text"],
+input[type="email"],
+input[type="password"] {
   width: 100%;
   min-height: 43px;
   padding: 0 12px;
@@ -259,7 +261,9 @@ input[type="text"] {
 }
 
 select:focus,
-input[type="text"]:focus {
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
   border-color: var(--pink);
   box-shadow: 0 0 0 3px rgba(255, 123, 171, 0.14);
 }
@@ -2690,10 +2694,64 @@ input[type="range"] {
   line-height: 1.65;
 }
 
-.account-gate-actions {
+.account-gate-dialog form {
   margin-top: 18px;
+  display: grid;
+  gap: 13px;
+}
+
+.account-gate-dialog form[hidden],
+.auth-link-button[hidden] {
+  display: none !important;
+}
+
+.auth-assistance {
+  min-height: 21px;
   display: flex;
   justify-content: flex-end;
+}
+
+.auth-link-button {
+  padding: 0;
+  border: 0;
+  color: #d93675;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.auth-link-button:hover {
+  color: #a92358;
+}
+
+#authStatus,
+#recoveryStatus {
+  min-height: 20px;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.account-gate-actions {
+  margin-top: 5px;
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+@media (max-width: 520px) {
+  .account-gate-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .account-gate-actions .primary-button,
+  .account-gate-actions .secondary-button {
+    width: 100%;
+  }
 }
 
 @media (max-width: 780px) {

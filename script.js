@@ -3665,6 +3665,9 @@ init();
   const form =
     document.querySelector("#nohaAuthForm");
 
+  const recoveryForm =
+    document.querySelector("#passwordRecoveryForm");
+
   const emailInput =
     document.querySelector("#authEmailInput");
 
@@ -3680,7 +3683,29 @@ init();
   const signUpButton =
     document.querySelector("#signUpButton");
 
+  const forgotPasswordButton =
+    document.querySelector("#forgotPasswordButton");
+
+  const newPasswordInput =
+    document.querySelector("#newPasswordInput");
+
+  const confirmNewPasswordInput =
+    document.querySelector("#confirmNewPasswordInput");
+
+  const recoveryStatus =
+    document.querySelector("#recoveryStatus");
+
+  const saveNewPasswordButton =
+    document.querySelector("#saveNewPasswordButton");
+
+  const backToSignInButton =
+    document.querySelector("#backToSignInButton");
+
   let currentUser = null;
+
+  function getAuthRedirectUrl() {
+    return `${location.origin}${location.pathname}`;
+  }
 
   function setStatus(message, isError = false) {
     status.textContent = message;
@@ -3688,9 +3713,29 @@ init();
       isError ? "#b42318" : "#6941c6";
   }
 
+  function setRecoveryStatus(
+    message,
+    isError = false
+  ) {
+    recoveryStatus.textContent = message;
+    recoveryStatus.style.color =
+      isError ? "#b42318" : "#6941c6";
+  }
+
   function setBusy(isBusy) {
     signInButton.disabled = isBusy;
     signUpButton.disabled = isBusy;
+    forgotPasswordButton.disabled = isBusy;
+    saveNewPasswordButton.disabled = isBusy;
+    backToSignInButton.disabled = isBusy;
+  }
+
+  function isInvalidCredentials(error) {
+    return Boolean(
+      error?.message?.includes(
+        "Invalid login credentials"
+      )
+    );
   }
 
   function friendlyError(error) {
@@ -3701,6 +3746,10 @@ init();
       message.includes("Invalid login credentials")
     ) {
       return "Email hoặc mật khẩu chưa đúng.";
+    }
+
+    if (message.includes("Email not confirmed")) {
+      return "Email chưa được xác nhận. Hãy kiểm tra hộp thư và bấm liên kết xác nhận.";
     }
 
     if (
@@ -3715,7 +3764,60 @@ init();
       return "Mật khẩu cần có ít nhất 6 ký tự.";
     }
 
+    if (
+      message.includes("New password should be different")
+    ) {
+      return "Mật khẩu mới cần khác mật khẩu đang sử dụng.";
+    }
+
+    if (
+      message.toLowerCase().includes("rate limit") ||
+      message.includes("only request this after")
+    ) {
+      return "Bạn thao tác quá nhanh. Vui lòng chờ một lát rồi thử lại.";
+    }
+
     return message;
+  }
+
+  function showSignInView() {
+    recoveryForm.hidden = true;
+    form.hidden = false;
+    forgotPasswordButton.hidden = true;
+    forgotPasswordButton.textContent =
+      "Quên mật khẩu?";
+    passwordInput.value = "";
+    setStatus("");
+    setRecoveryStatus("");
+
+    accountGateTitle.textContent =
+      "Đăng nhập NoHa";
+
+    accountGateMessage.textContent =
+      "Nhập email và mật khẩu để tiếp tục.";
+  }
+
+  function showPasswordRecoveryView() {
+    form.hidden = true;
+    recoveryForm.hidden = false;
+    forgotPasswordButton.hidden = true;
+    recoveryForm.reset();
+    setStatus("");
+    setRecoveryStatus("");
+
+    accountGateTitle.textContent =
+      "Đặt mật khẩu mới";
+
+    accountGateMessage.textContent =
+      "Nhập mật khẩu mới cho tài khoản NoHa của bạn.";
+
+    if (!accountGateDialog.open) {
+      accountGateDialog.showModal();
+    }
+
+    requestAnimationFrame(() => {
+      newPasswordInput.focus();
+    });
   }
 
   async function getCurrentUser() {
@@ -3740,6 +3842,7 @@ init();
     }
 
     setBusy(true);
+    forgotPasswordButton.hidden = true;
     setStatus("Đang đăng nhập…");
 
     try {
@@ -3764,6 +3867,9 @@ init();
 
       completePendingShareAction();
     } catch (error) {
+      forgotPasswordButton.hidden =
+        !isInvalidCredentials(error);
+
       setStatus(
         friendlyError(error),
         true
@@ -3779,18 +3885,17 @@ init();
     }
 
     setBusy(true);
+    forgotPasswordButton.hidden = true;
     setStatus("Đang tạo tài khoản…");
 
     try {
-      const redirectUrl =
-        `${location.origin}${location.pathname}`;
-
       const { data, error } =
         await nohaSupabase.auth.signUp({
           email: emailInput.value.trim(),
           password: passwordInput.value,
           options: {
-            emailRedirectTo: redirectUrl
+            emailRedirectTo:
+              getAuthRedirectUrl()
           }
         });
 
@@ -3824,6 +3929,111 @@ init();
     }
   }
 
+  async function requestPasswordReset() {
+    const email = emailInput.value.trim();
+
+    if (!email) {
+      emailInput.setCustomValidity(
+        "Hãy nhập email cần lấy lại mật khẩu."
+      );
+      emailInput.reportValidity();
+      emailInput.setCustomValidity("");
+      return;
+    }
+
+    if (!emailInput.checkValidity()) {
+      emailInput.reportValidity();
+      return;
+    }
+
+    setBusy(true);
+    setStatus("Đang gửi email đặt lại mật khẩu…");
+
+    try {
+      const { error } =
+        await nohaSupabase.auth
+          .resetPasswordForEmail(email, {
+            redirectTo: getAuthRedirectUrl()
+          });
+
+      if (error) {
+        throw error;
+      }
+
+      setStatus(
+        "Đã gửi email đặt lại mật khẩu. Hãy kiểm tra cả hộp thư đến và thư rác."
+      );
+
+      forgotPasswordButton.hidden = false;
+      forgotPasswordButton.textContent =
+        "Gửi lại email đặt mật khẩu";
+    } catch (error) {
+      forgotPasswordButton.hidden = false;
+      setStatus(
+        friendlyError(error),
+        true
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function updatePassword(event) {
+    event.preventDefault();
+
+    confirmNewPasswordInput.setCustomValidity("");
+
+    if (!recoveryForm.reportValidity()) {
+      return;
+    }
+
+    if (
+      newPasswordInput.value !==
+      confirmNewPasswordInput.value
+    ) {
+      confirmNewPasswordInput.setCustomValidity(
+        "Hai mật khẩu chưa trùng nhau."
+      );
+      confirmNewPasswordInput.reportValidity();
+      return;
+    }
+
+    setBusy(true);
+    setRecoveryStatus("Đang đổi mật khẩu…");
+
+    try {
+      const { data, error } =
+        await nohaSupabase.auth.updateUser({
+          password: newPasswordInput.value
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      currentUser = data.user;
+      recoveryForm.reset();
+      accountGateDialog.close();
+
+      history.replaceState(
+        {},
+        document.title,
+        `${location.pathname}${location.search}`
+      );
+
+      showToast(
+        "Đã đổi mật khẩu. Bạn đang đăng nhập NoHa."
+      );
+    } catch (error) {
+      setRecoveryStatus(
+        friendlyError(error),
+        true
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
   form.addEventListener(
     "submit",
     signIn
@@ -3834,10 +4044,29 @@ init();
     signUp
   );
 
+  forgotPasswordButton.addEventListener(
+    "click",
+    requestPasswordReset
+  );
+
+  recoveryForm.addEventListener(
+    "submit",
+    updatePassword
+  );
+
+  backToSignInButton.addEventListener(
+    "click",
+    showSignInView
+  );
+
   nohaSupabase.auth.onAuthStateChange(
-    (_event, session) => {
+    (event, session) => {
       currentUser =
         session?.user || null;
+
+      if (event === "PASSWORD_RECOVERY") {
+        showPasswordRecoveryView();
+      }
     }
   );
 
@@ -3848,7 +4077,11 @@ init();
       const isPrivate =
         action === "private";
 
+      recoveryForm.hidden = true;
+      form.hidden = false;
+      forgotPasswordButton.hidden = true;
       setStatus("");
+      setRecoveryStatus("");
 
       try {
         await getCurrentUser();

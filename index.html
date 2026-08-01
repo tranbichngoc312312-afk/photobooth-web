@@ -27,7 +27,7 @@
   rel="stylesheet"
 >
 
-<link rel="stylesheet" href="style.css?v=20260727-social01">
+<link rel="stylesheet" href="style.css?v=20260801-auth03">
 </head>
 
 <body>
@@ -1700,6 +1700,17 @@
       >
     </label>
 
+    <div class="auth-assistance">
+      <button
+        id="forgotPasswordButton"
+        class="auth-link-button"
+        type="button"
+        hidden
+      >
+        Quên mật khẩu?
+      </button>
+    </div>
+
     <p id="authStatus" aria-live="polite"></p>
 
     <div class="account-gate-actions">
@@ -1720,6 +1731,52 @@
       </button>
     </div>
   </form>
+
+  <form id="passwordRecoveryForm" hidden>
+    <label class="field">
+      <span>Mật khẩu mới</span>
+      <input
+        id="newPasswordInput"
+        type="password"
+        autocomplete="new-password"
+        minlength="6"
+        placeholder="Tối thiểu 6 ký tự"
+        required
+      >
+    </label>
+
+    <label class="field">
+      <span>Nhập lại mật khẩu mới</span>
+      <input
+        id="confirmNewPasswordInput"
+        type="password"
+        autocomplete="new-password"
+        minlength="6"
+        placeholder="Nhập lại mật khẩu"
+        required
+      >
+    </label>
+
+    <p id="recoveryStatus" aria-live="polite"></p>
+
+    <div class="account-gate-actions">
+      <button
+        id="saveNewPasswordButton"
+        class="primary-button"
+        type="submit"
+      >
+        Đổi mật khẩu
+      </button>
+
+      <button
+        id="backToSignInButton"
+        class="secondary-button"
+        type="button"
+      >
+        Quay lại đăng nhập
+      </button>
+    </div>
+  </form>
 </dialog>
   <!-- Thông báo -->
   <div
@@ -1730,7 +1787,7 @@
   ></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js?v=20260727-social01"></script>
+<script src="script.js?v=20260801-auth03"></script>
 
 </body>
 </html>
