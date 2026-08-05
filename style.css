@@ -4316,10 +4316,6 @@ input[type="range"] {
 }
 
 @media (max-width: 780px) {
-  body {
-    padding-bottom: 68px;
-  }
-
   .site-header {
     min-height: 62px;
     padding: 9px 14px;
