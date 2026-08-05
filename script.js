@@ -151,6 +151,7 @@ let audioContext = null;
 let previewRenderTimer = 0;
 let compositeRenderToken = 0;
 let pendingShareAction = null;
+let cameraStartPromise = null;
 
 function wait(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -195,7 +196,7 @@ function clearRecap() {
     "Video recap được ghi khi bạn dùng chế độ chụp tự động.";
 }
 
-async function startCamera() {
+async function openCamera() {
   cameraStatus.textContent = "Đang mở camera…";
 
   cameraPlaceholder.hidden = false;
@@ -308,6 +309,37 @@ video.setAttribute(
     showToast(
       "Không mở được camera. Hãy kiểm tra quyền truy cập."
     );
+  }
+}
+
+function startCamera() {
+  if (cameraStartPromise) {
+    return cameraStartPromise;
+  }
+
+  cameraStartPromise = openCamera().finally(() => {
+    cameraStartPromise = null;
+  });
+
+  return cameraStartPromise;
+}
+
+async function autoStartCameraIfPermitted() {
+  if (!navigator.permissions?.query) {
+    return;
+  }
+
+  try {
+    const cameraPermission = await navigator.permissions.query({
+      name: "camera"
+    });
+
+    if (cameraPermission.state === "granted") {
+      await startCamera();
+    }
+  } catch (error) {
+    // Some browsers do not support querying camera permission.
+    console.debug("Could not check camera permission:", error);
   }
 }
 
@@ -3581,6 +3613,8 @@ async function init() {
 
   cameraStatus.textContent =
   "Bấm Mở camera để bắt đầu.";
+
+  await autoStartCameraIfPermitted();
 }
 
 init();
