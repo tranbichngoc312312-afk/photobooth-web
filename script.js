@@ -43,17 +43,8 @@ const backToCaptureButton =
 const editorScreen =
   $("#editorScreen");
 
-const shareScreen =
-  $("#shareScreen");
-
 const sharePreviewImage =
   $("#sharePreviewImage");
-
-const continueToShareButton =
-  $("#continueToShareButton");
-
-const mobileContinueToShareButton =
-  $("#mobileContinueToShareButton");
 
 const accountGateDialog =
   $("#accountGateDialog");
@@ -1479,16 +1470,6 @@ async function renderComposite() {
   downloadImageButton.disabled =
     !ready;
 
-  if (continueToShareButton) {
-    continueToShareButton.disabled =
-      !ready;
-  }
-
-  if (mobileContinueToShareButton) {
-    mobileContinueToShareButton.disabled =
-      !ready;
-  }
-
   previewStatus.textContent =
     ready
       ? "Sẵn sàng tải"
@@ -2530,7 +2511,6 @@ async function openEditorScreen() {
   appShell.classList.remove("social-mode");
   setActiveNavigation("capture");
 
-  shareScreen.hidden = true;
   editorScreen.hidden = false;
 
   await renderComposite();
@@ -2596,42 +2576,6 @@ function updateSharePreview() {
   syncLatestPhotoboothPreview();
 }
 
-async function openPostCaptureScreen() {
-  await renderComposite();
-
-  if (downloadImageButton.disabled) {
-    showToast(
-      "Bạn cần hoàn thành bộ ảnh trước khi tiếp tục."
-    );
-    return;
-  }
-
-  updateSharePreview();
-
-  momentsScreen.hidden = true;
-  messagesScreen.hidden = true;
-  appShell.classList.remove("social-mode");
-  setActiveNavigation("capture");
-
-  editorScreen.hidden = true;
-  shareScreen.hidden = false;
-
-  shareScreen.scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
-}
-
-function openEditorFromShare() {
-  shareScreen.hidden = true;
-  editorScreen.hidden = false;
-
-  editorScreen.scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
-}
-
 function setActiveNavigation(view) {
   $$("[data-app-view]").forEach(button => {
     const isActive =
@@ -2665,7 +2609,6 @@ function hideCaptureFlow() {
     });
 
   editorScreen.hidden = true;
-  shareScreen.hidden = true;
 }
 
 function syncLatestPhotoboothPreview() {
@@ -2770,7 +2713,6 @@ function showAccountGate(action) {
 
 function openCaptureScreen() {
   editorScreen.hidden = true;
-  shareScreen.hidden = true;
   momentsScreen.hidden = true;
   messagesScreen.hidden = true;
   messagesScreen.classList.remove(
@@ -3130,38 +3072,10 @@ backToCaptureButton?.addEventListener(
   openCaptureScreen
 );
 
-  continueToShareButton?.addEventListener(
-    "click",
-    openPostCaptureScreen
-  );
-
-  mobileContinueToShareButton?.addEventListener(
-    "click",
-    openPostCaptureScreen
-  );
-
-  $("#backToEditorFromShareButton")
-    ?.addEventListener(
-      "click",
-      openEditorFromShare
-    );
-
   $("#saveDeviceButton")
     ?.addEventListener(
       "click",
       downloadComposite
-    );
-
-  $("#sendPrivateButton")
-    ?.addEventListener(
-      "click",
-      () => showAccountGate("private")
-    );
-
-  $("#postMomentButton")
-    ?.addEventListener(
-      "click",
-      () => showAccountGate("moment")
     );
 
   $("#closeAccountGateButton")
@@ -3648,7 +3562,6 @@ if (
 async function init() {
     /* Luôn bắt đầu ở màn hình chụp ảnh */
   editorScreen.hidden = true;
-  shareScreen.hidden = true;
   momentsScreen.hidden = true;
   messagesScreen.hidden = true;
 
