@@ -27,7 +27,7 @@
   rel="stylesheet"
 >
 
-<link rel="stylesheet" href="style.css?v=20260801-social04">
+<link rel="stylesheet" href="style.css?v=20261024-beauty01">
 </head>
 
 <body>
@@ -98,8 +98,8 @@
         </h1>
 
         <p>
-          Chọn layout, chụp tự động, thêm khung và filter
-          rồi tải ảnh PNG về máy.
+          Làm đẹp tự nhiên ngay khi chụp, chọn layout, thêm khung
+          và filter rồi tải ảnh PNG về máy.
         </p>
       </div>
 
@@ -276,6 +276,18 @@
             <span></span>
             LIVE
           </div>
+
+          <button
+            id="beautyToggle"
+            class="beauty-toggle is-on"
+            type="button"
+            aria-pressed="true"
+            title="Làm đẹp tự động: mịn da, môi và má hồng nhẹ"
+          >
+            <span aria-hidden="true">✨</span>
+            Đẹp tự nhiên
+            <b id="beautyToggleState">Bật</b>
+          </button>
 
         </div>
 
@@ -497,63 +509,14 @@
 
             <h3>Khung ảnh</h3>
 
-            <div id="frameList" class="frame-list">
+            <!-- Nhóm khung và danh sách khung được tạo từ frames.js -->
+            <div
+              id="frameCategories"
+              class="frame-categories"
+              aria-label="Nhóm khung ảnh"
+            ></div>
 
-              <button
-                class="frame-item active"
-                data-frame="pink"
-                type="button"
-              >
-                <span class="frame-swatch pink"></span>
-                NoHa Hồng
-              </button>
-
-              <button
-                class="frame-item"
-                data-frame="cream"
-                type="button"
-              >
-                <span class="frame-swatch cream"></span>
-                Kem ngọt
-              </button>
-
-              <button
-                class="frame-item"
-                data-frame="sky"
-                type="button"
-              >
-                <span class="frame-swatch sky"></span>
-                Trời xanh
-              </button>
-
-              <button
-                class="frame-item"
-                data-frame="film"
-                type="button"
-              >
-                <span class="frame-swatch film"></span>
-                Film cổ điển
-              </button>
-
-              <button
-                class="frame-item"
-                data-frame="mono"
-                type="button"
-              >
-                <span class="frame-swatch mono"></span>
-                Đen trắng
-              </button>
-
-              <button
-                class="frame-item"
-                data-frame="none"
-                type="button"
-              >
-                <span class="frame-swatch none"></span>
-                Tối giản
-              </button>
-
-            </div>
+            <div id="frameList" class="frame-list"></div>
 
             <label
               class="secondary-button file-button full-width"
@@ -1450,7 +1413,8 @@
       </li>
 
       <li>
-        Mở camera hoặc tải ảnh có sẵn từ thiết bị.
+        Mở camera hoặc tải ảnh có sẵn từ thiết bị. Chế độ
+        “Đẹp tự nhiên” bật sẵn, bấm nút ✨ trên camera để bật/tắt.
       </li>
 
       <li>
@@ -1717,7 +1681,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>window.NOHA_REAL_SOCIAL = true;</script>
-<script src="script.js?v=20260801-social04"></script>
+<script src="frames.js?v=20261024-beauty01"></script>
+<script src="beauty.js?v=20261024-beauty01"></script>
+<script src="script.js?v=20261024-beauty01"></script>
 <script src="social.js?v=20260801-social04"></script>
 
 </body>
