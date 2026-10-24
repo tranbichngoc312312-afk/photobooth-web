@@ -139,6 +139,7 @@ let selectedSlot = 0;
 let isCapturing = false;
 let soundEnabled = true;
 let activeFrame = "pink";
+let activeFrameCategory = "all";
 let activeFilter = "normal";
 let selectedSticker = "";
 let customFrameUrl = "";
@@ -155,6 +156,17 @@ let cameraStartPromise = null;
 
 function wait(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/*
+ * Sự kiện ứng dụng (noha:photo-captured, noha:photobooth-downloaded...).
+ * Các tính năng sau này như minigame "Vườn kỷ niệm" chỉ cần lắng nghe
+ * trên document, không phải sửa luồng chụp.
+ */
+function emitNohaEvent(name, detail = {}) {
+  document.dispatchEvent(
+    new CustomEvent(`noha:${name}`, { detail })
+  );
 }
 
 function getLayout() {
@@ -283,6 +295,11 @@ video.setAttribute(
 
     cameraPlaceholder.hidden = true;
     cameraPlaceholder.style.display = "none";
+
+    window.NohaBeauty?.attachLive(
+      video,
+      cameraStage
+    );
 
     cameraStatus.textContent =
       facingMode === "user"
@@ -535,11 +552,14 @@ function drawVideoCover(
   targetWidth,
   targetHeight
 ) {
+  // Nhận cả video lẫn canvas (khung hình đã làm đẹp)
   const sourceWidth =
-    sourceVideo.videoWidth;
+    sourceVideo.videoWidth ||
+    sourceVideo.width;
 
   const sourceHeight =
-    sourceVideo.videoHeight;
+    sourceVideo.videoHeight ||
+    sourceVideo.height;
 
   const sourceRatio =
     sourceWidth / sourceHeight;
@@ -630,6 +650,10 @@ captureCanvas.height = height;
     }
   );
 
+  // Làm đẹp đúng khung hình đang chụp; lỗi hoặc chưa sẵn sàng thì dùng ảnh gốc
+  const beautySource =
+    window.NohaBeauty?.renderVideoFrame(video) || null;
+
   context.save();
 
   if (facingMode === "user") {
@@ -637,11 +661,9 @@ captureCanvas.height = height;
   context.scale(-1, 1);
 }
 
-  
-
   drawVideoCover(
   context,
-  video,
+  beautySource || video,
   width,
   height
 );
@@ -673,7 +695,8 @@ captureCanvas.height = height;
   photos[index] = {
     url,
     name: `Ảnh ${index + 1}`,
-    source: "camera"
+    source: "camera",
+    beauty: Boolean(beautySource)
   };
 
   selectedSlot = Math.min(
@@ -683,6 +706,12 @@ captureCanvas.height = height;
 
   renderSlots();
   await renderComposite();
+
+  emitNohaEvent("photo-captured", {
+    index,
+    source: "camera",
+    beauty: Boolean(beautySource)
+  });
 
   if (video.paused) {
     await video.play().catch(() => {});
@@ -1084,6 +1113,12 @@ function updateVideoPreviewFilter() {
   video.style.filter =
     getCombinedFilter();
 
+  // Canvas làm đẹp được chèn sau, nên lấy bộ lọc qua biến CSS
+  cameraStage.style.setProperty(
+    "--preview-filter",
+    getCombinedFilter()
+  );
+
   $$(".photo-slot img").forEach(
     image => {
       image.style.filter =
@@ -1285,127 +1320,19 @@ function applyPixelFilter(canvas) {
   context.putImageData(imageData, 0, 0);
 }
 
-function framePalette(frame) {
-  const palettes = {
-    pink: {
-      bg: "#ff98bc",
-      inner: "#fff8fb",
-      ink: "#ffffff",
-      accent: "#ffe3ee"
-    },
-
-    cream: {
-      bg: "#f0dfbd",
-      inner: "#fffaf0",
-      ink: "#694d3e",
-      accent: "#fff4da"
-    },
-
-    sky: {
-      bg: "#88c8ee",
-      inner: "#f7fcff",
-      ink: "#ffffff",
-      accent: "#dff4ff"
-    },
-
-    film: {
-      bg: "#292329",
-      inner: "#f8ead8",
-      ink: "#f7dfb9",
-      accent: "#111111"
-    },
-
-    mono: {
-      bg: "#111111",
-      inner: "#fafafa",
-      ink: "#ffffff",
-      accent: "#e9e9e9"
-    },
-
-    none: {
-      bg: "#ffffff",
-      inner: "#ffffff",
-      ink: "#5b376d",
-      accent: "#ffffff"
-    },
-
-    custom: {
-      bg: "#ffffff",
-      inner: "#ffffff",
-      ink: "#5b376d",
-      accent: "#ffffff"
-    }
-  };
-
-  return palettes[frame] ||
-    palettes.pink;
-}
-
-function roundedRect(
-  context,
-  x,
-  y,
-  width,
-  height,
-  radius
+/* Bố cục ô ảnh của một layout — dùng chung cho ảnh xuất và ảnh xem trước khung */
+function getFrameGeometry(
+  layoutKey = layoutSelect.value
 ) {
-  const r = Math.min(
-    radius,
-    width / 2,
-    height / 2
-  );
-
-  context.beginPath();
-
-  context.moveTo(
-    x + r,
-    y
-  );
-
-  context.arcTo(
-    x + width,
-    y,
-    x + width,
-    y + height,
-    r
-  );
-
-  context.arcTo(
-    x + width,
-    y + height,
-    x,
-    y + height,
-    r
-  );
-
-  context.arcTo(
-    x,
-    y + height,
-    x,
-    y,
-    r
-  );
-
-  context.arcTo(
-    x,
-    y,
-    x + width,
-    y,
-    r
-  );
-
-  context.closePath();
-}
-
-function getPhotoBoxes(layout) {
-  const frame = activeFrame;
+  const layout =
+    LAYOUTS[layoutKey] || LAYOUTS.strip4;
 
   const strip =
-    layoutSelect.value ===
+    layoutKey ===
     "strip4";
 
   const single =
-    layoutSelect.value ===
+    layoutKey ===
     "single";
 
   const padding =
@@ -1477,12 +1404,17 @@ function getPhotoBoxes(layout) {
   }
 
   return {
+    width: layout.width,
+    height: layout.height,
     boxes,
     padding,
     header,
     footer,
     gap,
-    frame
+    strip,
+    single,
+    // Hệ số cỡ chữ/họa tiết, khớp tỉ lệ chữ cũ (42px dải dọc, 58px lưới)
+    scale: strip ? 1 : 1.38
   };
 }
 
@@ -1538,30 +1470,25 @@ workCanvas.height =
 const context =
   workCanvas.getContext("2d");
 
-  const palette =
-    framePalette(activeFrame);
+  const template =
+    NohaFrames.get(activeFrame);
 
-  context.clearRect(
-    0,
-    0,
-    layout.width,
-    layout.height
+  const geometry =
+    getFrameGeometry();
+
+  const { boxes } = geometry;
+
+  await NohaFrames.ensureFonts();
+
+  if (renderToken !== compositeRenderToken) {
+    return;
+  }
+
+  NohaFrames.paintBackground(
+    context,
+    template,
+    geometry
   );
-
-  context.fillStyle =
-    palette.bg;
-
-  context.fillRect(
-    0,
-    0,
-    layout.width,
-    layout.height
-  );
-
-  const {
-    boxes,
-    padding
-  } = getPhotoBoxes(layout);
 
   for (
     let index = 0;
@@ -1650,16 +1577,12 @@ if ("filter" in photoContext) {
 
     context.save();
 
-    roundedRect(
+    NohaFrames.clipPhoto(
       context,
-      box.x,
-      box.y,
-      box.width,
-      box.height,
-      18
+      template,
+      box,
+      geometry
     );
-
-    context.clip();
 
     context.drawImage(
       photoCanvas,
@@ -1671,22 +1594,18 @@ if ("filter" in photoContext) {
 
     context.restore();
 
-    if (
-      activeFrame === "film"
-    ) {
-      drawFilmMarks(
-        context,
-        box,
-        index
-      );
-    }
+    NohaFrames.paintPhotoExtras(
+      context,
+      template,
+      box,
+      index
+    );
   }
 
-  drawFrameDecorations(
+  NohaFrames.paintOverlay(
     context,
-    layout,
-    palette,
-    padding
+    template,
+    geometry
   );
 
   if (customFrameUrl) {
@@ -1718,7 +1637,7 @@ if ("filter" in photoContext) {
   drawCustomText(
     context,
     layout,
-    palette
+    template.palette
   );
 
   drawSticker(
@@ -1759,181 +1678,6 @@ outputCanvas.style.display =
 
 emptyPreview.style.display =
   "none";
-}
-
-function drawFrameDecorations(
-  context,
-  layout,
-  palette,
-  padding
-) {
-  const strip =
-    layoutSelect.value ===
-    "strip4";
-
-  const single =
-    layoutSelect.value ===
-    "single";
-
-  context.save();
-
-  context.fillStyle =
-    palette.ink;
-
-  context.textAlign =
-    "center";
-
-  context.font =
-    `900 ${
-      strip ? 42 : 58
-    }px Georgia`;
-
-  context.fillText(
-    "NoHa",
-    layout.width / 2,
-    strip ? 70 : 82
-  );
-
-  context.font =
-    `800 ${
-      strip ? 17 : 24
-    }px Arial`;
-
-  context.fillText(
-    "TIỆM PHOTOBOOTH",
-    layout.width / 2,
-    strip
-      ? layout.height - 88
-      : layout.height - 58
-  );
-
-  if (
-    activeFrame === "pink" ||
-    activeFrame === "cream" ||
-    activeFrame === "sky"
-  ) {
-    context.font =
-      `${
-        strip ? 38 : 52
-      }px Arial`;
-
-    context.fillText(
-      "✿",
-      padding,
-      strip
-        ? layout.height - 70
-        : 70
-    );
-
-    context.fillText(
-      "✿",
-      layout.width - padding,
-      strip
-        ? 74
-        : layout.height - 62
-    );
-  }
-
-  if (
-    activeFrame === "mono"
-  ) {
-    context.strokeStyle =
-      "#ffffff";
-
-    context.lineWidth =
-      strip ? 5 : 8;
-
-    context.strokeRect(
-      20,
-      20,
-      layout.width - 40,
-      layout.height - 40
-    );
-  }
-
-  if (
-    single &&
-    activeFrame === "none"
-  ) {
-    context.fillStyle =
-      "rgba(255,255,255,.72)";
-
-    context.fillRect(
-      0,
-      layout.height - 80,
-      layout.width,
-      80
-    );
-
-    context.fillStyle =
-      "#5b376d";
-
-    context.font =
-      "800 26px Arial";
-
-    context.fillText(
-      "NoHa · Tiệm Photobooth",
-      layout.width / 2,
-      layout.height - 30
-    );
-  }
-
-  context.restore();
-}
-
-function drawFilmMarks(
-  context,
-  box,
-  index
-) {
-  context.save();
-
-  context.fillStyle =
-    "#f6dfbb";
-
-  const size = Math.max(
-    10,
-    box.width * 0.018
-  );
-
-  for (
-    let x = box.x + 20;
-    x < box.x + box.width - 20;
-    x += size * 2.2
-  ) {
-    context.fillRect(
-      x,
-      box.y - 16,
-      size,
-      8
-    );
-
-    context.fillRect(
-      x,
-      box.y +
-        box.height +
-        8,
-      size,
-      8
-    );
-  }
-
-  context.font =
-    `700 ${
-      Math.max(
-        12,
-        box.width * 0.025
-      )
-    }px monospace`;
-
-  context.fillText(
-    String(index + 1)
-      .padStart(2, "0"),
-    box.x + 10,
-    box.y + 24
-  );
-
-  context.restore();
 }
 
 function drawCustomText(
@@ -2092,6 +1836,11 @@ async function downloadComposite() {
   showToast(
     "Đã tạo ảnh PNG chất lượng cao."
   );
+
+  emitNohaEvent("photobooth-downloaded", {
+    layout: layoutSelect.value,
+    frame: activeFrame
+  });
 }
 
 function chooseRecorderMimeType() {
@@ -2156,7 +1905,7 @@ context.scale(-1, 1);
         
         drawVideoCover(
   context,
-  video,
+  window.NohaBeauty?.liveCanvas || video,
   width,
   height
 );
@@ -2336,6 +2085,54 @@ function downloadRecap() {
   link.remove();
 }
 
+/* Ảnh tải lên cũng được làm đẹp khi chế độ đang bật; lỗi thì giữ ảnh gốc */
+async function prepareUploadedPhoto(file) {
+  const originalUrl =
+    URL.createObjectURL(file);
+
+  const photo = {
+    url: originalUrl,
+    name: file.name,
+    source: "upload",
+    beauty: false
+  };
+
+  if (!window.NohaBeauty?.getStatus().enabled) {
+    return photo;
+  }
+
+  try {
+    const image = new Image();
+    image.src = originalUrl;
+    await image.decode();
+
+    const processed =
+      await window.NohaBeauty.processImage(image);
+
+    if (!processed) {
+      return photo;
+    }
+
+    const blob = await canvasToBlob(
+      processed,
+      "image/jpeg",
+      0.92
+    );
+
+    URL.revokeObjectURL(originalUrl);
+
+    photo.url = URL.createObjectURL(blob);
+    photo.beauty = true;
+  } catch (error) {
+    console.warn(
+      "Không làm đẹp được ảnh tải lên:",
+      error
+    );
+  }
+
+  return photo;
+}
+
 async function handlePhotoUpload(files) {
   const layout = getLayout();
 
@@ -2355,18 +2152,21 @@ async function handlePhotoUpload(files) {
     index = selectedSlot;
   }
 
+  if (window.NohaBeauty?.getStatus().enabled) {
+    showToast("Đang làm đẹp ảnh…");
+  }
+
   for (const file of accepted) {
     if (index >= layout.count) {
       break;
     }
 
+    const photo =
+      await prepareUploadedPhoto(file);
+
     revokePhoto(photos[index]);
 
-    photos[index] = {
-      url: URL.createObjectURL(file),
-      name: file.name,
-      source: "upload"
-    };
+    photos[index] = photo;
 
     index++;
   }
@@ -2406,6 +2206,7 @@ function onLayoutChange() {
   clearRecap();
   renderSlots();
   renderComposite();
+  renderFrameList();
 
   showToast(
     `Đã chọn layout ${
@@ -2414,35 +2215,130 @@ function onLayoutChange() {
   );
 }
 
-function bindOptionButtons() {
-  $$(".frame-item").forEach(
-    button => {
-      button.addEventListener(
-        "click",
-        async () => {
-          $$(".frame-item").forEach(
-            item =>
-              item.classList.remove(
-                "active"
-              )
-          );
+/* Danh sách khung sinh từ dữ liệu NohaFrames, ảnh xem trước theo layout hiện tại */
+function renderFrameList() {
+  const frameList = $("#frameList");
+  const categoryBar = $("#frameCategories");
 
-          button.classList.add(
-            "active"
-          );
+  if (!frameList) {
+    return;
+  }
 
-          activeFrame =
-            button.dataset.frame;
+  if (categoryBar && !categoryBar.childElementCount) {
+    NohaFrames.CATEGORIES.forEach(category => {
+      const chip = document.createElement("button");
 
-          if (
-            activeFrame !== "custom"
-          ) {
-            customFrameUrl = "";
-          }
-
-          await renderComposite();
-        }
+      chip.type = "button";
+      chip.className = "frame-category";
+      chip.dataset.category = category.id;
+      chip.textContent = category.name;
+      chip.setAttribute(
+        "aria-pressed",
+        String(category.id === activeFrameCategory)
       );
+
+      categoryBar.appendChild(chip);
+    });
+  }
+
+  const geometry = getFrameGeometry();
+
+  frameList.innerHTML = "";
+
+  NohaFrames.list(activeFrameCategory).forEach(template => {
+    const button = document.createElement("button");
+    const locked = !NohaFrames.isUnlocked(template.id);
+
+    button.type = "button";
+    button.className = "frame-item";
+    button.dataset.frame = template.id;
+    button.classList.toggle("active", template.id === activeFrame);
+    button.classList.toggle("locked", locked);
+    button.setAttribute(
+      "aria-pressed",
+      String(template.id === activeFrame)
+    );
+
+    const thumb = document.createElement("canvas");
+    thumb.className = "frame-thumb";
+    thumb.setAttribute("aria-hidden", "true");
+
+    NohaFrames.renderThumbnail(thumb, template, geometry, 72, 92);
+
+    const name = document.createElement("span");
+    name.className = "frame-name";
+    name.textContent = template.name;
+
+    button.append(thumb, name);
+    frameList.appendChild(button);
+  });
+}
+
+function selectFrame(frameId) {
+  if (!NohaFrames.isUnlocked(frameId)) {
+    showToast(
+      "Khung này sẽ mở khóa bằng xu NoHa trong thời gian tới."
+    );
+    return;
+  }
+
+  activeFrame = frameId;
+
+  if (customFrameUrl.startsWith("blob:")) {
+    URL.revokeObjectURL(customFrameUrl);
+  }
+
+  customFrameUrl = "";
+
+  $$(".frame-item").forEach(item => {
+    const isActive = item.dataset.frame === frameId;
+
+    item.classList.toggle("active", isActive);
+    item.setAttribute("aria-pressed", String(isActive));
+  });
+
+  scheduleCompositeRender(0);
+}
+
+function bindOptionButtons() {
+  renderFrameList();
+
+  // Ảnh xem trước dùng chữ Pacifico: vẽ lại khi font tải xong
+  NohaFrames.ensureFonts().then(renderFrameList);
+
+  $("#frameList")?.addEventListener(
+    "click",
+    event => {
+      const button =
+        event.target.closest(".frame-item");
+
+      if (button) {
+        selectFrame(button.dataset.frame);
+      }
+    }
+  );
+
+  $("#frameCategories")?.addEventListener(
+    "click",
+    event => {
+      const chip =
+        event.target.closest(".frame-category");
+
+      if (!chip) {
+        return;
+      }
+
+      activeFrameCategory =
+        chip.dataset.category;
+
+      $$(".frame-category").forEach(item => {
+        item.setAttribute(
+          "aria-pressed",
+          String(item === chip)
+        );
+      });
+
+      renderFrameList();
     }
   );
 
@@ -3354,6 +3250,76 @@ scheduleCompositeRender(100);
 }
 
 
+/* Nút bật/tắt "Đẹp tự nhiên" trên màn hình camera */
+function setupBeautyToggle() {
+  const toggle = $("#beautyToggle");
+  const stateLabel = $("#beautyToggleState");
+
+  if (!toggle || !window.NohaBeauty) {
+    return;
+  }
+
+  const labels = {
+    loading: "Đang tải…",
+    error: "Tạm tắt",
+    unsupported: "Không hỗ trợ"
+  };
+
+  const render = status => {
+    const on = status.enabled && !status.autoDisabled;
+
+    toggle.setAttribute("aria-pressed", String(on));
+    toggle.classList.toggle("is-on", on);
+    toggle.classList.toggle(
+      "is-loading",
+      on && status.state === "loading"
+    );
+
+    stateLabel.textContent =
+      on && labels[status.state]
+        ? labels[status.state]
+        : on
+          ? "Bật"
+          : "Tắt";
+  };
+
+  NohaBeauty.onChange((status, reason) => {
+    render(status);
+
+    if (reason === "slow") {
+      showToast(
+        "Thiết bị xử lý chậm nên đã tạm tắt làm đẹp để chụp mượt hơn."
+      );
+    } else if (
+      reason === "error" &&
+      status.enabled
+    ) {
+      showToast(
+        "Không bật được làm đẹp trên thiết bị này. Bạn vẫn chụp bình thường."
+      );
+    } else if (reason === "unsupported") {
+      showToast(
+        "Trình duyệt chưa hỗ trợ làm đẹp tự động. Bạn vẫn chụp bình thường."
+      );
+    }
+  });
+
+  toggle.addEventListener("click", () => {
+    const status = NohaBeauty.getStatus();
+    const turnOn = !(status.enabled && !status.autoDisabled);
+
+    NohaBeauty.setEnabled(turnOn);
+
+    showToast(
+      turnOn
+        ? "Đã bật Đẹp tự nhiên."
+        : "Đã tắt làm đẹp."
+    );
+  });
+
+  render(NohaBeauty.getStatus());
+}
+
 function setupMobileEditorTools() {
   const mobileMedia = window.matchMedia(
     "(max-width: 780px)"
@@ -3608,6 +3574,7 @@ async function init() {
     bindSocialEvents();
   }
   setupMobileEditorTools();
+  setupBeautyToggle();
   renderSlots();
   updateVideoPreviewFilter();
 
