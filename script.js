@@ -296,11 +296,6 @@ video.setAttribute(
     cameraPlaceholder.hidden = true;
     cameraPlaceholder.style.display = "none";
 
-    window.NohaBeauty?.attachLive(
-      video,
-      cameraStage
-    );
-
     cameraStatus.textContent =
       facingMode === "user"
         ? "Camera trước đã sẵn sàng"
@@ -552,14 +547,11 @@ function drawVideoCover(
   targetWidth,
   targetHeight
 ) {
-  // Nhận cả video lẫn canvas (khung hình đã làm đẹp)
   const sourceWidth =
-    sourceVideo.videoWidth ||
-    sourceVideo.width;
+    sourceVideo.videoWidth;
 
   const sourceHeight =
-    sourceVideo.videoHeight ||
-    sourceVideo.height;
+    sourceVideo.videoHeight;
 
   const sourceRatio =
     sourceWidth / sourceHeight;
@@ -650,10 +642,6 @@ captureCanvas.height = height;
     }
   );
 
-  // Làm đẹp đúng khung hình đang chụp; lỗi hoặc chưa sẵn sàng thì dùng ảnh gốc
-  const beautySource =
-    window.NohaBeauty?.renderVideoFrame(video) || null;
-
   context.save();
 
   if (facingMode === "user") {
@@ -661,9 +649,11 @@ captureCanvas.height = height;
   context.scale(-1, 1);
 }
 
+
+
   drawVideoCover(
   context,
-  beautySource || video,
+  video,
   width,
   height
 );
@@ -695,8 +685,7 @@ captureCanvas.height = height;
   photos[index] = {
     url,
     name: `Ảnh ${index + 1}`,
-    source: "camera",
-    beauty: Boolean(beautySource)
+    source: "camera"
   };
 
   selectedSlot = Math.min(
@@ -709,8 +698,7 @@ captureCanvas.height = height;
 
   emitNohaEvent("photo-captured", {
     index,
-    source: "camera",
-    beauty: Boolean(beautySource)
+    source: "camera"
   });
 
   if (video.paused) {
@@ -1112,12 +1100,6 @@ function getCombinedFilter() {
 function updateVideoPreviewFilter() {
   video.style.filter =
     getCombinedFilter();
-
-  // Canvas làm đẹp được chèn sau, nên lấy bộ lọc qua biến CSS
-  cameraStage.style.setProperty(
-    "--preview-filter",
-    getCombinedFilter()
-  );
 
   $$(".photo-slot img").forEach(
     image => {
@@ -1905,7 +1887,7 @@ context.scale(-1, 1);
         
         drawVideoCover(
   context,
-  window.NohaBeauty?.liveCanvas || video,
+  video,
   width,
   height
 );
@@ -2085,54 +2067,6 @@ function downloadRecap() {
   link.remove();
 }
 
-/* Ảnh tải lên cũng được làm đẹp khi chế độ đang bật; lỗi thì giữ ảnh gốc */
-async function prepareUploadedPhoto(file) {
-  const originalUrl =
-    URL.createObjectURL(file);
-
-  const photo = {
-    url: originalUrl,
-    name: file.name,
-    source: "upload",
-    beauty: false
-  };
-
-  if (!window.NohaBeauty?.getStatus().enabled) {
-    return photo;
-  }
-
-  try {
-    const image = new Image();
-    image.src = originalUrl;
-    await image.decode();
-
-    const processed =
-      await window.NohaBeauty.processImage(image);
-
-    if (!processed) {
-      return photo;
-    }
-
-    const blob = await canvasToBlob(
-      processed,
-      "image/jpeg",
-      0.92
-    );
-
-    URL.revokeObjectURL(originalUrl);
-
-    photo.url = URL.createObjectURL(blob);
-    photo.beauty = true;
-  } catch (error) {
-    console.warn(
-      "Không làm đẹp được ảnh tải lên:",
-      error
-    );
-  }
-
-  return photo;
-}
-
 async function handlePhotoUpload(files) {
   const layout = getLayout();
 
@@ -2152,21 +2086,18 @@ async function handlePhotoUpload(files) {
     index = selectedSlot;
   }
 
-  if (window.NohaBeauty?.getStatus().enabled) {
-    showToast("Đang làm đẹp ảnh…");
-  }
-
   for (const file of accepted) {
     if (index >= layout.count) {
       break;
     }
 
-    const photo =
-      await prepareUploadedPhoto(file);
-
     revokePhoto(photos[index]);
 
-    photos[index] = photo;
+    photos[index] = {
+      url: URL.createObjectURL(file),
+      name: file.name,
+      source: "upload"
+    };
 
     index++;
   }
@@ -3250,76 +3181,6 @@ scheduleCompositeRender(100);
 }
 
 
-/* Nút bật/tắt "Đẹp tự nhiên" trên màn hình camera */
-function setupBeautyToggle() {
-  const toggle = $("#beautyToggle");
-  const stateLabel = $("#beautyToggleState");
-
-  if (!toggle || !window.NohaBeauty) {
-    return;
-  }
-
-  const labels = {
-    loading: "Đang tải…",
-    error: "Tạm tắt",
-    unsupported: "Không hỗ trợ"
-  };
-
-  const render = status => {
-    const on = status.enabled && !status.autoDisabled;
-
-    toggle.setAttribute("aria-pressed", String(on));
-    toggle.classList.toggle("is-on", on);
-    toggle.classList.toggle(
-      "is-loading",
-      on && status.state === "loading"
-    );
-
-    stateLabel.textContent =
-      on && labels[status.state]
-        ? labels[status.state]
-        : on
-          ? "Bật"
-          : "Tắt";
-  };
-
-  NohaBeauty.onChange((status, reason) => {
-    render(status);
-
-    if (reason === "slow") {
-      showToast(
-        "Thiết bị xử lý chậm nên đã tạm tắt làm đẹp để chụp mượt hơn."
-      );
-    } else if (
-      reason === "error" &&
-      status.enabled
-    ) {
-      showToast(
-        "Không bật được làm đẹp trên thiết bị này. Bạn vẫn chụp bình thường."
-      );
-    } else if (reason === "unsupported") {
-      showToast(
-        "Trình duyệt chưa hỗ trợ làm đẹp tự động. Bạn vẫn chụp bình thường."
-      );
-    }
-  });
-
-  toggle.addEventListener("click", () => {
-    const status = NohaBeauty.getStatus();
-    const turnOn = !(status.enabled && !status.autoDisabled);
-
-    NohaBeauty.setEnabled(turnOn);
-
-    showToast(
-      turnOn
-        ? "Đã bật Đẹp tự nhiên."
-        : "Đã tắt làm đẹp."
-    );
-  });
-
-  render(NohaBeauty.getStatus());
-}
-
 function setupMobileEditorTools() {
   const mobileMedia = window.matchMedia(
     "(max-width: 780px)"
@@ -3574,7 +3435,6 @@ async function init() {
     bindSocialEvents();
   }
   setupMobileEditorTools();
-  setupBeautyToggle();
   renderSlots();
   updateVideoPreviewFilter();
 
