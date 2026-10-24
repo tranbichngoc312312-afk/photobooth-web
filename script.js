@@ -139,7 +139,6 @@ let selectedSlot = 0;
 let isCapturing = false;
 let soundEnabled = true;
 let activeFrame = "pink";
-let activeFrameCategory = "all";
 let activeFilter = "normal";
 let selectedSticker = "";
 let customFrameUrl = "";
@@ -156,17 +155,6 @@ let cameraStartPromise = null;
 
 function wait(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-/*
- * Sự kiện ứng dụng (noha:photo-captured, noha:photobooth-downloaded...).
- * Các tính năng sau này như minigame "Vườn kỷ niệm" chỉ cần lắng nghe
- * trên document, không phải sửa luồng chụp.
- */
-function emitNohaEvent(name, detail = {}) {
-  document.dispatchEvent(
-    new CustomEvent(`noha:${name}`, { detail })
-  );
 }
 
 function getLayout() {
@@ -649,7 +637,7 @@ captureCanvas.height = height;
   context.scale(-1, 1);
 }
 
-
+  
 
   drawVideoCover(
   context,
@@ -695,11 +683,6 @@ captureCanvas.height = height;
 
   renderSlots();
   await renderComposite();
-
-  emitNohaEvent("photo-captured", {
-    index,
-    source: "camera"
-  });
 
   if (video.paused) {
     await video.play().catch(() => {});
@@ -1302,19 +1285,127 @@ function applyPixelFilter(canvas) {
   context.putImageData(imageData, 0, 0);
 }
 
-/* Bố cục ô ảnh của một layout — dùng chung cho ảnh xuất và ảnh xem trước khung */
-function getFrameGeometry(
-  layoutKey = layoutSelect.value
+function framePalette(frame) {
+  const palettes = {
+    pink: {
+      bg: "#ff98bc",
+      inner: "#fff8fb",
+      ink: "#ffffff",
+      accent: "#ffe3ee"
+    },
+
+    cream: {
+      bg: "#f0dfbd",
+      inner: "#fffaf0",
+      ink: "#694d3e",
+      accent: "#fff4da"
+    },
+
+    sky: {
+      bg: "#88c8ee",
+      inner: "#f7fcff",
+      ink: "#ffffff",
+      accent: "#dff4ff"
+    },
+
+    film: {
+      bg: "#292329",
+      inner: "#f8ead8",
+      ink: "#f7dfb9",
+      accent: "#111111"
+    },
+
+    mono: {
+      bg: "#111111",
+      inner: "#fafafa",
+      ink: "#ffffff",
+      accent: "#e9e9e9"
+    },
+
+    none: {
+      bg: "#ffffff",
+      inner: "#ffffff",
+      ink: "#5b376d",
+      accent: "#ffffff"
+    },
+
+    custom: {
+      bg: "#ffffff",
+      inner: "#ffffff",
+      ink: "#5b376d",
+      accent: "#ffffff"
+    }
+  };
+
+  return palettes[frame] ||
+    palettes.pink;
+}
+
+function roundedRect(
+  context,
+  x,
+  y,
+  width,
+  height,
+  radius
 ) {
-  const layout =
-    LAYOUTS[layoutKey] || LAYOUTS.strip4;
+  const r = Math.min(
+    radius,
+    width / 2,
+    height / 2
+  );
+
+  context.beginPath();
+
+  context.moveTo(
+    x + r,
+    y
+  );
+
+  context.arcTo(
+    x + width,
+    y,
+    x + width,
+    y + height,
+    r
+  );
+
+  context.arcTo(
+    x + width,
+    y + height,
+    x,
+    y + height,
+    r
+  );
+
+  context.arcTo(
+    x,
+    y + height,
+    x,
+    y,
+    r
+  );
+
+  context.arcTo(
+    x,
+    y,
+    x + width,
+    y,
+    r
+  );
+
+  context.closePath();
+}
+
+function getPhotoBoxes(layout) {
+  const frame = activeFrame;
 
   const strip =
-    layoutKey ===
+    layoutSelect.value ===
     "strip4";
 
   const single =
-    layoutKey ===
+    layoutSelect.value ===
     "single";
 
   const padding =
@@ -1386,17 +1477,12 @@ function getFrameGeometry(
   }
 
   return {
-    width: layout.width,
-    height: layout.height,
     boxes,
     padding,
     header,
     footer,
     gap,
-    strip,
-    single,
-    // Hệ số cỡ chữ/họa tiết, khớp tỉ lệ chữ cũ (42px dải dọc, 58px lưới)
-    scale: strip ? 1 : 1.38
+    frame
   };
 }
 
@@ -1452,25 +1538,30 @@ workCanvas.height =
 const context =
   workCanvas.getContext("2d");
 
-  const template =
-    NohaFrames.get(activeFrame);
+  const palette =
+    framePalette(activeFrame);
 
-  const geometry =
-    getFrameGeometry();
-
-  const { boxes } = geometry;
-
-  await NohaFrames.ensureFonts();
-
-  if (renderToken !== compositeRenderToken) {
-    return;
-  }
-
-  NohaFrames.paintBackground(
-    context,
-    template,
-    geometry
+  context.clearRect(
+    0,
+    0,
+    layout.width,
+    layout.height
   );
+
+  context.fillStyle =
+    palette.bg;
+
+  context.fillRect(
+    0,
+    0,
+    layout.width,
+    layout.height
+  );
+
+  const {
+    boxes,
+    padding
+  } = getPhotoBoxes(layout);
 
   for (
     let index = 0;
@@ -1559,12 +1650,16 @@ if ("filter" in photoContext) {
 
     context.save();
 
-    NohaFrames.clipPhoto(
+    roundedRect(
       context,
-      template,
-      box,
-      geometry
+      box.x,
+      box.y,
+      box.width,
+      box.height,
+      18
     );
+
+    context.clip();
 
     context.drawImage(
       photoCanvas,
@@ -1576,18 +1671,22 @@ if ("filter" in photoContext) {
 
     context.restore();
 
-    NohaFrames.paintPhotoExtras(
-      context,
-      template,
-      box,
-      index
-    );
+    if (
+      activeFrame === "film"
+    ) {
+      drawFilmMarks(
+        context,
+        box,
+        index
+      );
+    }
   }
 
-  NohaFrames.paintOverlay(
+  drawFrameDecorations(
     context,
-    template,
-    geometry
+    layout,
+    palette,
+    padding
   );
 
   if (customFrameUrl) {
@@ -1619,7 +1718,7 @@ if ("filter" in photoContext) {
   drawCustomText(
     context,
     layout,
-    template.palette
+    palette
   );
 
   drawSticker(
@@ -1660,6 +1759,181 @@ outputCanvas.style.display =
 
 emptyPreview.style.display =
   "none";
+}
+
+function drawFrameDecorations(
+  context,
+  layout,
+  palette,
+  padding
+) {
+  const strip =
+    layoutSelect.value ===
+    "strip4";
+
+  const single =
+    layoutSelect.value ===
+    "single";
+
+  context.save();
+
+  context.fillStyle =
+    palette.ink;
+
+  context.textAlign =
+    "center";
+
+  context.font =
+    `900 ${
+      strip ? 42 : 58
+    }px Georgia`;
+
+  context.fillText(
+    "NoHa",
+    layout.width / 2,
+    strip ? 70 : 82
+  );
+
+  context.font =
+    `800 ${
+      strip ? 17 : 24
+    }px Arial`;
+
+  context.fillText(
+    "TIỆM PHOTOBOOTH",
+    layout.width / 2,
+    strip
+      ? layout.height - 88
+      : layout.height - 58
+  );
+
+  if (
+    activeFrame === "pink" ||
+    activeFrame === "cream" ||
+    activeFrame === "sky"
+  ) {
+    context.font =
+      `${
+        strip ? 38 : 52
+      }px Arial`;
+
+    context.fillText(
+      "✿",
+      padding,
+      strip
+        ? layout.height - 70
+        : 70
+    );
+
+    context.fillText(
+      "✿",
+      layout.width - padding,
+      strip
+        ? 74
+        : layout.height - 62
+    );
+  }
+
+  if (
+    activeFrame === "mono"
+  ) {
+    context.strokeStyle =
+      "#ffffff";
+
+    context.lineWidth =
+      strip ? 5 : 8;
+
+    context.strokeRect(
+      20,
+      20,
+      layout.width - 40,
+      layout.height - 40
+    );
+  }
+
+  if (
+    single &&
+    activeFrame === "none"
+  ) {
+    context.fillStyle =
+      "rgba(255,255,255,.72)";
+
+    context.fillRect(
+      0,
+      layout.height - 80,
+      layout.width,
+      80
+    );
+
+    context.fillStyle =
+      "#5b376d";
+
+    context.font =
+      "800 26px Arial";
+
+    context.fillText(
+      "NoHa · Tiệm Photobooth",
+      layout.width / 2,
+      layout.height - 30
+    );
+  }
+
+  context.restore();
+}
+
+function drawFilmMarks(
+  context,
+  box,
+  index
+) {
+  context.save();
+
+  context.fillStyle =
+    "#f6dfbb";
+
+  const size = Math.max(
+    10,
+    box.width * 0.018
+  );
+
+  for (
+    let x = box.x + 20;
+    x < box.x + box.width - 20;
+    x += size * 2.2
+  ) {
+    context.fillRect(
+      x,
+      box.y - 16,
+      size,
+      8
+    );
+
+    context.fillRect(
+      x,
+      box.y +
+        box.height +
+        8,
+      size,
+      8
+    );
+  }
+
+  context.font =
+    `700 ${
+      Math.max(
+        12,
+        box.width * 0.025
+      )
+    }px monospace`;
+
+  context.fillText(
+    String(index + 1)
+      .padStart(2, "0"),
+    box.x + 10,
+    box.y + 24
+  );
+
+  context.restore();
 }
 
 function drawCustomText(
@@ -1818,11 +2092,6 @@ async function downloadComposite() {
   showToast(
     "Đã tạo ảnh PNG chất lượng cao."
   );
-
-  emitNohaEvent("photobooth-downloaded", {
-    layout: layoutSelect.value,
-    frame: activeFrame
-  });
 }
 
 function chooseRecorderMimeType() {
@@ -2137,7 +2406,6 @@ function onLayoutChange() {
   clearRecap();
   renderSlots();
   renderComposite();
-  renderFrameList();
 
   showToast(
     `Đã chọn layout ${
@@ -2146,130 +2414,35 @@ function onLayoutChange() {
   );
 }
 
-/* Danh sách khung sinh từ dữ liệu NohaFrames, ảnh xem trước theo layout hiện tại */
-function renderFrameList() {
-  const frameList = $("#frameList");
-  const categoryBar = $("#frameCategories");
-
-  if (!frameList) {
-    return;
-  }
-
-  if (categoryBar && !categoryBar.childElementCount) {
-    NohaFrames.CATEGORIES.forEach(category => {
-      const chip = document.createElement("button");
-
-      chip.type = "button";
-      chip.className = "frame-category";
-      chip.dataset.category = category.id;
-      chip.textContent = category.name;
-      chip.setAttribute(
-        "aria-pressed",
-        String(category.id === activeFrameCategory)
-      );
-
-      categoryBar.appendChild(chip);
-    });
-  }
-
-  const geometry = getFrameGeometry();
-
-  frameList.innerHTML = "";
-
-  NohaFrames.list(activeFrameCategory).forEach(template => {
-    const button = document.createElement("button");
-    const locked = !NohaFrames.isUnlocked(template.id);
-
-    button.type = "button";
-    button.className = "frame-item";
-    button.dataset.frame = template.id;
-    button.classList.toggle("active", template.id === activeFrame);
-    button.classList.toggle("locked", locked);
-    button.setAttribute(
-      "aria-pressed",
-      String(template.id === activeFrame)
-    );
-
-    const thumb = document.createElement("canvas");
-    thumb.className = "frame-thumb";
-    thumb.setAttribute("aria-hidden", "true");
-
-    NohaFrames.renderThumbnail(thumb, template, geometry, 72, 92);
-
-    const name = document.createElement("span");
-    name.className = "frame-name";
-    name.textContent = template.name;
-
-    button.append(thumb, name);
-    frameList.appendChild(button);
-  });
-}
-
-function selectFrame(frameId) {
-  if (!NohaFrames.isUnlocked(frameId)) {
-    showToast(
-      "Khung này sẽ mở khóa bằng xu NoHa trong thời gian tới."
-    );
-    return;
-  }
-
-  activeFrame = frameId;
-
-  if (customFrameUrl.startsWith("blob:")) {
-    URL.revokeObjectURL(customFrameUrl);
-  }
-
-  customFrameUrl = "";
-
-  $$(".frame-item").forEach(item => {
-    const isActive = item.dataset.frame === frameId;
-
-    item.classList.toggle("active", isActive);
-    item.setAttribute("aria-pressed", String(isActive));
-  });
-
-  scheduleCompositeRender(0);
-}
-
 function bindOptionButtons() {
-  renderFrameList();
+  $$(".frame-item").forEach(
+    button => {
+      button.addEventListener(
+        "click",
+        async () => {
+          $$(".frame-item").forEach(
+            item =>
+              item.classList.remove(
+                "active"
+              )
+          );
 
-  // Ảnh xem trước dùng chữ Pacifico: vẽ lại khi font tải xong
-  NohaFrames.ensureFonts().then(renderFrameList);
+          button.classList.add(
+            "active"
+          );
 
-  $("#frameList")?.addEventListener(
-    "click",
-    event => {
-      const button =
-        event.target.closest(".frame-item");
+          activeFrame =
+            button.dataset.frame;
 
-      if (button) {
-        selectFrame(button.dataset.frame);
-      }
-    }
-  );
+          if (
+            activeFrame !== "custom"
+          ) {
+            customFrameUrl = "";
+          }
 
-  $("#frameCategories")?.addEventListener(
-    "click",
-    event => {
-      const chip =
-        event.target.closest(".frame-category");
-
-      if (!chip) {
-        return;
-      }
-
-      activeFrameCategory =
-        chip.dataset.category;
-
-      $$(".frame-category").forEach(item => {
-        item.setAttribute(
-          "aria-pressed",
-          String(item === chip)
-        );
-      });
-
-      renderFrameList();
+          await renderComposite();
+        }
+      );
     }
   );
 

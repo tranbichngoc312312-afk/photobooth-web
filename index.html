@@ -27,7 +27,7 @@
   rel="stylesheet"
 >
 
-<link rel="stylesheet" href="style.css?v=20261024-frames02">
+<link rel="stylesheet" href="style.css?v=20260801-social04">
 </head>
 
 <body>
@@ -497,14 +497,63 @@
 
             <h3>Khung ảnh</h3>
 
-            <!-- Nhóm khung và danh sách khung được tạo từ frames.js -->
-            <div
-              id="frameCategories"
-              class="frame-categories"
-              aria-label="Nhóm khung ảnh"
-            ></div>
+            <div id="frameList" class="frame-list">
 
-            <div id="frameList" class="frame-list"></div>
+              <button
+                class="frame-item active"
+                data-frame="pink"
+                type="button"
+              >
+                <span class="frame-swatch pink"></span>
+                NoHa Hồng
+              </button>
+
+              <button
+                class="frame-item"
+                data-frame="cream"
+                type="button"
+              >
+                <span class="frame-swatch cream"></span>
+                Kem ngọt
+              </button>
+
+              <button
+                class="frame-item"
+                data-frame="sky"
+                type="button"
+              >
+                <span class="frame-swatch sky"></span>
+                Trời xanh
+              </button>
+
+              <button
+                class="frame-item"
+                data-frame="film"
+                type="button"
+              >
+                <span class="frame-swatch film"></span>
+                Film cổ điển
+              </button>
+
+              <button
+                class="frame-item"
+                data-frame="mono"
+                type="button"
+              >
+                <span class="frame-swatch mono"></span>
+                Đen trắng
+              </button>
+
+              <button
+                class="frame-item"
+                data-frame="none"
+                type="button"
+              >
+                <span class="frame-swatch none"></span>
+                Tối giản
+              </button>
+
+            </div>
 
             <label
               class="secondary-button file-button full-width"
@@ -1668,8 +1717,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>window.NOHA_REAL_SOCIAL = true;</script>
-<script src="frames.js?v=20261024-frames02"></script>
-<script src="script.js?v=20261024-frames02"></script>
+<script src="script.js?v=20260801-social04"></script>
 <script src="social.js?v=20260801-social04"></script>
 
 </body>
