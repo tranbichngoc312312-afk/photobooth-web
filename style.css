@@ -2517,7 +2517,8 @@ input[type="range"] {
   .mobile-download-actions {
     order: 4;
     display: grid !important;
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    /* Chỉ còn 2 nút (ảnh, video) nên chia đều 2 cột cho cân giữa */
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 8px !important;
     width: 100% !important;
     margin-top: 10px !important;
@@ -2562,9 +2563,9 @@ input[type="range"] {
     width: 100% !important;
     margin: 6px 0 0 !important;
     color: #8b7283 !important;
-    font-size: 9px !important;
+    font-size: 11px !important;
     line-height: 1.35 !important;
-    text-align: left !important;
+    text-align: center !important;
   }
 
   .mobile-continue-share {
