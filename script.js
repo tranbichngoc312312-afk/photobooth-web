@@ -1660,6 +1660,8 @@ outputCanvas.style.display =
 
 emptyPreview.style.display =
   "none";
+
+scheduleExportBlob(renderToken);
 }
 
 function drawCustomText(
@@ -1776,21 +1778,59 @@ function drawSticker(
   context.restore();
 }
 
-async function downloadComposite() {
-  await renderComposite();
+/*
+ * Ảnh PNG được tạo sẵn ngay sau mỗi lần cập nhật xem trước. Khi bấm tải,
+ * bảng chia sẻ mở ngay trong cú chạm — Safari/iOS chặn navigator.share
+ * nếu phải chờ tạo ảnh xong mới gọi.
+ */
+let exportBlobCache = {
+  token: 0,
+  blob: null
+};
 
-  if (
-    downloadImageButton.disabled
-  ) {
-    return;
-  }
+let exportBlobTimer = 0;
 
-  const blob =
-    await canvasToBlob(
-      outputCanvas,
-      "image/png"
-    );
+function scheduleExportBlob(token) {
+  clearTimeout(exportBlobTimer);
 
+  exportBlobTimer = setTimeout(async () => {
+    if (token !== compositeRenderToken) {
+      return;
+    }
+
+    try {
+      const blob = await canvasToBlob(
+        outputCanvas,
+        "image/png"
+      );
+
+      if (token === compositeRenderToken) {
+        exportBlobCache = { token, blob };
+      }
+    } catch (error) {
+      console.warn("Không tạo sẵn được ảnh PNG", error);
+    }
+  }, 350);
+}
+
+function isTouchDevice() {
+  return window.matchMedia("(pointer: coarse)").matches;
+}
+
+/* Trình duyệt bên trong app (Zalo, Facebook...) thường chặn tải file */
+function inAppBrowserName() {
+  const ua = navigator.userAgent;
+
+  if (/Zalo/i.test(ua)) return "Zalo";
+  if (/FBAN|FBAV|FB_IAB|Messenger/i.test(ua)) return "Facebook/Messenger";
+  if (/Instagram/i.test(ua)) return "Instagram";
+  if (/TikTok|musical_ly|BytedanceWebview/i.test(ua)) return "TikTok";
+  if (/\bLine\//i.test(ua)) return "LINE";
+
+  return "";
+}
+
+function triggerFileDownload(blob, filename) {
   const url =
     URL.createObjectURL(blob);
 
@@ -1798,31 +1838,171 @@ async function downloadComposite() {
     document.createElement("a");
 
   link.href = url;
-
-  link.download =
-    `noha-photobooth-${
-      layoutSelect.value
-    }.png`;
+  link.download = filename;
 
   document.body.appendChild(link);
 
   link.click();
   link.remove();
 
+  // iPhone hỏi "Tải về?" trước khi tải: giữ link đủ lâu cho người dùng bấm
   setTimeout(
     () =>
       URL.revokeObjectURL(url),
-    2000
+    60000
+  );
+}
+
+/*
+ * Lưu ảnh/video:
+ * - Điện thoại: mở bảng chia sẻ để "Lưu hình ảnh/video" vào thư viện ảnh.
+ * - Không chia sẻ được (trình duyệt trong app...): hiện ảnh/video để
+ *   nhấn giữ lưu, kèm nút tải file.
+ * - Máy tính: tải file như trước.
+ */
+async function saveBlob(blob, filename, title) {
+  const file = new File(
+    [blob],
+    filename,
+    { type: blob.type.split(";")[0] }
   );
 
-  showToast(
-    "Đã tạo ảnh PNG chất lượng cao."
+  if (isTouchDevice()) {
+    if (navigator.canShare?.({ files: [file] })) {
+      try {
+        await navigator.share({
+          files: [file],
+          title
+        });
+
+        return "shared";
+      } catch (error) {
+        if (error.name === "AbortError") {
+          return "cancelled";
+        }
+
+        console.warn("Không mở được bảng chia sẻ", error);
+      }
+    }
+
+    openSaveDialog(file);
+    return "dialog";
+  }
+
+  triggerFileDownload(file, filename);
+  return "downloaded";
+}
+
+let saveDialogUrl = "";
+
+function openSaveDialog(file) {
+  const dialog = $("#saveDialog");
+  const media = $("#saveDialogMedia");
+  const link = $("#saveDialogLink");
+  const isVideo = file.type.startsWith("video/");
+  const appName = inAppBrowserName();
+
+  if (saveDialogUrl) {
+    URL.revokeObjectURL(saveDialogUrl);
+  }
+
+  saveDialogUrl = URL.createObjectURL(file);
+
+  media.innerHTML = "";
+
+  const element = document.createElement(
+    isVideo ? "video" : "img"
   );
 
-  emitNohaEvent("photobooth-downloaded", {
-    layout: layoutSelect.value,
-    frame: activeFrame
-  });
+  element.src = saveDialogUrl;
+
+  if (isVideo) {
+    element.controls = true;
+    element.playsInline = true;
+    element.loop = true;
+  } else {
+    element.alt = "Ảnh photobooth NoHa";
+  }
+
+  media.appendChild(element);
+
+  link.href = saveDialogUrl;
+  link.download = file.name;
+
+  $("#saveDialogTitle").textContent =
+    isVideo ? "Lưu video recap" : "Lưu ảnh";
+
+  const hints = [
+    isVideo
+      ? "Bấm “Tải file về máy”, hoặc phát video rồi dùng nút chia sẻ của trình duyệt để lưu."
+      : "Nhấn giữ ảnh bên dưới rồi chọn “Lưu vào Ảnh” hoặc “Tải hình ảnh xuống”."
+  ];
+
+  if (appName) {
+    hints.push(
+      `Bạn đang mở NoHa trong ${appName}, app này có thể chặn tải file. Nếu chưa lưu được, bấm nút ••• rồi chọn “Mở bằng trình duyệt”.`
+    );
+  }
+
+  $("#saveDialogHint").textContent =
+    hints.join(" ");
+
+  if (!dialog.open) {
+    dialog.showModal();
+  }
+}
+
+function closeSaveDialog() {
+  $("#saveDialog").close();
+}
+
+async function downloadComposite() {
+  if (downloadImageButton.disabled) {
+    return;
+  }
+
+  // Dùng ảnh tạo sẵn nếu xem trước chưa đổi, để không mất cú chạm
+  let blob =
+    exportBlobCache.token === compositeRenderToken
+      ? exportBlobCache.blob
+      : null;
+
+  if (!blob) {
+    await renderComposite();
+
+    if (
+      downloadImageButton.disabled
+    ) {
+      return;
+    }
+
+    blob =
+      await canvasToBlob(
+        outputCanvas,
+        "image/png"
+      );
+  }
+
+  const result = await saveBlob(
+    blob,
+    `noha-photobooth-${
+      layoutSelect.value
+    }.png`,
+    "Ảnh photobooth NoHa"
+  );
+
+  if (result === "downloaded") {
+    showToast(
+      "Đã tạo ảnh PNG chất lượng cao."
+    );
+  }
+
+  if (result !== "cancelled") {
+    emitNohaEvent("photobooth-downloaded", {
+      layout: layoutSelect.value,
+      frame: activeFrame
+    });
+  }
 }
 
 function chooseRecorderMimeType() {
@@ -1830,8 +2010,11 @@ function chooseRecorderMimeType() {
     return "";
   }
 
+  // Ưu tiên MP4: iPhone và thư viện ảnh điện thoại không mở được WebM
   const types = [
+    "video/mp4;codecs=avc1",
     "video/mp4;codecs=h264",
+    "video/mp4",
     "video/webm;codecs=vp9",
     "video/webm;codecs=vp8",
     "video/webm"
@@ -2053,18 +2236,11 @@ function downloadRecap() {
       ? "mp4"
       : "webm";
 
-  const link =
-    document.createElement("a");
-
-  link.href = recapBlob.url;
-
-  link.download =
-    `noha-video-recap.${extension}`;
-
-  document.body.appendChild(link);
-
-  link.click();
-  link.remove();
+  saveBlob(
+    recapBlob.blob,
+    `noha-video-recap.${extension}`,
+    "Video recap NoHa"
+  );
 }
 
 async function handlePhotoUpload(files) {
@@ -2330,6 +2506,9 @@ scheduleCompositeRender(40);
 
 function scheduleCompositeRender(delay = 100) {
   clearTimeout(previewRenderTimer);
+
+  // Xem trước sắp đổi: ảnh tạo sẵn không còn đúng nữa
+  exportBlobCache.token = -1;
 
   previewRenderTimer = setTimeout(() => {
     renderComposite().catch(error => {
@@ -3138,6 +3317,12 @@ scheduleCompositeRender(100);
       () => {
         helpDialog.showModal();
       }
+    );
+
+  $("#closeSaveDialogButton")
+    ?.addEventListener(
+      "click",
+      closeSaveDialog
     );
 
   $("#closeHelpButton")

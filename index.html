@@ -27,7 +27,7 @@
   rel="stylesheet"
 >
 
-<link rel="stylesheet" href="style.css?v=20261024-frames02">
+<link rel="stylesheet" href="style.css?v=20261024-save03">
 </head>
 
 <body>
@@ -1419,6 +1419,35 @@
 
   </dialog>
 
+  <!-- Lưu ảnh/video khi điện thoại không mở được bảng chia sẻ -->
+  <dialog id="saveDialog" class="help-dialog save-dialog">
+    <div class="dialog-heading">
+      <h2 id="saveDialogTitle">Lưu ảnh</h2>
+
+      <button
+        id="closeSaveDialogButton"
+        class="icon-button"
+        type="button"
+        aria-label="Đóng"
+      >
+        ✕
+      </button>
+    </div>
+
+    <p id="saveDialogHint" class="save-dialog-hint"></p>
+
+    <div id="saveDialogMedia" class="save-dialog-media"></div>
+
+    <a
+      id="saveDialogLink"
+      class="primary-button save-dialog-link"
+      href="#"
+      download
+    >
+      ⬇ Tải file về máy
+    </a>
+  </dialog>
+
   <dialog id="profileDialog" class="help-dialog profile-dialog">
     <div class="dialog-heading">
       <h2>Tài khoản NoHa</h2>
@@ -1668,8 +1697,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>window.NOHA_REAL_SOCIAL = true;</script>
-<script src="frames.js?v=20261024-frames02"></script>
-<script src="script.js?v=20261024-frames02"></script>
+<script src="frames.js?v=20261024-save03"></script>
+<script src="script.js?v=20261024-save03"></script>
 <script src="social.js?v=20260801-social04"></script>
 
 </body>
