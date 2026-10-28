@@ -129,8 +129,21 @@ const FILTERS = {
   warm: "sepia(.18) saturate(1.12) brightness(1.05)",
   retro: "sepia(.45) contrast(1.05) saturate(.86)",
   mono: "grayscale(1) contrast(1.08)",
-  vivid: "contrast(1.1) saturate(1.35)"
+  vivid: "contrast(1.1) saturate(1.35)",
+  // Bộ lọc kiểu máy film
+  soft: "brightness(1.07) contrast(.9) saturate(.9)",
+  dazzClassic: "sepia(.2) contrast(1.12) saturate(1.18) hue-rotate(-6deg)",
+  dazzInstant: "sepia(.14) brightness(1.08) contrast(.88) saturate(.82) hue-rotate(8deg)"
 };
+
+/* Hiệu ứng sau khi chụp, vẽ theo thứ tự này lên từng ảnh */
+const EFFECT_ORDER = [
+  "chromatic",
+  "lightLeak",
+  "vignette",
+  "grain",
+  "timestamp"
+];
 
 let stream = null;
 let facingMode = "user";
@@ -141,6 +154,8 @@ let soundEnabled = true;
 let activeFrame = "pink";
 let activeFrameCategory = "all";
 let activeFilter = "normal";
+let activeEffects = new Set();
+let grainTile = null;
 let selectedSticker = "";
 let customFrameUrl = "";
 let recorder = null;
@@ -1231,6 +1246,20 @@ function applyPixelFilter(canvas) {
   } else if (activeFilter === "vivid") {
     preset.contrast = 1.1;
     preset.saturation = 1.35;
+  } else if (activeFilter === "soft") {
+    preset.brightness = 1.07;
+    preset.contrast = 0.9;
+    preset.saturation = 0.9;
+  } else if (activeFilter === "dazzClassic") {
+    // Bản tính tay không có hue-rotate, chỉ gần đúng với bản CSS
+    preset.sepia = 0.2;
+    preset.contrast = 1.12;
+    preset.saturation = 1.18;
+  } else if (activeFilter === "dazzInstant") {
+    preset.sepia = 0.14;
+    preset.brightness = 1.08;
+    preset.contrast = 0.88;
+    preset.saturation = 0.82;
   }
 
   const changeSaturation = (rgb, amount) => {
@@ -1300,6 +1329,142 @@ function applyPixelFilter(canvas) {
   }
 
   context.putImageData(imageData, 0, 0);
+}
+
+/* ===== Hiệu ứng sau khi chụp ===== */
+
+/* Ô nhiễu xám tạo một lần mỗi phiên, nên xem trước và ảnh tải về giống nhau */
+function getGrainTile() {
+  if (grainTile) {
+    return grainTile;
+  }
+
+  grainTile = document.createElement("canvas");
+  grainTile.width = 160;
+  grainTile.height = 160;
+
+  const context = grainTile.getContext("2d");
+  const noise = context.createImageData(160, 160);
+
+  for (let i = 0; i < noise.data.length; i += 4) {
+    const value = 128 + (Math.random() - 0.5) * 140;
+
+    noise.data[i] = value;
+    noise.data[i + 1] = value;
+    noise.data[i + 2] = value;
+    noise.data[i + 3] = 255;
+  }
+
+  context.putImageData(noise, 0, 0);
+
+  return grainTile;
+}
+
+/* Bản sao chỉ giữ các kênh màu của `color` (ví dụ #ff0000 = kênh đỏ) */
+function channelCopy(source, color) {
+  const copy = document.createElement("canvas");
+  copy.width = source.width;
+  copy.height = source.height;
+
+  const context = copy.getContext("2d");
+  context.drawImage(source, 0, 0);
+  context.globalCompositeOperation = "multiply";
+  context.fillStyle = color;
+  context.fillRect(0, 0, copy.width, copy.height);
+
+  return copy;
+}
+
+const PHOTO_EFFECTS = {
+  /* Lệch màu kiểu Y2K: kênh đỏ lệch phải, xanh lệch trái */
+  chromatic(context, canvas) {
+    const shift = Math.max(2, Math.round(canvas.width * 0.004));
+    const red = channelCopy(canvas, "#ff0000");
+    const cyan = channelCopy(canvas, "#00ffff");
+
+    context.fillStyle = "#000000";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.globalCompositeOperation = "lighter";
+    context.drawImage(cyan, -shift, 0);
+    context.drawImage(red, shift, 0);
+  },
+
+  /* Vệt sáng loang cam hồng từ mép, mỗi ảnh một vị trí khác nhau */
+  lightLeak(context, canvas, index) {
+    const unit = Math.min(canvas.width, canvas.height);
+    const x = index % 2 === 0 ? 0 : canvas.width;
+    const y = (index % 3) * canvas.height * 0.35;
+    const gradient = context.createRadialGradient(x, y, 0, x, y, unit * 0.9);
+
+    gradient.addColorStop(0, "rgba(255,150,60,0.75)");
+    gradient.addColorStop(0.35, "rgba(255,90,120,0.35)");
+    gradient.addColorStop(1, "rgba(255,90,120,0)");
+
+    context.globalCompositeOperation = "screen";
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+  },
+
+  /* Tối dần bốn góc */
+  vignette(context, canvas) {
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+    const gradient = context.createRadialGradient(
+      cx,
+      cy,
+      Math.min(canvas.width, canvas.height) * 0.35,
+      cx,
+      cy,
+      Math.hypot(canvas.width, canvas.height) / 2
+    );
+
+    gradient.addColorStop(0, "rgba(0,0,0,0)");
+    gradient.addColorStop(1, "rgba(0,0,0,0.55)");
+
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+  },
+
+  /* Hạt nhiễu kiểu film */
+  grain(context, canvas) {
+    context.globalCompositeOperation = "overlay";
+    context.globalAlpha = 0.35;
+    context.fillStyle = context.createPattern(getGrainTile(), "repeat");
+    context.fillRect(0, 0, canvas.width, canvas.height);
+  },
+
+  /* Dấu ngày kiểu máy ảnh film: '26 10 28 màu cam phát sáng */
+  timestamp(context, canvas) {
+    const now = new Date();
+    const pad = value => String(value).padStart(2, "0");
+    const text =
+      `'${String(now.getFullYear()).slice(2)} ${pad(now.getMonth() + 1)} ${pad(now.getDate())}`;
+    const size = Math.max(12, Math.round(Math.min(canvas.width, canvas.height) * 0.07));
+
+    context.font = `700 ${size}px "Courier New", monospace`;
+    context.textAlign = "right";
+    context.textBaseline = "bottom";
+    context.fillStyle = "#ff9a3c";
+    context.shadowColor = "rgba(255,120,40,0.85)";
+    context.shadowBlur = size * 0.35;
+    context.fillText(text, canvas.width - size * 0.6, canvas.height - size * 0.5);
+  }
+};
+
+function applyPhotoEffects(canvas, index) {
+  if (!activeEffects.size) {
+    return;
+  }
+
+  const context = canvas.getContext("2d");
+
+  EFFECT_ORDER
+    .filter(name => activeEffects.has(name))
+    .forEach(name => {
+      context.save();
+      PHOTO_EFFECTS[name](context, canvas, index);
+      context.restore();
+    });
 }
 
 /* Bố cục ô ảnh của một layout — dùng chung cho ảnh xuất và ảnh xem trước khung */
@@ -1502,7 +1667,9 @@ const photoRenderKey = [
   activeFilter,
   brightnessRange.value,
   contrastRange.value,
-  saturationRange.value
+  saturationRange.value,
+  index,
+  [...activeEffects].sort().join(",")
 ].join("|");
 
 let photoCanvas =
@@ -1546,6 +1713,8 @@ if ("filter" in photoContext) {
 
   applyPixelFilter(photoCanvas);
 }
+
+  applyPhotoEffects(photoCanvas, index);
 
   if (filteredPhotoCache.size > 40) {
     filteredPhotoCache.clear();
@@ -2479,6 +2648,40 @@ updateVideoPreviewFilter();
 scheduleCompositeRender(40);
         }
       );
+    }
+  );
+
+  // Hiệu ứng bật/tắt độc lập, có thể bật nhiều cái cùng lúc
+  $("#effectList")?.addEventListener(
+    "click",
+    event => {
+      const chip =
+        event.target.closest(".effect-chip");
+
+      if (!chip) {
+        return;
+      }
+
+      const effect = chip.dataset.effect;
+
+      if (activeEffects.has(effect)) {
+        activeEffects.delete(effect);
+      } else {
+        activeEffects.add(effect);
+      }
+
+      chip.classList.toggle(
+        "active",
+        activeEffects.has(effect)
+      );
+
+      chip.setAttribute(
+        "aria-pressed",
+        String(activeEffects.has(effect))
+      );
+
+      filteredPhotoCache.clear();
+      scheduleCompositeRender(40);
     }
   );
 

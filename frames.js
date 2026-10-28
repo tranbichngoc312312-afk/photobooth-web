@@ -22,6 +22,7 @@ window.NohaFrames = (() => {
   const CATEGORIES = [
     { id: "all", name: "Tất cả" },
     { id: "trend", name: "Hot trend" },
+    { id: "korean", name: "Kiểu Hàn" },
     { id: "event", name: "Lễ & sự kiện" },
     { id: "season", name: "Theo mùa" },
     { id: "minimal", name: "Tối giản" },
@@ -404,13 +405,12 @@ window.NohaFrames = (() => {
       text: { titleFont: "script", subtitle: "MERRY CHRISTMAS", date: true }
     },
 
-    /* ===== Khung hot trend & sự kiện (isNew: hiện nhãn MỚI) ===== */
+    /* ===== Khung hot trend & sự kiện ===== */
     {
       id: "event-graduation",
       name: "Tốt nghiệp",
       category: "event",
       access: "free",
-      isNew: true,
       palette: { ink: "#ffe7a3" },
       background: {
         type: "linear",
@@ -445,7 +445,6 @@ window.NohaFrames = (() => {
       name: "Bằng tốt nghiệp",
       category: "event",
       access: "free",
-      isNew: true,
       palette: { ink: "#1d2b5a" },
       background: { type: "solid", color: "#fbf6ea" },
       decorations: [
@@ -468,7 +467,6 @@ window.NohaFrames = (() => {
       name: "Tri ân 20/11",
       category: "event",
       access: "free",
-      isNew: true,
       palette: { ink: "#c2416b" },
       background: {
         type: "linear",
@@ -494,7 +492,6 @@ window.NohaFrames = (() => {
       name: "Sinh nhật",
       category: "event",
       access: "free",
-      isNew: true,
       palette: { ink: "#e4568c" },
       background: {
         type: "linear",
@@ -529,7 +526,6 @@ window.NohaFrames = (() => {
       name: "Halloween",
       category: "event",
       access: "free",
-      isNew: true,
       palette: { ink: "#ffb347" },
       background: {
         type: "linear",
@@ -573,7 +569,6 @@ window.NohaFrames = (() => {
       name: "Tết sum vầy",
       category: "event",
       access: "free",
-      isNew: true,
       palette: { ink: "#ffe08a" },
       background: {
         type: "linear",
@@ -599,7 +594,6 @@ window.NohaFrames = (() => {
       name: "Ngày cưới",
       category: "couple",
       access: "free",
-      isNew: true,
       palette: { ink: "#b08d2a" },
       background: { type: "solid", color: "#fffaf3" },
       decorations: [
@@ -627,7 +621,6 @@ window.NohaFrames = (() => {
       name: "Bìa tạp chí",
       category: "trend",
       access: "free",
-      isNew: true,
       palette: { ink: "#111111" },
       background: { type: "solid", color: "#ffffff" },
       decorations: [
@@ -654,7 +647,6 @@ window.NohaFrames = (() => {
       name: "Báo NoHa",
       category: "trend",
       access: "free",
-      isNew: true,
       palette: { ink: "#1b1b1b" },
       background: { type: "solid", color: "#f1ede4" },
       decorations: [
@@ -673,7 +665,6 @@ window.NohaFrames = (() => {
       name: "Rạp phim",
       category: "trend",
       access: "free",
-      isNew: true,
       palette: { ink: "#f4e9d8" },
       background: { type: "solid", color: "#141018" },
       decorations: [
@@ -694,7 +685,6 @@ window.NohaFrames = (() => {
       name: "Photocard idol",
       category: "trend",
       access: "free",
-      isNew: true,
       palette: { ink: "#7b5cff" },
       background: {
         type: "linear",
@@ -726,6 +716,280 @@ window.NohaFrames = (() => {
         titleFont: "bold",
         subtitle: "NOHA ENT. · OFFICIAL PHOTOCARD",
         shadow: "rgba(255,255,255,0.9)"
+      }
+    },
+
+    /* ===== Kiểu Hàn, pastel, cute, vintage, K-pop (isNew: nhãn MỚI) ===== */
+    {
+      id: "korean-black",
+      name: "Hàn Quốc đen",
+      category: "korean",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#f5f5f5" },
+      background: { type: "solid", color: "#111111" },
+      photo: { radius: 2 },
+      text: { titleSize: 0.75, subtitle: "NOHA · 4 CUTS", date: true }
+    },
+    {
+      id: "korean-white",
+      name: "Hàn Quốc trắng",
+      category: "korean",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#3a3a3a" },
+      background: { type: "solid", color: "#fafafa" },
+      photo: { radius: 2 },
+      text: { titleSize: 0.75, subtitle: "NOHA · 4 CUTS", date: true }
+    },
+    {
+      id: "korean-pastel-pink",
+      name: "Pastel hồng",
+      category: "korean",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#c25a7c" },
+      background: { type: "solid", color: "#f9d9e3" },
+      decorations: [
+        {
+          type: "scatter",
+          layer: "front",
+          shape: "sparkle",
+          density: 4,
+          size: [12, 20],
+          colors: ["#ffffff"],
+          seed: 101
+        }
+      ],
+      photo: { radius: 8 },
+      text: { titleFont: "script", titleSize: 0.85, subtitle: "SWEET MOMENT", date: true }
+    },
+    {
+      id: "korean-pastel-lilac",
+      name: "Pastel tím",
+      category: "korean",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#7a5fb0" },
+      background: { type: "solid", color: "#e3dbf5" },
+      decorations: [
+        {
+          type: "scatter",
+          layer: "front",
+          shape: "star",
+          density: 4,
+          size: [12, 18],
+          colors: ["#ffffff"],
+          seed: 102
+        }
+      ],
+      photo: { radius: 8 },
+      text: { titleFont: "script", titleSize: 0.85, subtitle: "LAVENDER DAY", date: true }
+    },
+    {
+      id: "korean-pastel-mint",
+      name: "Pastel bạc hà",
+      category: "korean",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#3f8a76" },
+      background: { type: "solid", color: "#d4f0e6" },
+      decorations: [
+        {
+          type: "scatter",
+          layer: "front",
+          shape: "heart",
+          density: 4,
+          size: [12, 18],
+          colors: ["#ffffff"],
+          seed: 103
+        }
+      ],
+      photo: { radius: 8 },
+      text: { titleFont: "script", titleSize: 0.85, subtitle: "FRESH MINT", date: true }
+    },
+    {
+      id: "cute-coquette",
+      name: "Nơ coquette",
+      category: "cute",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#d0637f" },
+      background: { type: "solid", color: "#fff0f3" },
+      decorations: [
+        {
+          type: "scatter",
+          layer: "back",
+          shape: "circle",
+          area: "all",
+          density: 12,
+          size: [6, 10],
+          colors: ["rgba(255,255,255,0.95)"],
+          seed: 111
+        },
+        { type: "corners", layer: "front", shape: "bow", colors: ["#f497b0"], size: 54, inset: 40 },
+        {
+          type: "scatter",
+          layer: "front",
+          shape: "heart",
+          density: 4,
+          size: [12, 18],
+          colors: ["#f497b0"],
+          seed: 112
+        }
+      ],
+      photo: { radius: 16, border: { color: "#ffffff", width: 8 } },
+      text: { titleFont: "script", subtitle: "SOFT & SWEET", date: true }
+    },
+    {
+      id: "cute-gingham-blue",
+      name: "Caro xanh",
+      category: "cute",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#2f5f9e" },
+      background: { type: "gingham", color: "#ffffff", stripe: "rgba(120,170,230,0.35)", size: 22 },
+      decorations: [
+        {
+          type: "scatter",
+          layer: "front",
+          shape: "heart",
+          density: 5,
+          size: [16, 24],
+          colors: ["#ffffff", "#7aaae6"],
+          seed: 121
+        }
+      ],
+      photo: { radius: 12, border: { color: "#ffffff", width: 8 } },
+      text: { titleFont: "script", subtitle: "PICNIC DAY", date: true, shadow: "rgba(255,255,255,0.95)" }
+    },
+    {
+      id: "cute-gingham-cherry",
+      name: "Caro cherry",
+      category: "cute",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#c8323f" },
+      background: { type: "gingham", color: "#fff6f6", stripe: "rgba(230,90,100,0.28)", size: 22 },
+      decorations: [
+        {
+          type: "scatter",
+          layer: "front",
+          shape: "cherry",
+          density: 6,
+          size: [28, 40],
+          colors: ["#e0313f"],
+          seed: 131
+        }
+      ],
+      photo: { radius: 12, border: { color: "#ffffff", width: 8 } },
+      text: { titleFont: "script", subtitle: "CHERRY ON TOP", date: true, shadow: "rgba(255,255,255,0.95)" }
+    },
+    {
+      id: "cute-bear",
+      name: "Gấu nâu",
+      category: "cute",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#7a4a2c" },
+      background: {
+        type: "linear",
+        stops: ["#fbe9d7", "#f2d3b6"]
+      },
+      decorations: [
+        {
+          type: "scatter",
+          layer: "front",
+          shape: "bear",
+          density: 6,
+          size: [30, 44],
+          colors: ["#a86b45", "#c08457"],
+          seed: 141
+        }
+      ],
+      photo: { radius: 18, border: { color: "#fffaf4", width: 8 } },
+      text: { titleFont: "script", subtitle: "BEAR HUG", date: true }
+    },
+    {
+      id: "trend-vintage-roll",
+      name: "Cuộn phim vàng",
+      category: "trend",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#3a2412" },
+      background: { type: "solid", color: "#efb53a" },
+      decorations: [
+        { type: "sprockets", layer: "back", color: "#3a2412" }
+      ],
+      photo: { radius: 2, border: { color: "#3a2412", width: 4 } },
+      text: {
+        title: "NOHA FILM 400",
+        titleFont: "bold",
+        titleSize: 0.8,
+        subtitle: "◀ 24 EXP · COLOR NEGATIVE ▶",
+        date: true
+      }
+    },
+    {
+      id: "trend-kpop-bias",
+      name: "My bias",
+      category: "trend",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#8a4fd8" },
+      background: {
+        type: "linear",
+        stops: ["#efe2ff", "#ffe0f2"]
+      },
+      decorations: [
+        {
+          type: "scatter",
+          layer: "front",
+          shape: "heart",
+          density: 5,
+          size: [16, 26],
+          colors: ["#ff7bc0", "#b48cff"],
+          seed: 151
+        },
+        {
+          type: "scatter",
+          layer: "front",
+          shape: "star",
+          density: 5,
+          size: [14, 22],
+          colors: ["#ffd84d", "#ffffff"],
+          seed: 152
+        }
+      ],
+      photo: { radius: 20, border: { color: "#ffffff", width: 6 } },
+      text: { titleFont: "bold", subtitle: "♡ MY BIAS ♡", tagline: "NOHA FANCLUB", date: true }
+    },
+    {
+      id: "trend-y2k-neon",
+      name: "Y2K neon",
+      category: "trend",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#9dff6a" },
+      background: { type: "solid", color: "#0d0d14" },
+      decorations: [
+        {
+          type: "scatter",
+          layer: "front",
+          shape: "sparkle",
+          density: 9,
+          size: [14, 30],
+          colors: ["#ff4fd8", "#9dff6a", "#5ee7ff"],
+          seed: 161
+        }
+      ],
+      photo: { radius: 24, border: { color: "#ff4fd8", width: 4 } },
+      text: {
+        titleFont: "bold",
+        titleColor: "#ff4fd8",
+        subtitle: "Y2K NEON ✦ NOHA",
+        shadow: "rgba(255,79,216,0.8)",
+        date: true
       }
     }
   ];
@@ -1095,11 +1359,112 @@ window.NohaFrames = (() => {
     context.stroke();
   }
 
+  function bowShape(context, size) {
+    const s = size / 2;
+
+    [-1, 1].forEach(side => {
+      // Hai cánh nơ
+      context.beginPath();
+      context.moveTo(0, 0);
+      context.bezierCurveTo(side * s * 0.4, -s * 0.7, side * s, -s * 0.5, side * s * 0.9, 0);
+      context.bezierCurveTo(side * s, s * 0.5, side * s * 0.4, s * 0.45, 0, 0);
+      context.fill();
+
+      // Hai đuôi nơ
+      context.beginPath();
+      context.moveTo(side * s * 0.05, s * 0.05);
+      context.lineTo(side * s * 0.5, s * 0.95);
+      context.lineTo(side * s * 0.3, s * 0.82);
+      context.lineTo(side * s * 0.14, s * 0.98);
+      context.closePath();
+      context.fill();
+    });
+
+    context.beginPath();
+    context.arc(0, 0, s * 0.2, 0, Math.PI * 2);
+    context.fill();
+    context.fillStyle = "rgba(0,0,0,0.12)";
+    context.fill();
+  }
+
+  function cherryShape(context, size, color) {
+    const s = size / 2;
+
+    context.strokeStyle = "#4f7a2a";
+    context.lineWidth = Math.max(1.5, size * 0.05);
+    context.lineCap = "round";
+    context.beginPath();
+    context.moveTo(-s * 0.4, s * 0.25);
+    context.quadraticCurveTo(-s * 0.2, -s * 0.4, s * 0.1, -s * 0.75);
+    context.moveTo(s * 0.4, s * 0.3);
+    context.quadraticCurveTo(s * 0.3, -s * 0.3, s * 0.1, -s * 0.75);
+    context.stroke();
+
+    context.fillStyle = "#6fae3c";
+    context.beginPath();
+    context.ellipse(s * 0.38, -s * 0.72, s * 0.3, s * 0.13, -0.4, 0, Math.PI * 2);
+    context.fill();
+
+    [[-s * 0.42, s * 0.45], [s * 0.42, s * 0.5]].forEach(([x, y]) => {
+      context.fillStyle = color;
+      context.beginPath();
+      context.arc(x, y, s * 0.36, 0, Math.PI * 2);
+      context.fill();
+      context.fillStyle = "rgba(255,255,255,0.55)";
+      context.beginPath();
+      context.arc(x - s * 0.12, y - s * 0.12, s * 0.09, 0, Math.PI * 2);
+      context.fill();
+    });
+  }
+
+  function bearShape(context, size, color) {
+    const s = size / 2;
+
+    context.fillStyle = color;
+    [[-s * 0.62, -s * 0.58], [s * 0.62, -s * 0.58]].forEach(([x, y]) => {
+      context.beginPath();
+      context.arc(x, y, s * 0.3, 0, Math.PI * 2);
+      context.fill();
+    });
+
+    context.beginPath();
+    context.arc(0, 0, s * 0.8, 0, Math.PI * 2);
+    context.fill();
+
+    context.fillStyle = "rgba(255,240,220,0.9)";
+    context.beginPath();
+    context.ellipse(0, s * 0.28, s * 0.36, s * 0.28, 0, 0, Math.PI * 2);
+    context.fill();
+
+    context.fillStyle = "#3a2418";
+    [[-s * 0.3, -s * 0.12], [s * 0.3, -s * 0.12]].forEach(([x, y]) => {
+      context.beginPath();
+      context.arc(x, y, s * 0.09, 0, Math.PI * 2);
+      context.fill();
+    });
+    context.beginPath();
+    context.ellipse(0, s * 0.18, s * 0.12, s * 0.08, 0, 0, Math.PI * 2);
+    context.fill();
+
+    context.fillStyle = "rgba(255,130,150,0.45)";
+    [[-s * 0.5, s * 0.15], [s * 0.5, s * 0.15]].forEach(([x, y]) => {
+      context.beginPath();
+      context.arc(x, y, s * 0.12, 0, Math.PI * 2);
+      context.fill();
+    });
+  }
+
   function drawShape(context, shape, size, color, random) {
     context.fillStyle = color;
     context.strokeStyle = color;
 
-    if (shape === "gradCap") {
+    if (shape === "bow") {
+      bowShape(context, size);
+    } else if (shape === "cherry") {
+      cherryShape(context, size, color);
+    } else if (shape === "bear") {
+      bearShape(context, size, color);
+    } else if (shape === "gradCap") {
       gradCapShape(context, size);
     } else if (shape === "pumpkin") {
       pumpkinShape(context, size, color);
@@ -1538,6 +1903,21 @@ window.NohaFrames = (() => {
 
       context.fillStyle = gradient;
       context.fillRect(0, 0, geo.width, geo.height);
+    } else if (background.type === "gingham") {
+      // Caro: sọc dọc và sọc ngang bán trong suốt chồng lên nhau
+      context.fillStyle = background.color;
+      context.fillRect(0, 0, geo.width, geo.height);
+
+      const size = background.size * geo.scale;
+      context.fillStyle = background.stripe;
+
+      for (let x = 0; x < geo.width; x += size * 2) {
+        context.fillRect(x, 0, size, geo.height);
+      }
+
+      for (let y = 0; y < geo.height; y += size * 2) {
+        context.fillRect(0, y, geo.width, size);
+      }
     } else if (background.type === "ruled") {
       context.fillStyle = background.color;
       context.fillRect(0, 0, geo.width, geo.height);
