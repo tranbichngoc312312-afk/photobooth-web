@@ -5123,6 +5123,21 @@ input[type="range"] {
   opacity: 0.7;
 }
 
+#frameList .frame-item.is-new::before {
+  content: "MỚI";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  z-index: 1;
+  padding: 2px 6px;
+  border-radius: 999px;
+  color: white;
+  background: linear-gradient(135deg, var(--pink), #ed6297);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+}
+
 #frameList .frame-item.locked::after {
   content: "🔒";
   position: absolute;
@@ -5152,5 +5167,14 @@ input[type="range"] {
     max-width: 34px;
     max-height: 42px;
     justify-self: center;
+  }
+
+  /* Nhãn MỚI nhỏ ở góc phải để không che ảnh xem trước */
+  .mobile-tools-panel #frameList .frame-item.is-new::before {
+    top: 3px;
+    right: 4px;
+    left: auto;
+    padding: 1px 4px;
+    font-size: 7px;
   }
 }
