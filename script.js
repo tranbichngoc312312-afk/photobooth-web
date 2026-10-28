@@ -2065,9 +2065,13 @@ async function startRecapRecording() {
 
         context.filter =
           getCombinedFilter();
-context.translate(width, 0);
-context.scale(-1, 1);
-        
+
+        // Lật gương giống hệt ảnh chụp: chỉ với camera trước
+        if (facingMode === "user") {
+          context.translate(width, 0);
+          context.scale(-1, 1);
+        }
+
         drawVideoCover(
   context,
   video,
