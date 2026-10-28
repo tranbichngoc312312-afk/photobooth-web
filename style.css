@@ -854,6 +854,69 @@ input[type="color"] {
   background: linear-gradient(135deg, #ff5886, #6e7cff);
 }
 
+.filter-preview.soft {
+  background: linear-gradient(135deg, #ffe4ec, #e6e0f5);
+}
+
+.filter-preview.dazz-classic {
+  background: linear-gradient(135deg, #e0a35a, #8a5a3c);
+}
+
+.filter-preview.dazz-instant {
+  background: linear-gradient(135deg, #f1e3c8, #b8c9b4);
+}
+
+/* Hiệu ứng sau khi chụp */
+
+.tool-subheading {
+  margin: 16px 0 9px;
+  font-size: 15px;
+}
+
+.effect-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.effect-chip {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid #ecd9e2;
+  border-radius: 999px;
+  color: var(--muted);
+  background: white;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.effect-chip.active {
+  border-color: var(--pink);
+  color: white;
+  background: linear-gradient(135deg, var(--pink), #ed6297);
+}
+
+@media (max-width: 780px) {
+  .mobile-tools-panel .effect-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .mobile-tools-panel .effect-chip {
+    min-height: 36px;
+    padding: 0 8px;
+    font-size: 10px;
+    text-align: left;
+  }
+
+  .mobile-tools-panel .tool-subheading {
+    margin: 12px 0 8px;
+    font-size: 13px;
+  }
+}
+
 /* Thanh chỉnh ảnh */
 
 .range-field {
