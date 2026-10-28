@@ -2361,6 +2361,7 @@ function renderFrameList() {
     button.dataset.frame = template.id;
     button.classList.toggle("active", template.id === activeFrame);
     button.classList.toggle("locked", locked);
+    button.classList.toggle("is-new", Boolean(template.isNew));
     button.setAttribute(
       "aria-pressed",
       String(template.id === activeFrame)
