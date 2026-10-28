@@ -1749,7 +1749,8 @@ if ("filter" in photoContext) {
       context,
       template,
       box,
-      index
+      index,
+      geometry
     );
   }
 

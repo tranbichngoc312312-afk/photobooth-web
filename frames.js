@@ -719,13 +719,12 @@ window.NohaFrames = (() => {
       }
     },
 
-    /* ===== Kiểu Hàn, pastel, cute, vintage, K-pop (isNew: nhãn MỚI) ===== */
+    /* ===== Kiểu Hàn, pastel, cute, vintage, K-pop ===== */
     {
       id: "korean-black",
       name: "Hàn Quốc đen",
       category: "korean",
       access: "free",
-      isNew: true,
       palette: { ink: "#f5f5f5" },
       background: { type: "solid", color: "#111111" },
       photo: { radius: 2 },
@@ -736,7 +735,6 @@ window.NohaFrames = (() => {
       name: "Hàn Quốc trắng",
       category: "korean",
       access: "free",
-      isNew: true,
       palette: { ink: "#3a3a3a" },
       background: { type: "solid", color: "#fafafa" },
       photo: { radius: 2 },
@@ -747,7 +745,6 @@ window.NohaFrames = (() => {
       name: "Pastel hồng",
       category: "korean",
       access: "free",
-      isNew: true,
       palette: { ink: "#c25a7c" },
       background: { type: "solid", color: "#f9d9e3" },
       decorations: [
@@ -769,7 +766,6 @@ window.NohaFrames = (() => {
       name: "Pastel tím",
       category: "korean",
       access: "free",
-      isNew: true,
       palette: { ink: "#7a5fb0" },
       background: { type: "solid", color: "#e3dbf5" },
       decorations: [
@@ -791,7 +787,6 @@ window.NohaFrames = (() => {
       name: "Pastel bạc hà",
       category: "korean",
       access: "free",
-      isNew: true,
       palette: { ink: "#3f8a76" },
       background: { type: "solid", color: "#d4f0e6" },
       decorations: [
@@ -813,7 +808,6 @@ window.NohaFrames = (() => {
       name: "Nơ coquette",
       category: "cute",
       access: "free",
-      isNew: true,
       palette: { ink: "#d0637f" },
       background: { type: "solid", color: "#fff0f3" },
       decorations: [
@@ -846,7 +840,6 @@ window.NohaFrames = (() => {
       name: "Caro xanh",
       category: "cute",
       access: "free",
-      isNew: true,
       palette: { ink: "#2f5f9e" },
       background: { type: "gingham", color: "#ffffff", stripe: "rgba(120,170,230,0.35)", size: 22 },
       decorations: [
@@ -868,7 +861,6 @@ window.NohaFrames = (() => {
       name: "Caro cherry",
       category: "cute",
       access: "free",
-      isNew: true,
       palette: { ink: "#c8323f" },
       background: { type: "gingham", color: "#fff6f6", stripe: "rgba(230,90,100,0.28)", size: 22 },
       decorations: [
@@ -890,7 +882,6 @@ window.NohaFrames = (() => {
       name: "Gấu nâu",
       category: "cute",
       access: "free",
-      isNew: true,
       palette: { ink: "#7a4a2c" },
       background: {
         type: "linear",
@@ -915,7 +906,6 @@ window.NohaFrames = (() => {
       name: "Cuộn phim vàng",
       category: "trend",
       access: "free",
-      isNew: true,
       palette: { ink: "#3a2412" },
       background: { type: "solid", color: "#efb53a" },
       decorations: [
@@ -935,7 +925,6 @@ window.NohaFrames = (() => {
       name: "My bias",
       category: "trend",
       access: "free",
-      isNew: true,
       palette: { ink: "#8a4fd8" },
       background: {
         type: "linear",
@@ -969,7 +958,6 @@ window.NohaFrames = (() => {
       name: "Y2K neon",
       category: "trend",
       access: "free",
-      isNew: true,
       palette: { ink: "#9dff6a" },
       background: { type: "solid", color: "#0d0d14" },
       decorations: [
@@ -991,6 +979,366 @@ window.NohaFrames = (() => {
         shadow: "rgba(255,79,216,0.8)",
         date: true
       }
+    },
+
+    /* ===== Chủ đề phổ biến: basic, máy ảnh, vé, vở, jeans... (isNew: nhãn MỚI) ===== */
+    {
+      id: "basic-black",
+      name: "Basic đen",
+      category: "minimal",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#f2f2f2" },
+      background: { type: "solid", color: "#0e0e0e" },
+      decorations: [{ type: "filmEdge", layer: "front", color: "#d9d9d9" }],
+      photo: { radius: 0 },
+      text: { titleFont: "script", titleSize: 0.75, subtitle: "NOHA PHOTOBOOTH", date: true }
+    },
+    {
+      id: "basic-red",
+      name: "Basic đỏ đô",
+      category: "minimal",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#f8e6d8" },
+      background: { type: "solid", color: "#8e2a1c" },
+      decorations: [{ type: "filmEdge", layer: "front", color: "#f0c9b5" }],
+      photo: { radius: 0 },
+      text: { titleFont: "script", titleSize: 0.75, subtitle: "NOHA PHOTOBOOTH", date: true }
+    },
+    {
+      id: "trend-digicam",
+      name: "Máy ảnh số",
+      category: "trend",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#5b5bd6" },
+      background: { type: "solid", color: "#5b78f5" },
+      decorations: [
+        { type: "deviceBodies", layer: "back", colors: ["#e9e9ef", "#ffc3d7", "#c8e6a0", "#c9cbe6", "#ffe2a8", "#bfe3ff"] },
+        {
+          type: "scatter",
+          layer: "front",
+          shape: "star",
+          density: 5,
+          size: [14, 22],
+          colors: ["#ffffff", "#ffd166"],
+          seed: 171
+        }
+      ],
+      photo: { radius: 14, extras: ["deviceDetails"] },
+      text: { titleFont: "bold", color: "#ffffff", subtitle: "SAY CHEESE!", date: true }
+    },
+    {
+      id: "couple-save-date",
+      name: "Save the date",
+      category: "couple",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#fbe9e4" },
+      background: { type: "solid", color: "#8f0f16" },
+      photo: { shape: "heart", border: { color: "#fff6f2", width: 8 } },
+      text: { titleFont: "script", subtitle: "SAVE THE DATE", date: true }
+    },
+    {
+      id: "cute-star-blue",
+      name: "Sao xanh",
+      category: "cute",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#ffffff" },
+      background: { type: "solid", color: "#6fb4f2" },
+      decorations: [
+        {
+          type: "scatter",
+          layer: "back",
+          shape: "star",
+          area: "all",
+          density: 26,
+          size: [16, 28],
+          colors: ["rgba(255,255,255,0.85)"],
+          seed: 181
+        }
+      ],
+      photo: { radius: 34, border: { color: "#ffffff", width: 6 } },
+      text: { titleFont: "script", subtitle: "STAR GIRL ★", date: true, shadow: "rgba(30,80,150,0.4)" }
+    },
+    {
+      id: "cute-school",
+      name: "Vở học trò",
+      category: "cute",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#2d4f9e" },
+      background: { type: "ruled", color: "#ffffff", line: "#cfe0f7", spacing: 30 },
+      decorations: [
+        { type: "notebookMargin", layer: "back", color: "#f08b8b" },
+        {
+          type: "scatter",
+          layer: "front",
+          shape: "star",
+          density: 5,
+          size: [14, 22],
+          colors: ["#ffd166", "#7aaae6"],
+          seed: 191
+        },
+        { type: "corners", layer: "front", shape: "book", colors: ["#7aaae6", "#f497b0"], size: 42, inset: 40 }
+      ],
+      photo: { radius: 10, border: { color: "#bcd3f2", width: 4 } },
+      text: { titleFont: "script", subtitle: "BACK TO SCHOOL", date: true }
+    },
+    {
+      id: "trend-denim",
+      name: "Jeans",
+      category: "trend",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#fff1d6" },
+      background: { type: "denim", color: "#2f4f7f" },
+      decorations: [
+        {
+          type: "scatter",
+          layer: "front",
+          shape: "star",
+          density: 4,
+          size: [18, 26],
+          colors: ["#ffffff", "#ffb3c7"],
+          seed: 201
+        }
+      ],
+      photo: { radius: 14, stitch: { color: "#f2a65a", gap: 10 } },
+      text: { titleFont: "bold", subtitle: "BLUE JEANS DAY", date: true }
+    },
+    {
+      id: "cute-matcha",
+      name: "Matcha latte",
+      category: "cute",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#4d6b2b" },
+      background: { type: "solid", color: "#e3ecc9" },
+      decorations: [
+        { type: "dots", layer: "back", color: "rgba(120,150,70,0.25)", radius: 6, spacing: 40 },
+        {
+          type: "scatter",
+          layer: "front",
+          shape: "leaf",
+          density: 6,
+          size: [20, 30],
+          colors: ["#7fa14a", "#a6c46a"],
+          seed: 211
+        }
+      ],
+      photo: { radius: 16, border: { color: "#fffdf5", width: 8 } },
+      text: { titleFont: "script", subtitle: "MATCHA LATTE ♡", date: true }
+    },
+    {
+      id: "trend-phone",
+      name: "Màn hình điện thoại",
+      category: "trend",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#ff6fa8" },
+      background: {
+        type: "linear",
+        angle: 160,
+        stops: ["#dfe6f2", "#f4e6f0", "#e3eef0"]
+      },
+      decorations: [
+        {
+          type: "phoneUI",
+          layer: "front",
+          color: "#2b2b2b",
+          dockColors: ["#7ee08a", "#7ec8ff", "#ffd166", "#ff8fb1"]
+        }
+      ],
+      photo: { radius: 26, border: { color: "#ffffff", width: 6 } },
+      text: { title: "hello", titleFont: "script", subtitle: "" }
+    },
+    {
+      id: "season-summer",
+      name: "Biển hè",
+      category: "season",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#ffffff" },
+      background: {
+        type: "linear",
+        stops: ["#5ec8f2", "#2f9fe0"]
+      },
+      decorations: [
+        { type: "waves", layer: "back", colors: ["#8fdcf7", "#f7e3b0", "#ffffff"] },
+        { type: "corners", layer: "front", shape: "sun", colors: ["#ffd23f"], size: 48, inset: 40 }
+      ],
+      photo: { radius: 18, border: { color: "#ffffff", width: 8 } },
+      text: {
+        titleFont: "script",
+        subtitle: "HELLO SUMMER",
+        color: "#ffffff",
+        shadow: "rgba(0,80,140,0.45)",
+        date: true
+      }
+    },
+    {
+      id: "cute-lucky",
+      name: "Cỏ may mắn",
+      category: "cute",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#2f8a3f" },
+      background: { type: "solid", color: "#ffffff" },
+      decorations: [
+        {
+          type: "scatter",
+          layer: "front",
+          shape: "clover",
+          density: 9,
+          size: [18, 30],
+          colors: ["#4caf50", "#7bc96f"],
+          seed: 221
+        }
+      ],
+      photo: { radius: 10, border: { color: "#e3f4df", width: 6 } },
+      text: { titleFont: "script", subtitle: "MAY MẮN NGẬP TRÀN", date: true }
+    },
+    {
+      id: "cute-scrapbook",
+      name: "Sổ kỷ niệm",
+      category: "cute",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#8a5a3c" },
+      background: { type: "solid", color: "#faf2e4" },
+      decorations: [
+        { type: "dots", layer: "back", color: "rgba(200,170,130,0.22)", radius: 3, spacing: 26 },
+        {
+          type: "scatter",
+          layer: "front",
+          shape: "heart",
+          density: 4,
+          size: [14, 20],
+          colors: ["#f497b0", "#ffd166"],
+          seed: 231
+        }
+      ],
+      photo: {
+        radius: 4,
+        border: { color: "#ffffff", width: 10 },
+        shadow: "rgba(120,80,40,0.22)",
+        extras: ["tape"],
+        tapeColors: ["rgba(255,205,120,0.8)", "rgba(244,151,176,0.75)", "rgba(126,200,255,0.75)"]
+      },
+      text: { titleFont: "script", subtitle: "SWEET MEMORIES", date: true }
+    },
+    {
+      id: "event-vietnam",
+      name: "Tự hào Việt Nam",
+      category: "event",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#ffe08a" },
+      background: {
+        type: "linear",
+        stops: ["#d4161f", "#a50f17"]
+      },
+      decorations: [
+        {
+          type: "scatter",
+          layer: "front",
+          shape: "star",
+          density: 6,
+          size: [22, 36],
+          colors: ["#ffd23f"],
+          seed: 241
+        }
+      ],
+      photo: { radius: 14, border: { color: "#ffd23f", width: 6 } },
+      text: { titleFont: "script", subtitle: "TỰ HÀO VIỆT NAM", date: true }
+    },
+    {
+      id: "cute-strawberry-green",
+      name: "Dâu tây caro",
+      category: "cute",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#5a7a3a" },
+      background: { type: "gingham", color: "#f6f9ee", stripe: "rgba(140,170,100,0.3)", size: 18 },
+      decorations: [
+        {
+          type: "scatter",
+          layer: "front",
+          shape: "strawberry",
+          density: 6,
+          size: [26, 38],
+          colors: ["#e8414f"],
+          seed: 251
+        },
+        { type: "corners", layer: "front", shape: "bow", colors: ["#e8768a"], size: 46, inset: 40 }
+      ],
+      photo: { radius: 8, border: { color: "#ffffff", width: 6 } },
+      text: { titleFont: "script", subtitle: "BERRY CUTE", date: true, shadow: "rgba(255,255,255,0.95)" }
+    },
+    {
+      id: "trend-boarding-pass",
+      name: "Vé máy bay",
+      category: "trend",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#1e3a8a" },
+      background: { type: "solid", color: "#f7f9fc" },
+      decorations: [
+        {
+          type: "boardingPass",
+          layer: "front",
+          color: "#1e3a8a",
+          from: "HAN",
+          to: "SGN",
+          time: "07:00",
+          gate: "05"
+        }
+      ],
+      photo: { radius: 8, border: { color: "#dbe4f5", width: 4 } },
+      text: { title: "NoHa Airlines", titleFont: "bold", titleSize: 0.8, subtitle: "" }
+    },
+    {
+      id: "trend-theater",
+      name: "Vé xem kịch",
+      category: "trend",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#c8232c" },
+      background: { type: "solid", color: "#fffaf6" },
+      decorations: [
+        { type: "ticketStub", layer: "front", color: "#c8232c", title: "NOHA THEATRE" }
+      ],
+      photo: { radius: 4, border: { color: "#f5d0d2", width: 4 } },
+      text: { titleFont: "serif", titleSize: 0.85, tagline: "★ PREMIUM TICKET ★", subtitle: "" }
+    },
+    {
+      id: "trend-retro-window",
+      name: "Cửa sổ retro",
+      category: "trend",
+      access: "free",
+      isNew: true,
+      palette: { ink: "#ffffff" },
+      background: {
+        type: "linear",
+        stops: ["#7fb2ff", "#b7d8ff", "#9fd68a"]
+      },
+      decorations: [
+        {
+          type: "scatter",
+          layer: "back",
+          shape: "cloud",
+          area: "all",
+          density: 6,
+          size: [50, 80],
+          colors: ["rgba(255,255,255,0.85)"],
+          seed: 261
+        }
+      ],
+      photo: { radius: 0, extras: ["windowChrome"], windowColors: ["#e05aa8", "#f59ad0"] },
+      text: { titleFont: "bold", subtitle: "NOHA_OS 98", shadow: "rgba(40,60,120,0.5)", date: true }
     }
   ];
 
@@ -1454,11 +1802,118 @@ window.NohaFrames = (() => {
     });
   }
 
+  function sunShape(context, size) {
+    const s = size / 2;
+
+    context.lineWidth = Math.max(2, size * 0.07);
+    context.lineCap = "round";
+
+    for (let ray = 0; ray < 12; ray++) {
+      const angle = (ray / 12) * Math.PI * 2;
+      context.beginPath();
+      context.moveTo(Math.cos(angle) * s * 0.62, Math.sin(angle) * s * 0.62);
+      context.lineTo(Math.cos(angle) * s * 0.95, Math.sin(angle) * s * 0.95);
+      context.stroke();
+    }
+
+    context.beginPath();
+    context.arc(0, 0, s * 0.48, 0, Math.PI * 2);
+    context.fill();
+  }
+
+  function cloverShape(context, size) {
+    const s = size / 2;
+
+    for (let leaf = 0; leaf < 4; leaf++) {
+      context.save();
+      context.rotate((leaf * Math.PI) / 2 + Math.PI / 4);
+      context.translate(0, -s * 0.42);
+      heartPath(context, s * 1.05);
+      context.fill();
+      context.restore();
+    }
+
+    context.lineWidth = Math.max(1.5, size * 0.06);
+    context.lineCap = "round";
+    context.beginPath();
+    context.moveTo(0, 0);
+    context.quadraticCurveTo(s * 0.2, s * 0.6, s * 0.1, s);
+    context.stroke();
+  }
+
+  function strawberryShape(context, size, color) {
+    const s = size / 2;
+
+    context.beginPath();
+    context.moveTo(0, s);
+    context.bezierCurveTo(-s * 0.95, s * 0.2, -s * 0.8, -s * 0.6, 0, -s * 0.5);
+    context.bezierCurveTo(s * 0.8, -s * 0.6, s * 0.95, s * 0.2, 0, s);
+    context.fill();
+
+    context.fillStyle = "rgba(255,240,180,0.9)";
+    [[-0.3, -0.1], [0.3, -0.1], [0, 0.15], [-0.2, 0.45], [0.2, 0.45], [0, -0.3]].forEach(([x, y]) => {
+      context.beginPath();
+      context.ellipse(x * s, y * s, s * 0.05, s * 0.08, 0, 0, Math.PI * 2);
+      context.fill();
+    });
+
+    context.fillStyle = "#4f9a3a";
+    for (let leaf = 0; leaf < 5; leaf++) {
+      context.save();
+      context.translate(0, -s * 0.52);
+      context.rotate(-Math.PI / 2 + (leaf - 2) * 0.55);
+      context.beginPath();
+      context.ellipse(s * 0.22, 0, s * 0.24, s * 0.09, 0, 0, Math.PI * 2);
+      context.fill();
+      context.restore();
+    }
+  }
+
+  function planeShape(context, size) {
+    const s = size / 2;
+
+    context.beginPath();
+    context.moveTo(s, 0);
+    context.lineTo(-s * 0.7, -s * 0.12);
+    context.lineTo(-s, -s * 0.12);
+    context.lineTo(-s * 0.85, 0);
+    context.lineTo(-s, s * 0.12);
+    context.lineTo(-s * 0.7, s * 0.12);
+    context.closePath();
+    context.fill();
+
+    [-1, 1].forEach(side => {
+      context.beginPath();
+      context.moveTo(s * 0.15, 0);
+      context.lineTo(-s * 0.25, side * s * 0.75);
+      context.lineTo(-s * 0.4, side * s * 0.75);
+      context.lineTo(-s * 0.2, 0);
+      context.closePath();
+      context.fill();
+
+      context.beginPath();
+      context.moveTo(-s * 0.65, 0);
+      context.lineTo(-s * 0.85, side * s * 0.35);
+      context.lineTo(-s * 0.95, side * s * 0.35);
+      context.lineTo(-s * 0.85, 0);
+      context.closePath();
+      context.fill();
+    });
+  }
+
   function drawShape(context, shape, size, color, random) {
     context.fillStyle = color;
     context.strokeStyle = color;
 
-    if (shape === "bow") {
+    if (shape === "sun") {
+      sunShape(context, size);
+    } else if (shape === "clover") {
+      cloverShape(context, size);
+    } else if (shape === "strawberry") {
+      strawberryShape(context, size, color);
+    } else if (shape === "plane") {
+      planeShape(context, size);
+    } else if (shape === "bow") {
       bowShape(context, size);
     } else if (shape === "cherry") {
       cherryShape(context, size, color);
@@ -1704,6 +2159,226 @@ window.NohaFrames = (() => {
       });
     },
 
+    /* Mép phim: tam giác nhỏ và số khung ở hai bên, kiểu dải ảnh basic */
+    filmEdge(context, decoration, template, geo) {
+      const size = 9 * geo.scale;
+
+      context.fillStyle = decoration.color;
+      context.font = `600 ${10 * geo.scale}px monospace`;
+
+      geo.boxes.forEach((box, index) => {
+        const cy = box.y + box.height / 2;
+        const leftX = box.x / 2;
+        const rightX = geo.width - (geo.width - box.x - box.width) / 2;
+
+        [leftX, rightX].forEach((x, side) => {
+          context.beginPath();
+          context.moveTo(x - size / 2, cy - size / 2);
+          context.lineTo(x + size / 2, cy);
+          context.lineTo(x - size / 2, cy + size / 2);
+          context.closePath();
+          context.fill();
+
+          context.save();
+          context.translate(x, box.y + 28 * geo.scale);
+          context.rotate(side ? Math.PI / 2 : -Math.PI / 2);
+          context.textAlign = "center";
+          context.fillText(`${12 + index * 2}A`, 0, 0);
+          context.restore();
+        });
+      });
+    },
+
+    /* Thân máy ảnh số bo tròn phía sau mỗi ảnh, mỗi máy một màu */
+    deviceBodies(context, decoration, template, geo) {
+      const pad = 14 * geo.scale;
+
+      geo.boxes.forEach((box, index) => {
+        context.fillStyle = decoration.colors[index % decoration.colors.length];
+        roundedRect(
+          context,
+          box.x - pad,
+          box.y - pad,
+          box.width + pad * 2,
+          box.height + pad * 2,
+          30 * geo.scale
+        );
+        context.fill();
+        context.strokeStyle = "rgba(60,40,80,0.18)";
+        context.lineWidth = 3 * geo.scale;
+        context.stroke();
+      });
+    },
+
+    /* Đường lề đỏ kiểu trang vở */
+    notebookMargin(context, decoration, template, geo) {
+      const x = geo.padding * 0.55;
+
+      context.strokeStyle = decoration.color;
+      context.lineWidth = 2.5 * geo.scale;
+      context.beginPath();
+      context.moveTo(x, 0);
+      context.lineTo(x, geo.height);
+      context.stroke();
+    },
+
+    /* Thanh trạng thái và dock kiểu màn hình điện thoại (không dùng biểu tượng app thật) */
+    phoneUI(context, decoration, template, geo) {
+      const s = geo.scale;
+
+      context.fillStyle = decoration.color;
+      context.font = `700 ${15 * s}px Arial`;
+      context.textBaseline = "middle";
+      context.fillText("9:41", geo.padding, 26 * s);
+
+      const bx = geo.width - geo.padding - 30 * s;
+      context.strokeStyle = decoration.color;
+      context.lineWidth = 2 * s;
+      roundedRect(context, bx, 18 * s, 26 * s, 14 * s, 4 * s);
+      context.stroke();
+      context.fillRect(bx + 3 * s, 21 * s, 17 * s, 8 * s);
+      context.fillRect(bx + 27 * s, 22 * s, 3 * s, 6 * s);
+
+      const dockHeight = 56 * s;
+      const dockY = geo.height - dockHeight - 14 * s;
+
+      context.fillStyle = "rgba(255,255,255,0.55)";
+      roundedRect(context, geo.padding, dockY, geo.width - geo.padding * 2, dockHeight, 20 * s);
+      context.fill();
+
+      const icon = 38 * s;
+      const count = decoration.dockColors.length;
+      const spacing = (geo.width - geo.padding * 2) / count;
+
+      decoration.dockColors.forEach((color, slot) => {
+        context.fillStyle = color;
+        roundedRect(
+          context,
+          geo.padding + spacing * slot + (spacing - icon) / 2,
+          dockY + (dockHeight - icon) / 2,
+          icon,
+          icon,
+          10 * s
+        );
+        context.fill();
+      });
+    },
+
+    /* Sóng biển nhiều lớp ở chân khung */
+    waves(context, decoration, template, geo) {
+      const s = geo.scale;
+
+      decoration.colors.forEach((color, layer) => {
+        const baseY = geo.height - (110 - layer * 34) * s;
+        const amplitude = 12 * s;
+        const length = 120 * s;
+
+        context.fillStyle = color;
+        context.beginPath();
+        context.moveTo(0, geo.height);
+        context.lineTo(0, baseY);
+
+        for (let x = 0; x <= geo.width + length; x += length / 2) {
+          const up = (x / (length / 2)) % 2 === 0;
+          context.quadraticCurveTo(
+            x + length / 4,
+            baseY + (up ? -amplitude : amplitude),
+            x + length / 2,
+            baseY
+          );
+        }
+
+        context.lineTo(geo.width, geo.height);
+        context.closePath();
+        context.fill();
+      });
+    },
+
+    /* Thẻ lên máy bay ở chân khung: chặng bay, giờ, ghế, máy bay, mã vạch */
+    boardingPass(context, decoration, template, geo) {
+      const s = geo.scale;
+      const { bottom } = photoBounds(geo);
+      const top = bottom + 22 * s;
+      const left = geo.padding;
+      const ink = decoration.color;
+
+      context.fillStyle = ink;
+      context.textBaseline = "top";
+
+      context.font = `600 ${12 * s}px Arial`;
+      context.fillText("From", left, top);
+      context.fillText("To", left + 150 * s, top);
+      context.font = `900 ${30 * s}px Arial`;
+      context.fillText(decoration.from, left, top + 16 * s);
+      context.fillText(decoration.to, left + 150 * s, top + 16 * s);
+
+      context.font = `600 ${12 * s}px Arial`;
+      context.fillText("Boarding", left, top + 58 * s);
+      context.fillText("Gate", left + 150 * s, top + 58 * s);
+      context.font = `800 ${18 * s}px Arial`;
+      context.fillText(decoration.time, left, top + 74 * s);
+      context.fillText(decoration.gate, left + 150 * s, top + 74 * s);
+
+      context.save();
+      context.translate(left + 112 * s, top + 34 * s);
+      drawShape(context, "plane", 34 * s, ink, () => 0);
+      context.restore();
+
+      // Mã vạch dọc bên phải
+      const random = seededRandom(404);
+      const barLeft = geo.width - geo.padding - 70 * s;
+
+      for (let y = top; y < geo.height - 18 * s; ) {
+        const h = (1 + Math.floor(random() * 3)) * s;
+        context.fillRect(barLeft, y, 70 * s, h);
+        y += h + (1 + Math.floor(random() * 3)) * s;
+      }
+    },
+
+    /* Cuống vé xem kịch: viền kép, hàng/ghế, mã vạch */
+    ticketStub(context, decoration, template, geo) {
+      const s = geo.scale;
+      const { bottom } = photoBounds(geo);
+      const top = bottom + 20 * s;
+      const left = geo.padding;
+      const right = geo.width - geo.padding;
+      const ink = decoration.color;
+
+      context.strokeStyle = ink;
+      context.lineWidth = 2 * s;
+      context.setLineDash([8 * s, 6 * s]);
+      context.beginPath();
+      context.moveTo(left, top);
+      context.lineTo(right, top);
+      context.stroke();
+      context.setLineDash([]);
+
+      context.fillStyle = ink;
+      context.textAlign = "center";
+      context.textBaseline = "top";
+      context.font = `900 ${22 * s}px Georgia`;
+      context.fillText(decoration.title, (left + right) / 2, top + 14 * s);
+      context.font = `700 ${14 * s}px Arial`;
+      context.fillText("★ ★ ★", (left + right) / 2, top + 44 * s);
+
+      const cells = [["NGÀY", fillPlaceholders("{date}")], ["HÀNG", "B"], ["GHẾ", "07"]];
+      const cellWidth = (right - left) / cells.length;
+
+      cells.forEach(([label, value], cell) => {
+        const cx = left + cellWidth * cell + cellWidth / 2;
+        context.font = `600 ${11 * s}px Arial`;
+        context.fillText(label, cx, top + 68 * s);
+        context.font = `800 ${16 * s}px Arial`;
+        context.fillText(value, cx, top + 84 * s);
+      });
+
+      context.strokeStyle = ink;
+      context.lineWidth = 3 * s;
+      context.strokeRect(14 * s, 14 * s, geo.width - 28 * s, geo.height - 28 * s);
+      context.lineWidth = 1.5 * s;
+      context.strokeRect(22 * s, 22 * s, geo.width - 44 * s, geo.height - 44 * s);
+    },
+
     /* Lỗ phim hai bên mép */
     sprockets(context, decoration, template, geo) {
       const holeWidth = geo.padding * 0.36;
@@ -1859,6 +2534,94 @@ window.NohaFrames = (() => {
 
       context.font = `700 ${Math.max(12, box.width * 0.025)}px monospace`;
       context.fillText(String(index + 1).padStart(2, "0"), box.x + 10, box.y + 24);
+    },
+
+    /* Hai miếng băng keo washi dán chéo ở góc trên ảnh */
+    tape(context, box, index, template, geo) {
+      const width = 90 * geo.scale;
+      const height = 26 * geo.scale;
+      const colors = template.photo.tapeColors || ["rgba(255,214,120,0.75)"];
+
+      [
+        [box.x + width * 0.25, box.y + height * 0.1, -0.5],
+        [box.x + box.width - width * 0.25, box.y + height * 0.1, 0.5]
+      ].forEach(([x, y, rotation], corner) => {
+        context.save();
+        context.translate(x, y);
+        context.rotate(rotation);
+        context.fillStyle = colors[(index + corner) % colors.length];
+        context.fillRect(-width / 2, -height / 2, width, height);
+        context.restore();
+      });
+    },
+
+    /* Thanh tiêu đề cửa sổ máy tính đời cũ phía trên mỗi ảnh */
+    windowChrome(context, box, index, template, geo) {
+      const barHeight = 24 * geo.scale;
+      const y = box.y - barHeight;
+      const colors = template.photo.windowColors || ["#5a6fd8", "#9aa8ff"];
+
+      const gradient = context.createLinearGradient(box.x, 0, box.x + box.width, 0);
+      gradient.addColorStop(0, colors[0]);
+      gradient.addColorStop(1, colors[1]);
+
+      context.fillStyle = gradient;
+      context.fillRect(box.x, y, box.width, barHeight);
+
+      context.fillStyle = "#ffffff";
+      context.font = `700 ${13 * geo.scale}px Arial`;
+      context.textBaseline = "middle";
+      context.fillText(`noha_photo_0${index + 1}.jpg`, box.x + 10 * geo.scale, y + barHeight / 2);
+
+      // Ba nút thu nhỏ / phóng to / đóng
+      const size = 15 * geo.scale;
+
+      for (let button = 0; button < 3; button++) {
+        const bx = box.x + box.width - (button + 1) * (size + 5 * geo.scale);
+        const by = y + (barHeight - size) / 2;
+
+        context.fillStyle = "#e6e6e6";
+        context.fillRect(bx, by, size, size);
+        context.strokeStyle = "#555555";
+        context.lineWidth = Math.max(1, geo.scale);
+        context.strokeRect(bx, by, size, size);
+      }
+
+      context.strokeStyle = "#2b2b2b";
+      context.lineWidth = 3 * geo.scale;
+      context.strokeRect(box.x, y, box.width, box.height + barHeight);
+    },
+
+    /* Ống kính và nút bấm của máy ảnh số quanh mỗi ảnh */
+    deviceDetails(context, box, index, template, geo) {
+      const lens = 18 * geo.scale;
+      const x = box.x + box.width - lens * 0.6;
+      const y = box.y + lens * 0.6;
+
+      context.fillStyle = "#2b2b3a";
+      context.beginPath();
+      context.arc(x, y, lens, 0, Math.PI * 2);
+      context.fill();
+      context.strokeStyle = "#ffffff";
+      context.lineWidth = 3 * geo.scale;
+      context.stroke();
+      context.fillStyle = "rgba(255,255,255,0.6)";
+      context.beginPath();
+      context.arc(x - lens * 0.3, y - lens * 0.3, lens * 0.25, 0, Math.PI * 2);
+      context.fill();
+
+      ["#ff7bab", "#ffd166", "#7ec8ff"].forEach((color, dot) => {
+        context.fillStyle = color;
+        context.beginPath();
+        context.arc(
+          box.x + (14 + dot * 18) * geo.scale,
+          box.y + box.height - 12 * geo.scale,
+          6 * geo.scale,
+          0,
+          Math.PI * 2
+        );
+        context.fill();
+      });
     }
   };
 
@@ -1903,6 +2666,30 @@ window.NohaFrames = (() => {
 
       context.fillStyle = gradient;
       context.fillRect(0, 0, geo.width, geo.height);
+    } else if (background.type === "denim") {
+      // Vải jeans: nền xanh với các sợi chéo mảnh
+      context.fillStyle = background.color;
+      context.fillRect(0, 0, geo.width, geo.height);
+
+      const step = 5 * geo.scale;
+      context.strokeStyle = "rgba(255,255,255,0.07)";
+      context.lineWidth = Math.max(1, geo.scale);
+
+      for (let offset = -geo.height; offset < geo.width; offset += step) {
+        context.beginPath();
+        context.moveTo(offset, 0);
+        context.lineTo(offset + geo.height, geo.height);
+        context.stroke();
+      }
+
+      const shade = context.createRadialGradient(
+        geo.width / 2, geo.height / 2, geo.width * 0.2,
+        geo.width / 2, geo.height / 2, geo.height * 0.7
+      );
+      shade.addColorStop(0, "rgba(255,255,255,0.08)");
+      shade.addColorStop(1, "rgba(0,0,0,0.25)");
+      context.fillStyle = shade;
+      context.fillRect(0, 0, geo.width, geo.height);
     } else if (background.type === "gingham") {
       // Caro: sọc dọc và sọc ngang bán trong suốt chồng lên nhau
       context.fillStyle = background.color;
@@ -1942,11 +2729,35 @@ window.NohaFrames = (() => {
     paintDecorations(context, template, geo, "back");
   }
 
-  /* Vẽ viền/bóng phía sau ô ảnh, rồi đặt vùng cắt bo góc cho ảnh */
+  /* Trái tim nằm giữa ô, không rộng quá ~1.15 lần chiều cao để giữ dáng tim */
+  function heartRect(context, x, y, width, height) {
+    const w = Math.min(width, height * 1.15);
+    const left = x + (width - w) / 2;
+    const cx = left + w / 2;
+
+    context.beginPath();
+    context.moveTo(cx, y + height * 0.25);
+    context.bezierCurveTo(cx, y, left, y, left, y + height * 0.3);
+    context.bezierCurveTo(left, y + height * 0.6, cx, y + height * 0.75, cx, y + height);
+    context.bezierCurveTo(cx, y + height * 0.75, left + w, y + height * 0.6, left + w, y + height * 0.3);
+    context.bezierCurveTo(left + w, y, cx, y, cx, y + height * 0.25);
+    context.closePath();
+  }
+
+  function photoPath(context, template, x, y, width, height, radius) {
+    if (template.photo?.shape === "heart") {
+      heartRect(context, x, y, width, height);
+    } else {
+      roundedRect(context, x, y, width, height, radius);
+    }
+  }
+
+  /* Vẽ viền/bóng phía sau ô ảnh, rồi đặt vùng cắt (bo góc hoặc trái tim) cho ảnh */
   function clipPhoto(context, template, box, geo) {
     const radius = template.photo?.radius ?? 18;
     const border = template.photo?.border;
     const shadow = template.photo?.shadow;
+    const stitch = template.photo?.stitch;
 
     if (border || shadow) {
       const width = border ? border.width * geo.scale : 0;
@@ -1960,8 +2771,9 @@ window.NohaFrames = (() => {
       }
 
       context.fillStyle = border?.color || "#ffffff";
-      roundedRect(
+      photoPath(
         context,
+        template,
         box.x - width,
         box.y - width,
         box.width + width * 2,
@@ -1972,17 +2784,37 @@ window.NohaFrames = (() => {
       context.restore();
     }
 
-    roundedRect(context, box.x, box.y, box.width, box.height, radius);
+    // Đường chỉ may nét đứt quanh ảnh (khung jeans)
+    if (stitch) {
+      const gap = stitch.gap * geo.scale;
+
+      context.save();
+      context.strokeStyle = stitch.color;
+      context.lineWidth = 3 * geo.scale;
+      context.setLineDash([10 * geo.scale, 7 * geo.scale]);
+      roundedRect(
+        context,
+        box.x - gap,
+        box.y - gap,
+        box.width + gap * 2,
+        box.height + gap * 2,
+        radius + gap
+      );
+      context.stroke();
+      context.restore();
+    }
+
+    photoPath(context, template, box.x, box.y, box.width, box.height, radius);
     context.clip();
   }
 
-  function paintPhotoExtras(context, template, box, index) {
+  function paintPhotoExtras(context, template, box, index, geo = { scale: 1 }) {
     (template.photo?.extras || []).forEach(name => {
       const painter = PHOTO_EXTRAS[name];
 
       if (painter) {
         context.save();
-        painter(context, box, index);
+        painter(context, box, index, template, geo);
         context.restore();
       }
     });
@@ -2131,7 +2963,7 @@ window.NohaFrames = (() => {
       context.fill();
       context.restore();
 
-      paintPhotoExtras(context, template, box, index);
+      paintPhotoExtras(context, template, box, index, geo);
     });
 
     paintOverlay(context, template, geo);
